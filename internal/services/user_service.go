@@ -23,14 +23,14 @@ func (u UserServiceImpl) CreateUser(ctx context.Context, user *models.User) erro
 	if err := isValidPassword(user.Password); err != nil {
 		return err
 	}
-	user.Password = hash(user.Password)
+	user.Password = hashit(user.Password)
 	if err := u.Repository.Create(ctx, user); err != nil {
 		return err
 	}
 	return nil
 }
 
-func hash(str string) string {
+func hashit(str string) string {
 	hash := md5.Sum([]byte(str))
 	return hex.EncodeToString(hash[:])
 }

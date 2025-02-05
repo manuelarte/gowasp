@@ -6,7 +6,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"gowasp/internal/config"
 	"gowasp/internal/handlers"
-	"gowasp/internal/models/errors"
 	"gowasp/internal/repositories"
 	"gowasp/internal/services"
 	"log"
@@ -21,7 +20,7 @@ func main() {
 	userService := services.UserServiceImpl{Repository: repositories.UserRepositoryDB{DB: db}}
 	userHandler := handlers.UserHandler{UserService: userService}
 
-	errors.RegisterErrorResponseHandlers()
+	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
 	r.POST("/users", userHandler.Create)
 
