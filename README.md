@@ -20,7 +20,7 @@ An HTTP client is provided in [users-signup.http](./tools/users-signup.http) to 
 
 #### Weak Password Requirements
 
-As you can see in [users_service.go](./internal/services/user_service.go), the only requirement for a password is to have *more than 4 characters* (#Scenario 1).
+As you can see in [users_service.go](./internal/services/user_service.go), the only requirement for a password is to have *more than 4 characters* (`#Scenario 1`).
 Let's try to improve that by adding **stronger requirements**:
 + minimum 8 characters, (let's set also a maximum password length of 256)
 + include non-alphanumerical characters
@@ -40,7 +40,7 @@ Run the http requests described in [#Scenario 2](./tools/users-signup.http).
 To solve it, the best solution is to use up-to date hashing algorithms, like `bcrypt`, `scrypt` or `PBKDF2`.
 + Change the MD5 hashing algorithm for [bcrypt](https://pkg.go.dev/golang.org/x/crypto/bcrypt).
 + Use a different salt for every user.
-+ Repeat `#Scenario 2` and check that the same password generates different hashes.
++ Repeat `# 2` and check that the same password generates different hashes.
 
 ### 2. Login User - POST /users/login
 
