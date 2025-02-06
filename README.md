@@ -9,9 +9,9 @@ To run the app, in the root directory type
 
 Let's explore different vulnerabilities by exploiting some of the functionalities that the app provides:
 
-### 1. Create User - POST /users
+### 1. Create User - POST /users/signup
 
-We are going to explote the vulnerabilities related to the endpoint to create a user in [/users](http://localhost:8080/users).
+We are going to explote the vulnerabilities related to the endpoint to create a user in [/users](http://localhost:8080/users/signup).
 The vulnerabilities that we are going to check are:
 + [Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)
 + [Weak Hash Algorithm](https://cwe.mitre.org/data/definitions/328.html)
@@ -38,9 +38,9 @@ Run the http requests described in [#Scenario 2](./tools/create-users.http).
 > Never use outdated hashing algorithms like MD5.
 
 To solve it, the best solution is to use up-to date hashing algorithms, like `bcrypt`, `scrypt` or `PBKDF2`.
-+ Change the MD5 hashing algorithm for [pbkdf2](https://pkg.go.dev/golang.org/x/crypto/pbkdf2).
++ Change the MD5 hashing algorithm for [bcrypt](https://pkg.go.dev/golang.org/x/crypto/bcrypt).
 + Use a different salt for every user.
-+ Repeat #Scenario 2 and check that the same password generates different hashes.
++ Repeat `#Scenario 2` and check that the same password generates different hashes.
 
 ## TODO
 

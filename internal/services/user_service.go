@@ -11,6 +11,7 @@ import (
 
 type UserService interface {
 	CreateUser(ctx context.Context, user *models.User) error
+	LoginUser(ctx context.Context, user *models.User) error
 }
 
 var _ UserService = new(UserServiceImpl)
@@ -27,6 +28,11 @@ func (u UserServiceImpl) CreateUser(ctx context.Context, user *models.User) erro
 	if err := u.Repository.Create(ctx, user); err != nil {
 		return err
 	}
+	return nil
+}
+
+func (u UserServiceImpl) LoginUser(ctx context.Context, user *models.User) error {
+	// Do the sql injection here
 	return nil
 }
 
