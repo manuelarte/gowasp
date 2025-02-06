@@ -52,7 +52,6 @@ func (h *UserHandler) Signup(c *gin.Context) {
 		c.HTML(code, response.(errors.ErrorResponse).HtmlTemplate, response.(errors.ErrorResponse).Data)
 		return
 	}
-	c.Request.URL.Path = "/users/welcome"
 	c.Redirect(http.StatusFound, "/users/welcome")
 }
 
@@ -63,7 +62,8 @@ func (h *UserHandler) Login(c *gin.Context) {
 		c.HTML(code, response.(errors.ErrorResponse).HtmlTemplate, response.(errors.ErrorResponse).Data)
 		return
 	}
-	if err := h.UserService.LoginUser(c, &user); err != nil {
+	user, err := h.UserService.LoginUser(c, user.Email, user.Password)
+	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.HTML(code, response.(errors.ErrorResponse).HtmlTemplate, response.(errors.ErrorResponse).Data)
 		return
@@ -71,7 +71,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 	session := sessions.Default(c)
 	userBytes, _ := json.Marshal(user)
 	session.Set("user", userBytes)
-	err := session.Save()
+	err = session.Save()
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.HTML(code, response.(errors.ErrorResponse).HtmlTemplate, response.(errors.ErrorResponse).Data)
@@ -83,5 +83,5 @@ func (h *UserHandler) Login(c *gin.Context) {
 func (h *UserHandler) Logout(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Clear()
-	session.Save()
+	_ = session.Save()
 }

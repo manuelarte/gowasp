@@ -1,10 +1,10 @@
-### HTTP Client example to use for '1. Create User - POST /users'
+### HTTP Client example to use for '1. User Signup - POST /users/signup'
 
 ### 1. Scenario: Password not long enough
 POST http://localhost:8080/users/signup
 Content-Type: application/x-www-form-urlencoded
 
-email=my-username@test.com&password=123
+email=user@test.com&password=123
 
 ### 2. Scenario: Using md5 hash algorithm, check how long it takes for a computer to decrypt that hash
 #### 2.1 Create one user
@@ -25,4 +25,4 @@ email=user2@test.com&password=1234
 POST http://localhost:8080/users/signup
 Content-Type: application/x-www-form-urlencoded
 
-email=my-username@test.com&password=1234
+email=user@test.com&password=12345678#

@@ -11,7 +11,7 @@ import (
 
 type UserService interface {
 	CreateUser(ctx context.Context, user *models.User) error
-	LoginUser(ctx context.Context, user *models.User) error
+	LoginUser(ctx context.Context, email string, password string) (models.User, error)
 }
 
 var _ UserService = new(UserServiceImpl)
@@ -31,9 +31,9 @@ func (u UserServiceImpl) CreateUser(ctx context.Context, user *models.User) erro
 	return nil
 }
 
-func (u UserServiceImpl) LoginUser(ctx context.Context, user *models.User) error {
-	// Do the sql injection here
-	return nil
+func (u UserServiceImpl) LoginUser(ctx context.Context, email string, password string) (models.User, error) {
+	hashedPassword := hashit(password)
+	return u.Repository.Login(ctx, email, hashedPassword)
 }
 
 func hashit(str string) string {
