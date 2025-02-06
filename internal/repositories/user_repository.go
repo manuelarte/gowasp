@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"context"
-	"database/sql"
+	"gorm.io/gorm"
 	"gowasp/internal/models"
 )
 
@@ -13,12 +13,11 @@ type UserRepository interface {
 var _ UserRepository = new(UserRepositoryDB)
 
 type UserRepositoryDB struct {
-	DB *sql.DB
+	DB *gorm.DB
 }
 
 func (u UserRepositoryDB) Create(ctx context.Context, user *models.User) error {
-	query := "INSERT INTO users(created_at, updated_at, username, password) VALUES (current_timestamp, current_timestamp, ?, ?)"
-	if _, err := u.DB.ExecContext(ctx, query, user.Username, user.Password); err != nil {
+	if err := u.DB.WithContext(ctx).Create(user).Error; err != nil {
 		return err
 	}
 	return nil

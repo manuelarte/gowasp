@@ -1,9 +1,12 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/gin-gonic/gin"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/mattn/go-sqlite3"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 	"gowasp/internal/config"
 	"gowasp/internal/handlers"
 	"gowasp/internal/repositories"
@@ -16,8 +19,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
 
-	userService := services.UserServiceImpl{Repository: repositories.UserRepositoryDB{DB: db}}
+		}
+	}(db)
+
+	gormDB, err := gorm.Open(sqlite.New(sqlite.Config{Conn: db}), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	userService := services.UserServiceImpl{Repository: repositories.UserRepositoryDB{DB: gormDB}}
 	userHandler := handlers.UserHandler{UserService: userService}
 
 	config.RegisterErrorResponseHandlers()

@@ -11,7 +11,7 @@ Let's explore different vulnerabilities by exploiting some of the functionalitie
 
 ### 1. Create User - POST /users
 
-We are going to explote the vulnerabilities related to the endpoint to create an user in [/users](http://localhost:8080/users).
+We are going to explote the vulnerabilities related to the endpoint to create a user in [/users](http://localhost:8080/users).
 The vulnerabilities that we are going to check are:
 + [Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)
 + [Weak Hash Algorithm](https://cwe.mitre.org/data/definitions/328.html)
@@ -25,7 +25,7 @@ Let's try to improve that by adding **stronger requirements**:
 + minimum 8 characters, (let's set also a maximum password length of 256)
 + include non-alphanumerical characters
 
-Once you have implemented this restrictions, test them using the http client.
+Once you have implemented these restrictions, test them using the http client.
 
 #### Weak Hash Algorithm
 
@@ -37,7 +37,7 @@ Run the http requests described in [#Scenario 2](./tools/create-users.http).
 > [!IMPORTANT]  
 > Never use outdated hashing algorithms like MD5.
 
-To solve it, the best solution is to use up to date hashing algorithms, like `bcrypt`, `scrypt` or `PBKDF2`.
+To solve it, the best solution is to use up-to date hashing algorithms, like `bcrypt`, `scrypt` or `PBKDF2`.
 + Change the MD5 hashing algorithm for [pbkdf2](https://pkg.go.dev/golang.org/x/crypto/pbkdf2).
 + Use a different salt for every user.
 + Repeat #Scenario 2 and check that the same password generates different hashes.

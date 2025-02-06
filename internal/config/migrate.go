@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
+	"time"
 )
 
 func MigrateDatabase() (*sql.DB, error) {
@@ -12,6 +13,10 @@ func MigrateDatabase() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	db.SetConnMaxLifetime(time.Minute * 3)
+	db.SetMaxOpenConns(3)
+	db.SetMaxIdleConns(3)
+
 	driver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
 	if err != nil {
 		return nil, err
