@@ -33,7 +33,9 @@ func main() {
 		log.Fatal(err)
 	}
 	userService := services.UserServiceImpl{Repository: repositories.UserRepositoryDB{DB: gormDB}}
-	userHandler := handlers.UsersHandler{UserService: userService}
+	usersHandler := handlers.UsersHandler{UserService: userService}
+
+	blogsHandler := handlers.BlogsHandler{}
 
 	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
@@ -41,14 +43,16 @@ func main() {
 	r.Use(sessions.Sessions("mysession", store))
 	r.LoadHTMLGlob("web/templates/**/*")
 
-	r.GET("/users/signup", userHandler.SignupPage)
-	r.GET("/users/login", userHandler.LoginPage)
+	r.GET("/users/signup", usersHandler.SignupPage)
+	r.GET("/users/login", usersHandler.LoginPage)
 
-	r.GET("/users/welcome", config.AuthMiddleware(), userHandler.WelcomePage)
+	r.GET("/users/welcome", config.AuthMiddleware(), usersHandler.WelcomePage)
 
-	r.POST("/users/signup", userHandler.Signup)
-	r.POST("/users/login", userHandler.Login)
-	r.DELETE("/users/logout", userHandler.Logout)
+	r.POST("/users/signup", usersHandler.Signup)
+	r.POST("/users/login", usersHandler.Login)
+	r.DELETE("/users/logout", usersHandler.Logout)
+
+	r.GET("/blogs", config.AuthMiddleware(), blogsHandler.GetBlogFileByName)
 
 	err = r.Run()
 	if err != nil {

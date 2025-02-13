@@ -27,9 +27,6 @@
             document.getElementById("loginError").style.visibility="hidden";
             window.location.href = "/users/welcome"
         })
-        .then(data => {
-            console.log(data); // Process your data here
-        })
         .catch(error => {
             document.getElementById("loginError").style.visibility="visible";
             console.error('There has been a problem with your fetch operation:', error);

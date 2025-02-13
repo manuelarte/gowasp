@@ -48,7 +48,6 @@ We are going to explote the vulnerabilities related to the endpoint to login a u
 The vulnerabilities that we are going to check are:
 
 + [SQL injection](https://owasp.org/www-community/attacks/SQL_Injection)
-+ Information Disclosure (displaying that the user exists)
 
 An HTTP client is provided in [users-login.http](./tools/users-login.http) to follow along.
 
@@ -59,13 +58,27 @@ Try to explote this vulnerability by concatenating an always true sql statement 
 
 ### 3. View Blogs
 
-- Create a default blog in resources, check that I can access private resources by changing the url
+Once you're logged in, you are redirected to http://localhost:8080/users/welcome. There you can see an Intro Blog. 
+If you open the network tab of developer console of your web browser, and refresh, the program makes a call to http://localhost:8080/blogs?name=intro.txt.
+
+Let's try to exploit that. The vulnerabilities that we are going to check in this scenario:
+
++ [SSRF](https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29/)
+
+To follow along, check [blogs.http](./tools/blogs.http)
+
+#### SSRF - Server Side Request Forgery
+
+Let's check how the `GetBlogFileByName` method is implemented in [blogs_handler](/internal/handlers/blogs_handler.go).
+We can see that we are using `os.Open`:
+> file, err := os.Open(fmt.Sprintf("./resources/blogs/%s", name))
+
+What would happen in we change the name query parameter to point to a different file in a different location, maybe we could try with `../internal/private.txt`
+Try to also display `/etc/passwd` file content.
 
 ## TODO
 
-### NEXT VULNERABILITIES, SQL Injection for login, for example, add posts for other users
-
-### CSRF, SSRF, wrong authorization to get user's posts
+### NEXT CSRF, html injection
 
 ### Excessive logging
 ...

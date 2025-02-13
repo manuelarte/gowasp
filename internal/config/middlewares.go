@@ -14,14 +14,14 @@ func AuthMiddleware() gin.HandlerFunc {
 		session := sessions.Default(c)
 		sessionUser := session.Get("user")
 		if sessionUser == nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
 			return
 		}
 
 		var user models.User
 		err := json.Unmarshal(sessionUser.([]byte), &user)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
 			return
 		}
 
