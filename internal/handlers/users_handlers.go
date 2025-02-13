@@ -54,6 +54,7 @@ func (h *UsersHandler) Signup(c *gin.Context) {
 		return
 	}
 	logrus.Infof("Signup for User '%s'", user.Username)
+	c.JSON(http.StatusCreated, user)
 }
 
 func (h *UsersHandler) Login(c *gin.Context) {

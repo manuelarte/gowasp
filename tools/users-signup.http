@@ -16,7 +16,7 @@ Content-Type: application/json
 
 {
   "username": "user1",
-  "password": "1234"
+  "password": "#12345678#"
 }
 
 #### 2.2 Create another user with the same password and check that the hashed passwords are the same
@@ -25,7 +25,7 @@ Content-Type: application/json
 
 {
   "username": "user2",
-  "password": "1234"
+  "password": "#12345678#"
 }
 
 ###### Implement solutions ###########
