@@ -7,7 +7,6 @@ import (
 	"github.com/ing-bank/ginerr/v3"
 	"github.com/sirupsen/logrus"
 	"gowasp/internal/models"
-	"gowasp/internal/models/errors"
 	"gowasp/internal/services"
 	"net/http"
 )
@@ -34,14 +33,15 @@ func (h *UserHandler) WelcomePage(c *gin.Context) {
 
 func (h *UserHandler) Signup(c *gin.Context) {
 	user := models.User{}
-	if err := c.Bind(&user); err != nil {
+	if err := c.BindJSON(&user); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
-		c.HTML(code, response.(errors.ErrorResponse).HtmlTemplate, response.(errors.ErrorResponse).Data)
+		c.JSON(code, response)
 		return
 	}
 	if err := h.UserService.CreateUser(c, &user); err != nil {
+		logrus.Infof("Signup attempt failed for User '%s'", user.Username)
 		code, response := ginerr.NewErrorResponse(c, err)
-		c.HTML(code, response.(errors.ErrorResponse).HtmlTemplate, response.(errors.ErrorResponse).Data)
+		c.JSON(code, response)
 		return
 	}
 	session := sessions.Default(c)
@@ -50,23 +50,24 @@ func (h *UserHandler) Signup(c *gin.Context) {
 	err := session.Save()
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
-		c.HTML(code, response.(errors.ErrorResponse).HtmlTemplate, response.(errors.ErrorResponse).Data)
+		c.JSON(code, response)
 		return
 	}
-	c.Redirect(http.StatusFound, "/users/welcome")
+	logrus.Infof("Signup for User '%s'", user.Username)
 }
 
 func (h *UserHandler) Login(c *gin.Context) {
 	user := models.User{}
-	if err := c.Bind(&user); err != nil {
+	if err := c.BindJSON(&user); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
-		c.HTML(code, response.(errors.ErrorResponse).HtmlTemplate, response.(errors.ErrorResponse).Data)
+		c.JSON(code, response)
 		return
 	}
 	user, err := h.UserService.LoginUser(c, user.Username, user.Password)
 	if err != nil {
+		logrus.Infof("Login attempt failed for User '%s'", user.Username)
 		code, response := ginerr.NewErrorResponse(c, err)
-		c.HTML(code, response.(errors.ErrorResponse).HtmlTemplate, response.(errors.ErrorResponse).Data)
+		c.JSON(code, response)
 		return
 	}
 	session := sessions.Default(c)
@@ -74,12 +75,12 @@ func (h *UserHandler) Login(c *gin.Context) {
 	session.Set("user", userBytes)
 	err = session.Save()
 	if err != nil {
+		logrus.Infof("Login attempt failed for User '%s'", user.Username)
 		code, response := ginerr.NewErrorResponse(c, err)
-		c.HTML(code, response.(errors.ErrorResponse).HtmlTemplate, response.(errors.ErrorResponse).Data)
+		c.JSON(code, response)
 		return
 	}
 	logrus.Infof("User %s logged in", user.Username)
-	c.Redirect(http.StatusFound, "/users/welcome")
 }
 
 func (h *UserHandler) Logout(c *gin.Context) {

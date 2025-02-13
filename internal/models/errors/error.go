@@ -3,8 +3,7 @@ package errors
 import "github.com/gin-gonic/gin"
 
 type ErrorResponse struct {
-	HtmlTemplate string
-	Data         gin.H
+	Data gin.H `json:"data"`
 }
 
 var _ error = new(PasswordNotValid)

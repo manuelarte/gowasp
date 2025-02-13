@@ -2,9 +2,12 @@
 
 ### 1. Scenario: normal login
 POST http://localhost:8080/users/login
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 
-username=gowasp&password=gowasp
+{
+  "username": "gowasp",
+  "password": "gowasp"
+}
 
 ##### 2. Scenario: logout
 ### 2.1 Logout
@@ -12,6 +15,9 @@ DELETE http://localhost:8080/users/logout
 
 ### 2.2 Try to log in without knowing any credentials
 POST http://localhost:8080/users/login
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 
-username=...&password=...
+{
+  "username": "....",
+  "password": "...."
+}

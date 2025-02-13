@@ -2,9 +2,14 @@ package repositories
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 	"gowasp/internal/models"
+)
+
+var (
+	ErrUserNotFound = errors.New("user and password not found")
 )
 
 type UserRepository interface {
@@ -35,7 +40,7 @@ func (u UserRepositoryDB) Login(ctx context.Context, username string, password s
 	var user models.User
 	err := row.Scan(&user.ID, &user.Username, &user.Password)
 	if err != nil {
-		return models.User{}, err
+		return models.User{}, ErrUserNotFound
 	}
 	return user, nil
 }
