@@ -2,13 +2,14 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 	"gorm.io/gorm"
 	"gowasp/internal/models"
 )
 
 type UserRepository interface {
 	Create(ctx context.Context, user *models.User) error
-	Login(ctx context.Context, email string, password string) (models.User, error)
+	Login(ctx context.Context, username string, password string) (models.User, error)
 }
 
 var _ UserRepository = new(UserRepositoryDB)
@@ -24,15 +25,15 @@ func (u UserRepositoryDB) Create(ctx context.Context, user *models.User) error {
 	return nil
 }
 
-func (u UserRepositoryDB) Login(ctx context.Context, email string, password string) (models.User, error) {
-	query := "SELECT id, email, password FROM users WHERE email = '" + email + "' AND password = '" + password + "';"
+func (u UserRepositoryDB) Login(ctx context.Context, username string, password string) (models.User, error) {
+	query := fmt.Sprintf("SELECT id, username, password FROM users WHERE username = '%s' AND PASSWORD = '%s';", username, password)
 
 	row := u.DB.WithContext(ctx).Raw(query).Row()
 	if row.Err() != nil {
 		return models.User{}, row.Err()
 	}
 	var user models.User
-	err := row.Scan(&user.ID, &user.Email, &user.Password)
+	err := row.Scan(&user.ID, &user.Username, &user.Password)
 	if err != nil {
 		return models.User{}, err
 	}

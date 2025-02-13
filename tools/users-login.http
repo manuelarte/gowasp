@@ -4,7 +4,7 @@
 POST http://localhost:8080/users/login
 Content-Type: application/x-www-form-urlencoded
 
-email=gowasp@test.com&password=gowasp
+username=gowasp&password=gowasp
 
 ##### 2. Scenario: logout
 ### 2.1 Logout
@@ -14,4 +14,4 @@ DELETE http://localhost:8080/users/logout
 POST http://localhost:8080/users/login
 Content-Type: application/x-www-form-urlencoded
 
-email=...&password=...
+username=...&password=...

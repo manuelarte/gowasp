@@ -5,6 +5,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/ing-bank/ginerr/v3"
+	"github.com/sirupsen/logrus"
 	"gowasp/internal/models"
 	"gowasp/internal/models/errors"
 	"gowasp/internal/services"
@@ -62,7 +63,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 		c.HTML(code, response.(errors.ErrorResponse).HtmlTemplate, response.(errors.ErrorResponse).Data)
 		return
 	}
-	user, err := h.UserService.LoginUser(c, user.Email, user.Password)
+	user, err := h.UserService.LoginUser(c, user.Username, user.Password)
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.HTML(code, response.(errors.ErrorResponse).HtmlTemplate, response.(errors.ErrorResponse).Data)
@@ -77,6 +78,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 		c.HTML(code, response.(errors.ErrorResponse).HtmlTemplate, response.(errors.ErrorResponse).Data)
 		return
 	}
+	logrus.Infof("User %s logged in", user.Username)
 	c.Redirect(http.StatusFound, "/users/welcome")
 }
 

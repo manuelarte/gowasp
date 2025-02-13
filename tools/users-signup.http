@@ -4,20 +4,20 @@
 POST http://localhost:8080/users/signup
 Content-Type: application/x-www-form-urlencoded
 
-email=user@test.com&password=123
+username=user&password=123
 
 ### 2. Scenario: Using md5 hash algorithm, check how long it takes for a computer to decrypt that hash
 #### 2.1 Create one user
 POST http://localhost:8080/users/signup
 Content-Type: application/x-www-form-urlencoded
 
-email=user1@test.com&password=1234
+username=user1&password=1234
 
 #### 2.2 Create another user with the same password and check that the hashed passwords are the same
 POST http://localhost:8080/users/signup
 Content-Type: application/x-www-form-urlencoded
 
-email=user2@test.com&password=1234
+username=user2&password=1234
 
 ###### Implement solutions ###########
 
@@ -25,4 +25,4 @@ email=user2@test.com&password=1234
 POST http://localhost:8080/users/signup
 Content-Type: application/x-www-form-urlencoded
 
-email=user@test.com&password=12345678#
+username=user&password=12345678#
