@@ -4,9 +4,10 @@
         <script type="text/javascript">
               function signup(event) {
                 event.preventDefault(); // Prevent form from refreshing the page
-                document.getElementById("signupError").style.visibility="hidden";
-                username = document.getElementById("username").value
-                password =document.getElementById("password").value
+                document.getElementById("error-message").style.visibility="hidden";
+                const username = document.getElementById("username").value
+                const password = document.getElementById("password").value
+                const errorMessage = document.getElementById("error-message");
                 const userSignup = {
                   username: username,
                   password: password
@@ -20,18 +21,24 @@
                   body: JSON.stringify(userSignup),
                 })
                 .then(response => {
-                    if (!response.ok) {
-                        document.getElementById("signupError").style.visibility="visible";
-                        throw new Error('Network response was not ok');
+                    console.log("Response", response)
+                    if (response.ok) {
+                        errorMessage.style.visibility = "hidden";
+                        window.location.href = "/users/welcome"
+                        return
+                    } else {
+                        errorMessage.style.visibility = "visible";
+                        response.json().then(errorResponse => {
+                            console.log(errorResponse)
+                            errorMessage.textContent = errorResponse.data.message
+                        })
                     }
-                    document.getElementById("signupError").style.visibility="hidden";
-                    window.location.href = "/users/welcome"
-                })
-                .then(data => {
-                    console.log(data); // Process your data here
+
+
                 })
                 .catch(error => {
-                    document.getElementById("signupError").style.visibility="visible";
+                    errorMessage.style.visibility="visible";
+                    errorMessage.textContent = "An unexpected error occurred.";
                     console.error('There has been a problem with your fetch operation:', error);
                 });
               }
@@ -46,9 +53,9 @@
             <input type="password" id="password" name="password" required><br>
             <input type="submit" value="Signup">
         </form>
-        <div id="signupError" style="color:red; visibility: hidden;">
+        <p id="error-message" style="color:red; visibility: hidden;">
               An error occurred
-        </div>
+        </p>
 {{end}}
 
 
