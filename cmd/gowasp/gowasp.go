@@ -33,7 +33,7 @@ func main() {
 		log.Fatal(err)
 	}
 	userService := services.UserServiceImpl{Repository: repositories.UserRepositoryDB{DB: gormDB}}
-	userHandler := handlers.UserHandler{UserService: userService}
+	userHandler := handlers.UsersHandler{UserService: userService}
 
 	config.RegisterErrorResponseHandlers()
 	r := gin.Default()

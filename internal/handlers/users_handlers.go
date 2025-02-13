@@ -11,19 +11,19 @@ import (
 	"net/http"
 )
 
-type UserHandler struct {
+type UsersHandler struct {
 	UserService services.UserService
 }
 
-func (h *UserHandler) SignupPage(c *gin.Context) {
+func (h *UsersHandler) SignupPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "users/signup.tpl", gin.H{})
 }
 
-func (h *UserHandler) LoginPage(c *gin.Context) {
+func (h *UsersHandler) LoginPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "users/login.tpl", gin.H{})
 }
 
-func (h *UserHandler) WelcomePage(c *gin.Context) {
+func (h *UsersHandler) WelcomePage(c *gin.Context) {
 	session := sessions.Default(c)
 	var user models.User
 	_ = json.Unmarshal(session.Get("user").([]byte), &user)
@@ -31,7 +31,7 @@ func (h *UserHandler) WelcomePage(c *gin.Context) {
 	c.HTML(http.StatusOK, "users/welcome.tpl", gin.H{"user": user})
 }
 
-func (h *UserHandler) Signup(c *gin.Context) {
+func (h *UsersHandler) Signup(c *gin.Context) {
 	user := models.User{}
 	if err := c.BindJSON(&user); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
@@ -56,7 +56,7 @@ func (h *UserHandler) Signup(c *gin.Context) {
 	logrus.Infof("Signup for User '%s'", user.Username)
 }
 
-func (h *UserHandler) Login(c *gin.Context) {
+func (h *UsersHandler) Login(c *gin.Context) {
 	user := models.User{}
 	if err := c.BindJSON(&user); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
@@ -83,7 +83,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 	logrus.Infof("User %s logged in", user.Username)
 }
 
-func (h *UserHandler) Logout(c *gin.Context) {
+func (h *UsersHandler) Logout(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Clear()
 	_ = session.Save()

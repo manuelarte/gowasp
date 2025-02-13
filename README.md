@@ -40,7 +40,7 @@ Run the http requests described in [#Scenario 2](./tools/users-signup.http).
 To solve it, the best solution is to use up-to date hashing algorithms, like `bcrypt`, `scrypt` or `PBKDF2`.
 + Change the MD5 hashing algorithm for [bcrypt](https://pkg.go.dev/golang.org/x/crypto/bcrypt).
 + Use a different salt for every user.
-+ Repeat `# 2` and check that the same password generates different hashes.
++ Repeat `#2` and check that the same password generates different hashes.
 
 ### 2. Login User - POST /users/login
 
@@ -55,7 +55,11 @@ An HTTP client is provided in [users-login.http](./tools/users-login.http) to fo
 #### SQL Injection
 
 As you can see in [user_repository.go](./internal/repositories/user_repository.go), in the `Login` method, the query is created by string concatenation.
-Try to explote this vulnerability by concatenating an always true sql statement (something like OR '1'='1'), and avoid the execution of the password clause (maybe by commenting the rest of the query with --)
+Try to explote this vulnerability by concatenating an always true sql statement (something like -OR '1'='1'-), and avoid the execution of the password clause (maybe by commenting the rest of the query with --)
+
+### 3. View Blogs
+
+- Create a default blog in resources, check that I can access private resources by changing the url
 
 ## TODO
 
