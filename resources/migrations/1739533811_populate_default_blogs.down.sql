@@ -1,0 +1,1 @@
+DELETE FROM blogs WHERE id IN (1,2)

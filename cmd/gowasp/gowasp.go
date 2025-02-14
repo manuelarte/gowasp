@@ -6,6 +6,7 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/manuelarte/pagorminator"
 	_ "github.com/mattn/go-sqlite3"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -32,10 +33,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	_ = gormDB.Use(pagorminator.PaGormMinator{})
 	userService := services.UserServiceImpl{Repository: repositories.UserRepositoryDB{DB: gormDB}}
 	usersHandler := handlers.UsersHandler{UserService: userService}
 
-	blogsHandler := handlers.BlogsHandler{}
+	blogService := services.BlogServiceImpl{Repository: repositories.BlogRepositoryDB{DB: gormDB}}
+	blogsHandler := handlers.BlogsHandler{BlogService: blogService}
 
 	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
@@ -52,7 +55,8 @@ func main() {
 	r.POST("/users/login", usersHandler.Login)
 	r.DELETE("/users/logout", usersHandler.Logout)
 
-	r.GET("/blogs", config.AuthMiddleware(), blogsHandler.GetBlogFileByName)
+	r.GET("/static/blogs", config.AuthMiddleware(), blogsHandler.GetStaticBlogFileByName)
+	r.GET("/blogs", blogsHandler.GetAll)
 
 	err = r.Run()
 	if err != nil {

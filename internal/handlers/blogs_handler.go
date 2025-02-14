@@ -5,14 +5,18 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/ing-bank/ginerr/v3"
+	"github.com/manuelarte/pagorminator"
+	"gowasp/internal/services"
 	"io"
 	"os"
+	"strconv"
 )
 
 type BlogsHandler struct {
+	BlogService services.BlogService
 }
 
-func (h *BlogsHandler) GetBlogFileByName(c *gin.Context) {
+func (h *BlogsHandler) GetStaticBlogFileByName(c *gin.Context) {
 	name := c.Query("name")
 	file, err := os.Open(fmt.Sprintf("./resources/blogs/%s", name))
 	if err != nil {
@@ -46,4 +50,19 @@ func (h *BlogsHandler) GetBlogFileByName(c *gin.Context) {
 	}
 
 	c.Data(200, "text/plain", bs)
+}
+
+func (h *BlogsHandler) GetAll(c *gin.Context) {
+	pageString := c.DefaultQuery("page", "0")
+	page, _ := strconv.Atoi(pageString)
+	sizeString := c.DefaultQuery("size", "10")
+	size, _ := strconv.Atoi(sizeString)
+	pageRequest, _ := pagorminator.PageRequest(page, size)
+	pageBlogsResponse, err := h.BlogService.GetAll(c, pageRequest)
+	if err != nil {
+		code, response := ginerr.NewErrorResponse(c, err)
+		c.JSON(code, response)
+		return
+	}
+	c.JSON(200, pageBlogsResponse)
 }

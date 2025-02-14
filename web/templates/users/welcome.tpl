@@ -14,7 +14,7 @@
         <script type="text/javascript">
 
             const firstBlog = document.getElementById("first-blog")
-            fetch('/blogs?name=intro.txt', {
+            fetch('/static/blogs?name=intro.txt', {
                 method: 'GET',
                 headers: {
                     "Content-Type": "text/plain"
