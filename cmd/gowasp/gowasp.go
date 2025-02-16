@@ -40,6 +40,9 @@ func main() {
 	blogService := services.BlogServiceImpl{Repository: repositories.BlogRepositoryDB{DB: gormDB}}
 	blogsHandler := handlers.BlogsHandler{BlogService: blogService}
 
+	blogCommentService := services.BlogCommentServiceImpl{Repository: repositories.BlogCommentRepositoryDB{DB: gormDB}}
+	blogCommentHandler := handlers.BlogCommentsHandler{BlogCommentService: blogCommentService}
+
 	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
 	store := cookie.NewStore([]byte("secret"))
@@ -58,6 +61,7 @@ func main() {
 	r.DELETE("/users/logout", usersHandler.Logout)
 
 	r.GET("/blogs", blogsHandler.GetAll)
+	r.GET("/blogs/:id/comments", blogCommentHandler.GetBlogComments)
 
 	err = r.Run()
 	if err != nil {

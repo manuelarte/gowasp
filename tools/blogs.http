@@ -13,3 +13,8 @@ GET http://localhost:8080/static/blogs?name=...
 ### Get all blogs
 
 GET http://localhost:8080/blogs
+Content-Type: application/json
+
+### Get blog comments
+GET http://localhost:8080/blogs/1/comments
+Content-Type: application/json

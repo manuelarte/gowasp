@@ -17,6 +17,22 @@ type BlogsHandler struct {
 	BlogService services.BlogService
 }
 
+func (h *BlogsHandler) GetOnePage(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		code, response := ginerr.NewErrorResponse(c, err)
+		c.JSON(code, response)
+		return
+	}
+	blog, err := h.BlogService.GetById(c, id)
+	if err != nil {
+		code, response := ginerr.NewErrorResponse(c, err)
+		c.JSON(code, response)
+		return
+	}
+	c.HTML(http.StatusOK, "blogs/one.tpl", gin.H{"blog": blog})
+}
+
 func (h *BlogsHandler) GetStaticBlogFileByName(c *gin.Context) {
 	name := c.Query("name")
 	file, err := os.Open(fmt.Sprintf("./resources/blogs/%s", name))
@@ -66,20 +82,4 @@ func (h *BlogsHandler) GetAll(c *gin.Context) {
 		return
 	}
 	c.JSON(200, pageBlogsResponse)
-}
-
-func (h *BlogsHandler) GetOnePage(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		code, response := ginerr.NewErrorResponse(c, err)
-		c.JSON(code, response)
-		return
-	}
-	blog, err := h.BlogService.GetById(c, id)
-	if err != nil {
-		code, response := ginerr.NewErrorResponse(c, err)
-		c.JSON(code, response)
-		return
-	}
-	c.HTML(http.StatusOK, "blogs/one.tpl", gin.H{"blog": blog})
 }

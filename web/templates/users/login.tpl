@@ -6,7 +6,7 @@
         event.preventDefault(); // Prevent form from refreshing the page
         document.getElementById("loginError").style.visibility="hidden";
         username = document.getElementById("username").value
-        password =document.getElementById("password").value
+        password = document.getElementById("password").value
         const userLogin = {
           username: username,
           password: password
