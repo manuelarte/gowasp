@@ -35,12 +35,12 @@ func (h *BlogCommentsHandler) GetBlogComments(c *gin.Context) {
 }
 
 func (h *BlogCommentsHandler) CreateBlogComment(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		code, response := ginerr.NewErrorResponse(c, err)
-		c.JSON(code, response)
-		return
-	}
+	//id, err := strconv.Atoi(c.Param("id"))
+	//if err != nil {
+	//	code, response := ginerr.NewErrorResponse(c, err)
+	//	c.JSON(code, response)
+	//	return
+	//}
 	blogComment := models.BlogComment{}
 	if err := c.BindJSON(&blogComment); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
@@ -49,4 +49,11 @@ func (h *BlogCommentsHandler) CreateBlogComment(c *gin.Context) {
 	}
 	// create
 	// vulnerabilities, csrf, template injection, not validating that the user who created comment is the one authenticated
+	err := h.BlogCommentService.Create(c, &blogComment)
+	if err != nil {
+		code, response := ginerr.NewErrorResponse(c, err)
+		c.JSON(code, response)
+		return
+	}
+	c.JSON(200, blogComment)
 }

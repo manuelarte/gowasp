@@ -8,6 +8,7 @@ import (
 )
 
 type BlogCommentRepository interface {
+	Create(ctx context.Context, blogComment *models.BlogComment) error
 	GetAllForBlog(ctx context.Context, blogID uint, pageRequest *pagorminator.Pagination) ([]*models.BlogComment, error)
 }
 
@@ -24,4 +25,8 @@ func (b BlogCommentRepositoryDB) GetAllForBlog(ctx context.Context, blogID uint,
 		return nil, tx.Error
 	}
 	return blogComments, tx.Error
+}
+
+func (b BlogCommentRepositoryDB) Create(ctx context.Context, blogComment *models.BlogComment) error {
+	return b.DB.WithContext(ctx).Create(blogComment).Error
 }

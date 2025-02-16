@@ -8,6 +8,7 @@ import (
 )
 
 type BlogCommentService interface {
+	Create(ctx context.Context, blogComment *models.BlogComment) error
 	GetAllForBlog(ctx context.Context, blogID uint, pagination *pagorminator.Pagination) (models.PageResponse[*models.BlogComment], error)
 }
 
@@ -31,4 +32,8 @@ func (b BlogCommentServiceImpl) GetAllForBlog(ctx context.Context, blogID uint, 
 			TotalPages: pagination.GetTotalPages(),
 		},
 	}, nil
+}
+
+func (b BlogCommentServiceImpl) Create(ctx context.Context, blogComment *models.BlogComment) error {
+	return b.Repository.Create(ctx, blogComment)
 }

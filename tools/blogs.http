@@ -18,3 +18,13 @@ Content-Type: application/json
 ### Get blog comments
 GET http://localhost:8080/blogs/1/comments
 Content-Type: application/json
+
+### Create blog comments
+POST http://localhost:8080/blogs/1/comments
+Content-Type: application/json
+
+{
+  "blogId": 1,
+  "userId": 2,
+  "comment": "Very nice article"
+}
