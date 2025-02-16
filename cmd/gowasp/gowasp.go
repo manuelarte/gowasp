@@ -62,6 +62,7 @@ func main() {
 
 	r.GET("/blogs", blogsHandler.GetAll)
 	r.GET("/blogs/:id/comments", blogCommentHandler.GetBlogComments)
+	r.POST("/blogs/:id/comments", config.AuthMiddleware(), blogCommentHandler.CreateBlogComment)
 
 	err = r.Run()
 	if err != nil {

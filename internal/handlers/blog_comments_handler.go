@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ing-bank/ginerr/v3"
 	"github.com/manuelarte/pagorminator"
+	"gowasp/internal/models"
 	"gowasp/internal/services"
 	"strconv"
 )
@@ -31,4 +32,21 @@ func (h *BlogCommentsHandler) GetBlogComments(c *gin.Context) {
 		return
 	}
 	c.JSON(200, pageResponse)
+}
+
+func (h *BlogCommentsHandler) CreateBlogComment(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		code, response := ginerr.NewErrorResponse(c, err)
+		c.JSON(code, response)
+		return
+	}
+	blogComment := models.BlogComment{}
+	if err := c.BindJSON(&blogComment); err != nil {
+		code, response := ginerr.NewErrorResponse(c, err)
+		c.JSON(code, response)
+		return
+	}
+	// create
+	// vulnerabilities, csrf, template injection, not validating that the user who created comment is the one authenticated
 }
