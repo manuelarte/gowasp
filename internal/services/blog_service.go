@@ -9,6 +9,7 @@ import (
 
 type BlogService interface {
 	GetAll(ctx context.Context, pagination *pagorminator.Pagination) (models.PageResponse[*models.Blog], error)
+	GetById(ctx context.Context, id int) (models.Blog, error)
 }
 
 var _ BlogService = new(BlogServiceImpl)
@@ -31,4 +32,8 @@ func (b BlogServiceImpl) GetAll(ctx context.Context, pagination *pagorminator.Pa
 			TotalPages: pagination.GetTotalPages(),
 		},
 	}, nil
+}
+
+func (b BlogServiceImpl) GetById(ctx context.Context, id int) (models.Blog, error) {
+	return b.Repository.GetById(ctx, id)
 }

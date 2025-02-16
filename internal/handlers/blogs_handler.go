@@ -69,5 +69,17 @@ func (h *BlogsHandler) GetAll(c *gin.Context) {
 }
 
 func (h *BlogsHandler) GetOnePage(c *gin.Context) {
-	c.HTML(http.StatusOK, "blogs/one.tpl", gin.H{})
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		code, response := ginerr.NewErrorResponse(c, err)
+		c.JSON(code, response)
+		return
+	}
+	blog, err := h.BlogService.GetById(c, id)
+	if err != nil {
+		code, response := ginerr.NewErrorResponse(c, err)
+		c.JSON(code, response)
+		return
+	}
+	c.HTML(http.StatusOK, "blogs/one.tpl", gin.H{"blog": blog})
 }
