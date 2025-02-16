@@ -50,12 +50,13 @@ func main() {
 	r.GET("/users/login", usersHandler.LoginPage)
 
 	r.GET("/users/welcome", config.AuthMiddleware(), usersHandler.WelcomePage)
+	r.GET("/static/blogs", config.AuthMiddleware(), blogsHandler.GetStaticBlogFileByName)
+	r.GET("/blogs/:id/view", config.AuthMiddleware(), blogsHandler.GetOnePage)
 
 	r.POST("/users/signup", usersHandler.Signup)
 	r.POST("/users/login", usersHandler.Login)
 	r.DELETE("/users/logout", usersHandler.Logout)
 
-	r.GET("/static/blogs", config.AuthMiddleware(), blogsHandler.GetStaticBlogFileByName)
 	r.GET("/blogs", blogsHandler.GetAll)
 
 	err = r.Run()

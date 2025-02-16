@@ -8,6 +8,7 @@ import (
 	"github.com/manuelarte/pagorminator"
 	"gowasp/internal/services"
 	"io"
+	"net/http"
 	"os"
 	"strconv"
 )
@@ -65,4 +66,8 @@ func (h *BlogsHandler) GetAll(c *gin.Context) {
 		return
 	}
 	c.JSON(200, pageBlogsResponse)
+}
+
+func (h *BlogsHandler) GetOnePage(c *gin.Context) {
+	c.HTML(http.StatusOK, "blogs/one.tpl", gin.H{})
 }

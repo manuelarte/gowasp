@@ -19,7 +19,7 @@ type BlogRepositoryDB struct {
 
 func (b BlogRepositoryDB) GetAll(ctx context.Context, pageRequest *pagorminator.Pagination) ([]*models.Blog, error) {
 	var blogs []*models.Blog
-	tx := b.DB.WithContext(ctx).Debug().Clauses(pageRequest).Find(&blogs)
+	tx := b.DB.WithContext(ctx).Clauses(pageRequest).Order("posted_at asc").Find(&blogs)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
