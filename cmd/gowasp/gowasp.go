@@ -54,6 +54,7 @@ func main() {
 	r.SetFuncMap(template.FuncMap{
 		"unsafe": renderUnsafe,
 	})
+	r.Static("/css", "web/css")
 	r.LoadHTMLGlob("web/templates/**/*")
 
 	r.GET("/users/signup", usersHandler.SignupPage)
