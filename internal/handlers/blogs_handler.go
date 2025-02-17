@@ -35,6 +35,7 @@ func (h *BlogsHandler) GetOnePage(c *gin.Context) {
 
 func (h *BlogsHandler) GetStaticBlogFileByName(c *gin.Context) {
 	name := c.Query("name")
+	// CWE-918: Server-Side Request Forgery (SSRF) https://cwe.mitre.org/data/definitions/918.html
 	file, err := os.Open(fmt.Sprintf("./resources/blogs/%s", name))
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
