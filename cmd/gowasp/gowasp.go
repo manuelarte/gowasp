@@ -35,12 +35,11 @@ func main() {
 	}
 	_ = gormDB.Use(pagorminator.PaGormMinator{})
 	userService := services.UserServiceImpl{Repository: repositories.UserRepositoryDB{DB: gormDB}}
-	usersHandler := handlers.UsersHandler{UserService: userService}
-
 	blogService := services.BlogServiceImpl{Repository: repositories.BlogRepositoryDB{DB: gormDB}}
-	blogsHandler := handlers.BlogsHandler{BlogService: blogService}
-
 	blogCommentService := services.BlogCommentServiceImpl{Repository: repositories.BlogCommentRepositoryDB{DB: gormDB}}
+
+	usersHandler := handlers.UsersHandler{UserService: userService, BlogService: blogService}
+	blogsHandler := handlers.BlogsHandler{BlogService: blogService, BlogCommentService: blogCommentService}
 	blogCommentHandler := handlers.BlogCommentsHandler{BlogCommentService: blogCommentService}
 
 	config.RegisterErrorResponseHandlers()

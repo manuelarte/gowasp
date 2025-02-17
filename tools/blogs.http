@@ -23,7 +23,7 @@ Content-Type: text/html
 GET http://localhost:8080/blogs/1/comments
 Content-Type: application/json
 
-### Create blog comments
+### Create blog comment
 POST http://localhost:8080/blogs/1/comments
 Content-Type: application/json
 
@@ -31,4 +31,14 @@ Content-Type: application/json
   "blogId": 1,
   "userId": 2,
   "comment": "Very nice article"
+}
+
+### Create blog comment for another user
+POST http://localhost:8080/blogs/1/comments
+Content-Type: application/json
+
+{
+  "blogId": 1,
+  "userId": 1,
+  "comment": "Horrible article, you should delete it <script type='text/javascript'>alert('Hello')</script>"
 }

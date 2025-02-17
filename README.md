@@ -78,6 +78,18 @@ We can see that we are using `os.Open`:
 
 To solve this issue for this scenario we could validate the user input, and avoid path traversal with functions like [`filepath.Clean`](https://pkg.go.dev/path/filepath#Clean)
 
+### 4. Add Comments
+
+Vulnerabilities we are going to check here:
+
+- [CSRF](https://owasp.org/www-community/attacks/csrf)
+- Template injection
+- Improper validation (I can create comments for other users)
+
+#### CSRF - Cross Site Request Forgery
+
+We are going to explode the feature of adding comments
+
 ## TODO
 
 ### NEXT CSRF, html injection

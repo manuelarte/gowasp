@@ -14,7 +14,8 @@ import (
 )
 
 type BlogsHandler struct {
-	BlogService services.BlogService
+	BlogService        services.BlogService
+	BlogCommentService services.BlogCommentService
 }
 
 func (h *BlogsHandler) GetOnePage(c *gin.Context) {
@@ -30,7 +31,10 @@ func (h *BlogsHandler) GetOnePage(c *gin.Context) {
 		c.JSON(code, response)
 		return
 	}
-	c.HTML(http.StatusOK, "blogs/one.tpl", gin.H{"blog": blog})
+	commentsPageRequest, _ := pagorminator.PageRequest(0, 10)
+	pageResponseBlogComments, err := h.BlogCommentService.GetAllForBlog(c, uint(id), commentsPageRequest)
+
+	c.HTML(http.StatusOK, "blogs/one.tpl", gin.H{"blog": blog, "comments": pageResponseBlogComments})
 }
 
 func (h *BlogsHandler) GetStaticBlogFileByName(c *gin.Context) {

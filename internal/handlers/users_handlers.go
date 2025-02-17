@@ -5,6 +5,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/ing-bank/ginerr/v3"
+	"github.com/manuelarte/pagorminator"
 	"github.com/sirupsen/logrus"
 	"gowasp/internal/models"
 	"gowasp/internal/services"
@@ -14,6 +15,7 @@ import (
 
 type UsersHandler struct {
 	UserService services.UserService
+	BlogService services.BlogService
 }
 
 func (h *UsersHandler) SignupPage(c *gin.Context) {
@@ -29,7 +31,14 @@ func (h *UsersHandler) WelcomePage(c *gin.Context) {
 	var user models.User
 	_ = json.Unmarshal(session.Get("user").([]byte), &user)
 
-	c.HTML(http.StatusOK, "users/welcome.tpl", gin.H{"user": user})
+	// TODO pass the latest articles
+	blogPageRequest, _ := pagorminator.PageRequest(0, 5)
+	latestBlogsPageResponse, err := h.BlogService.GetAll(c, blogPageRequest)
+	if err != nil {
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+	c.HTML(http.StatusOK, "users/welcome.tpl", gin.H{"user": user, "latestBlogs": latestBlogsPageResponse.Data})
 }
 
 func (h *UsersHandler) Signup(c *gin.Context) {

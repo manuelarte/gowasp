@@ -9,6 +9,7 @@ import (
 	"gowasp/internal/models"
 	"gowasp/internal/services"
 	"strconv"
+	"time"
 )
 
 type BlogCommentsHandler struct {
@@ -45,6 +46,7 @@ func (h *BlogCommentsHandler) CreateBlogComment(c *gin.Context) {
 	//	return
 	//}
 	blogComment := models.BlogComment{}
+	blogComment.PostedAt = time.Now()
 	if err := c.BindJSON(&blogComment); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
