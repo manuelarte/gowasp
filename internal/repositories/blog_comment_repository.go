@@ -20,7 +20,7 @@ type BlogCommentRepositoryDB struct {
 
 func (b BlogCommentRepositoryDB) GetAllForBlog(ctx context.Context, blogID uint, pageRequest *pagorminator.Pagination) ([]*models.BlogComment, error) {
 	var blogComments []*models.BlogComment
-	tx := b.DB.WithContext(ctx).Clauses(pageRequest).Order("posted_at asc").Where("blog_id = ?", blogID).Find(&blogComments)
+	tx := b.DB.WithContext(ctx).Clauses(pageRequest).Order("posted_at asc").Where("blog_id = ?", blogID).Preload("User").Find(&blogComments)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

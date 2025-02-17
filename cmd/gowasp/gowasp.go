@@ -14,8 +14,13 @@ import (
 	"gowasp/internal/handlers"
 	"gowasp/internal/repositories"
 	"gowasp/internal/services"
+	"html/template"
 	"log"
 )
+
+func renderUnsafe(s string) template.HTML {
+	return template.HTML(s)
+}
 
 func main() {
 	db, err := config.MigrateDatabase()
@@ -46,6 +51,9 @@ func main() {
 	r := gin.Default()
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("mysession", store))
+	r.SetFuncMap(template.FuncMap{
+		"unsafe": renderUnsafe,
+	})
 	r.LoadHTMLGlob("web/templates/**/*")
 
 	r.GET("/users/signup", usersHandler.SignupPage)
@@ -53,7 +61,7 @@ func main() {
 
 	r.GET("/users/welcome", config.AuthMiddleware(), usersHandler.WelcomePage)
 	r.GET("/static/blogs", config.AuthMiddleware(), blogsHandler.GetStaticBlogFileByName)
-	r.GET("/blogs/:id/view", config.AuthMiddleware(), blogsHandler.GetOnePage)
+	r.GET("/blogs/:id/view", config.AuthMiddleware(), blogsHandler.ViewBlogPage)
 
 	r.POST("/users/signup", usersHandler.Signup)
 	r.POST("/users/login", usersHandler.Login)

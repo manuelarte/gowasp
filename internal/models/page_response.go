@@ -11,3 +11,14 @@ type PageMetadata struct {
 	TotalCount int64 `json:"totalCount"`
 	TotalPages int   `json:"totalPages"`
 }
+
+func Transform[T any, Y any](original PageResponse[T], f func(t T) Y) PageResponse[Y] {
+	data := make([]Y, len(original.Data))
+	for i, item := range original.Data {
+		data[i] = f(item)
+	}
+	return PageResponse[Y]{
+		Data:     data,
+		Metadata: original.Metadata,
+	}
+}

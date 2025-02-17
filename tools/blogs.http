@@ -14,31 +14,3 @@ GET http://localhost:8080/static/blogs?name=...
 
 GET http://localhost:8080/blogs
 Content-Type: application/json
-
-### Get one blog
-GET http://localhost:8080/blogs/1/view
-Content-Type: text/html
-
-### Get Blog comments
-GET http://localhost:8080/blogs/1/comments
-Content-Type: application/json
-
-### Create blog comment
-POST http://localhost:8080/blogs/1/comments
-Content-Type: application/json
-
-{
-  "blogId": 1,
-  "userId": 2,
-  "comment": "Very nice article"
-}
-
-### Create blog comment for another user
-POST http://localhost:8080/blogs/1/comments
-Content-Type: application/json
-
-{
-  "blogId": 1,
-  "userId": 1,
-  "comment": "Horrible article, you should delete it <script type='text/javascript'>alert('Hello')</script>"
-}

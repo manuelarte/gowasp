@@ -6,11 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ing-bank/ginerr/v3"
 	"github.com/manuelarte/pagorminator"
+	"gowasp/internal/models"
 	"gowasp/internal/services"
 	"io"
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 type BlogsHandler struct {
@@ -18,7 +20,7 @@ type BlogsHandler struct {
 	BlogCommentService services.BlogCommentService
 }
 
-func (h *BlogsHandler) GetOnePage(c *gin.Context) {
+func (h *BlogsHandler) ViewBlogPage(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
@@ -33,8 +35,9 @@ func (h *BlogsHandler) GetOnePage(c *gin.Context) {
 	}
 	commentsPageRequest, _ := pagorminator.PageRequest(0, 10)
 	pageResponseBlogComments, err := h.BlogCommentService.GetAllForBlog(c, uint(id), commentsPageRequest)
+	pageResponseBlogUserComments := models.Transform(pageResponseBlogComments, toBlogUserComment)
 
-	c.HTML(http.StatusOK, "blogs/one.tpl", gin.H{"blog": blog, "comments": pageResponseBlogComments})
+	c.HTML(http.StatusOK, "blogs/blog.tpl", gin.H{"blog": blog, "comments": pageResponseBlogUserComments})
 }
 
 func (h *BlogsHandler) GetStaticBlogFileByName(c *gin.Context) {
@@ -87,4 +90,34 @@ func (h *BlogsHandler) GetAll(c *gin.Context) {
 		return
 	}
 	c.JSON(200, pageBlogsResponse)
+}
+
+type BlogUserComment struct {
+	ID        uint        `json:"id"`
+	CreatedAt time.Time   `json:"createdAt"`
+	UpdatedAt time.Time   `json:"updatedAt,omitempty"`
+	PostedAt  time.Time   `json:"postedAt" gorm:"now"`
+	BlogID    uint        `json:"blogId"`
+	User      UserComment `json:"user"`
+	Comment   string      `json:"comment"`
+}
+
+type UserComment struct {
+	ID       uint   `json:"id"`
+	Username string `json:"username"`
+}
+
+func toBlogUserComment(blogComment *models.BlogComment) BlogUserComment {
+	return BlogUserComment{
+		ID:        blogComment.ID,
+		CreatedAt: blogComment.CreatedAt,
+		UpdatedAt: blogComment.UpdatedAt,
+		PostedAt:  blogComment.PostedAt,
+		BlogID:    blogComment.BlogID,
+		User: UserComment{
+			ID:       blogComment.User.ID,
+			Username: blogComment.User.Username,
+		},
+		Comment: blogComment.Comment,
+	}
 }

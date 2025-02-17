@@ -1,4 +1,4 @@
-{{ define "blogs/one.tpl"}}
+{{ define "blogs/blog.tpl"}}
     {{ template "layouts/header.tpl" .}}
 
         <h2>{{ .blog.Title }}</h2>

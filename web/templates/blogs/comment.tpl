@@ -1,4 +1,4 @@
 {{ define "blogs/comment.tpl"}}
-<p>User: {{ .UserID }}</p>
-<p>{{ .Comment }}</p>
+<p>User: {{ .User.Username }}</p>
+<p>{{ .Comment | unsafe }}</p>
 {{ end }}
