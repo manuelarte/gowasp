@@ -9,6 +9,7 @@ import (
 	"gowasp/internal/models"
 	"gowasp/internal/services"
 	"net/http"
+	"time"
 )
 
 type UsersHandler struct {
@@ -32,12 +33,13 @@ func (h *UsersHandler) WelcomePage(c *gin.Context) {
 }
 
 func (h *UsersHandler) Signup(c *gin.Context) {
-	user := models.User{}
-	if err := c.BindJSON(&user); err != nil {
+	userSignup := UserSignup{}
+	if err := c.BindJSON(&userSignup); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
 		return
 	}
+	user := userSignup.toUser()
 	if err := h.UserService.CreateUser(c, &user); err != nil {
 		logrus.Infof("Signup attempt failed for User '%s'", user.Username)
 		code, response := ginerr.NewErrorResponse(c, err)
@@ -88,4 +90,19 @@ func (h *UsersHandler) Logout(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Clear()
 	_ = session.Save()
+}
+
+type UserSignup struct {
+	Username string `json:"username" binding:"required,max=18"`
+	Password string `json:"password" binding:"required,max=18"`
+}
+
+func (u UserSignup) toUser() models.User {
+	return models.User{
+		ID:        0,
+		CreatedAt: time.Time{},
+		UpdatedAt: time.Time{},
+		Username:  u.Username,
+		Password:  u.Password,
+	}
 }

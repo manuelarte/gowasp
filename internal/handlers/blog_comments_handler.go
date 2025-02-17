@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/ing-bank/ginerr/v3"
 	"github.com/manuelarte/pagorminator"
 	"gowasp/internal/models"
@@ -31,6 +33,7 @@ func (h *BlogCommentsHandler) GetBlogComments(c *gin.Context) {
 		c.JSON(code, response)
 		return
 	}
+	c.SetCookie("csrf", uuid.New().String(), 3600*24, fmt.Sprintf("/blogs/%d/comments", id), "localhost", false, true)
 	c.JSON(200, pageResponse)
 }
 
