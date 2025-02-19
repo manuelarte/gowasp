@@ -45,15 +45,16 @@ func (h *BlogCommentsHandler) CreateBlogComment(c *gin.Context) {
 	//	c.JSON(code, response)
 	//	return
 	//}
-	blogComment := models.BlogComment{}
-	blogComment.PostedAt = time.Now()
-	if err := c.BindJSON(&blogComment); err != nil {
+	newBlogComment := NewBlogComment{}
+	newBlogComment.PostedAt = time.Now()
+	if err := c.BindJSON(&newBlogComment); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
 		return
 	}
 	// create
 	// vulnerabilities, csrf, template injection, not validating that the user who created comment is the one authenticated
+	blogComment := newBlogComment.toBlogComment()
 	err := h.BlogCommentService.Create(c, &blogComment)
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
@@ -61,4 +62,23 @@ func (h *BlogCommentsHandler) CreateBlogComment(c *gin.Context) {
 		return
 	}
 	c.JSON(200, blogComment)
+}
+
+type NewBlogComment struct {
+	PostedAt time.Time `json:"postedAt" binding:"required"`
+	BlogID   uint      `json:"blogId" binding:"required"`
+	UserID   uint      `json:"userId" binding:"required"`
+	Comment  string    `json:"comment" binding:"required,max=1000"`
+}
+
+func (b *NewBlogComment) toBlogComment() models.BlogComment {
+	return models.BlogComment{
+		ID:        0,
+		CreatedAt: time.Time{},
+		UpdatedAt: time.Time{},
+		PostedAt:  b.PostedAt,
+		BlogID:    b.BlogID,
+		UserID:    b.UserID,
+		Comment:   b.Comment,
+	}
 }
