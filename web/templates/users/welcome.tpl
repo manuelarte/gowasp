@@ -1,12 +1,6 @@
 {{ define "users/welcome.tpl"}}
     {{ template "layouts/header.tpl" .}}
 
-        <script type='text/javascript'>
-            function blogLiClock(blog) {
-              window.location.href = "/blogs/" + blog.id + "/view"
-            }
-        </script>
-
         <h1>Welcome {{ .user.Username }} to Gowasp website</h1>
         <p>Warning: This is just for information purposes: Password hash: {{ .user.Password }} </p>
 
@@ -21,7 +15,7 @@
             <h2>Latest Blogs</h2>
             <ul>
                 {{range $val := .latestBlogs}}
-                    <li onclick="blogLiClock({{ $val }})"><a href="#">{{ $val.Title }}</a></li>
+                    <li><a href="/blogs/{{ $val.ID }}/view">{{ $val.Title }}</a></li>
                 {{end}}
             </ul>
         <div>
@@ -40,7 +34,6 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                console.log(firstBlog)
                 response.text().then(data => firstBlog.textContent = data)
             })
             .catch(error => {
