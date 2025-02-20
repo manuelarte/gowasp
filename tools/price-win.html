@@ -59,6 +59,7 @@
     </style>
     <script type="text/javascript">
         function uploadComment(event) {
+            event.preventDefault()
             const postID = 2
             const userID = 2
             const newUserComment = {
@@ -67,25 +68,23 @@
                 comment: "<script>alert('You have been hacked')<\/script>",
             };
             console.log("Sending data:", '/posts/' + postID + '/comments', JSON.stringify(newUserComment));
-            debugger;
             fetch('http://localhost:8080/posts/' + postID + '/comments', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
                 },
+                credentials: 'include',
                 body: JSON.stringify(newUserComment),
             })
                 .then(response => {
-                    debugger;
                     if (!response.ok) {
-                        console.error("did not succedded")
+                        console.error("did not succedded", response)
+                        return
                     }
                     console.log("comment added")
-                    debugger
                 })
                 .catch(error => {
                     console.error('There has been a problem with your fetch operation:', error);
-                    debugger
                 });
         }
     </script>

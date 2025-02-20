@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -49,6 +50,10 @@ func main() {
 
 	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
+	configCors := cors.DefaultConfig()
+	configCors.AllowOrigins = []string{"http://localhost:8080", "http://localhost:63342"}
+	configCors.AllowCredentials = true
+	r.Use(cors.New(configCors))
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("mysession", store))
 	r.SetFuncMap(template.FuncMap{
