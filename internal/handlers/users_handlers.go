@@ -31,7 +31,6 @@ func (h *UsersHandler) WelcomePage(c *gin.Context) {
 	var user models.User
 	_ = json.Unmarshal(session.Get("user").([]byte), &user)
 
-	// TODO pass the latest articles
 	blogPageRequest, _ := pagorminator.PageRequest(0, 5)
 	latestBlogsPageResponse, err := h.BlogService.GetAll(c, blogPageRequest)
 	if err != nil {

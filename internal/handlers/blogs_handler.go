@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/ing-bank/ginerr/v3"
 	"github.com/manuelarte/pagorminator"
@@ -37,7 +39,11 @@ func (h *BlogsHandler) ViewBlogPage(c *gin.Context) {
 	pageResponseBlogComments, err := h.BlogCommentService.GetAllForBlog(c, uint(id), commentsPageRequest)
 	pageResponseBlogUserComments := models.Transform(pageResponseBlogComments, toBlogUserComment)
 
-	c.HTML(http.StatusOK, "blogs/blog.tpl", gin.H{"blog": blog, "comments": pageResponseBlogUserComments})
+	session := sessions.Default(c)
+	var user models.User
+	_ = json.Unmarshal(session.Get("user").([]byte), &user)
+
+	c.HTML(http.StatusOK, "blogs/blog.tpl", gin.H{"user": user, "blog": blog, "comments": pageResponseBlogUserComments})
 }
 
 func (h *BlogsHandler) GetStaticBlogFileByName(c *gin.Context) {
