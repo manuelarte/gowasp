@@ -96,25 +96,30 @@ There are several ways to implement a solution for this vulnerability in this ca
 + Override the values given in userID and/or postID by the proper values (the user id coming from the session cookie and the postID coming from the url)
 + (**preferred**) Implement a new struct that contains only the valid fields as we have in `UserSignup` struct.
 
-#### HTML Template Injection
-
-If we look at the comment section of the view post page, we see that the comment is displayed. 
-Maybe we could try to inject some html/javascript code in the comment and check whether is displayed.
-
-Run the Scenario 2 http requests that tries to inject a <script> content in your comment.
-
-To solve this remember to always escape/validate user input. 
-In this case, Gin provides already a mechanism against this attack, and we needed to avoid it by creating a custom function to avoid escaping the html characters.
-You can check [`gowasp.main`](cmd/gowasp/gowasp.go) how I created an `unsafe` function to render html content.
-
 #### CSRF - Cross Site Request Forgery
 
-TODO - add a form to insert a comment with the csrf value also 
-We are going to explode the feature of adding comments
+The add comments endpoint is not protected against CSRF attacks. And we can check it by following this steps:
++ login in the application with your browser.
++ open [price-win.html](/tools/price-win.html) with that same browser. 
++ Click on the rewards button.
++ Go to http://localhost:8080/posts/2/comments and check what happened.
 
-## TODO
+The app has been exploit by two vulnerabilities, CSRF and HTML Template injection.
 
-### NEXT CSRF, html injection
+To avoid CSRF attacks we can validate add a CSRF cookie in our requests, and validate in the payload that the cookie and the json field match.
+In the template [add_edit_comment.tpl](/web/templates/posts/add_edit_comment.tpl) you can check that we are sending a csrf value that:
 
-### Excessive logging
-...
+```<input type='hidden' id='csrf' name="csrf" value='{{ .csrf }}'>```
+
+Validate that the value that we receive from that json field matches the value that we have in the `csrf` cookie in the Request.
+Restart the application and check that you can't create comments anymore using the win price button
+
+#### HTML Template Injection
+
+Before we could see that we also suffered from template injection.
+
+Run the `#Scenario 2` http requests that tries to inject a `<script>` content in your comment.
+
+To solve this remember to always escape/validate user input.
+In this case, Gin provides already a mechanism against this attack, and we needed to avoid it by creating a custom function to avoid escaping the html characters.
+You can check [`gowasp.main`](cmd/gowasp/gowasp.go) how I created an `unsafe` function to render html content.

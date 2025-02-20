@@ -5,7 +5,7 @@
         <p>{{ .post.Content }}</p>
 
         <div>
-            <p>Add comment</p>
+            {{ template "posts/add_edit_comment.tpl" .}}
         </div>
 
         <div id="comments">
