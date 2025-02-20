@@ -39,12 +39,6 @@ func (h *PostCommentsHandler) GetPostComments(c *gin.Context) {
 }
 
 func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
-	//id, err := strconv.Atoi(c.Param("id"))
-	//if err != nil {
-	//	code, response := ginerr.NewErrorResponse(c, err)
-	//	c.JSON(code, response)
-	//	return
-	//}
 	newPostComment := NewPostComment{}
 	newPostComment.PostedAt = time.Now()
 	if err := c.BindJSON(&newPostComment); err != nil {
@@ -52,8 +46,6 @@ func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
 		c.JSON(code, response)
 		return
 	}
-	// create
-	// vulnerabilities, csrf, template injection, not validating that the user who created comment is the one authenticated
 	postComment := newPostComment.toPostComment()
 	err := h.PostCommentService.Create(c, &postComment)
 	if err != nil {
@@ -67,8 +59,8 @@ func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
 type NewPostComment struct {
 	PostedAt time.Time `json:"postedAt" binding:"required"`
 	PostID   uint      `json:"postID" binding:"required"`
-	UserID   uint      `json:"userId" binding:"required"`
-	Comment  string    `json:"comment" binding:"required,max=1000"`
+	UserID   uint      `json:"userID" binding:"required"`
+	Comment  string    `json:"comment" binding:"required,min=1,max=1000"`
 }
 
 func (b *NewPostComment) toPostComment() models.PostComment {

@@ -64,6 +64,8 @@ func main() {
 	r.GET("/static/posts", config.AuthMiddleware(), postsHandler.GetStaticPostFileByName)
 	r.GET("/posts/:id/view", config.AuthMiddleware(), postsHandler.ViewPostPage)
 
+	r.GET("/debug", handlers.GetTemplateByName)
+
 	r.POST("/users/signup", usersHandler.Signup)
 	r.POST("/users/login", usersHandler.Login)
 	r.DELETE("/users/logout", usersHandler.Logout)
