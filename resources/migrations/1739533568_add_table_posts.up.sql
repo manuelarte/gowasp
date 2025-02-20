@@ -1,4 +1,4 @@
-CREATE TABLE blogs (
+CREATE TABLE posts (
     id integer NOT NULL,
     created_at datetime,
     updated_at datetime,

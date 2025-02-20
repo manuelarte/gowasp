@@ -7,24 +7,24 @@ import (
 	"gowasp/internal/repositories"
 )
 
-type BlogService interface {
-	GetAll(ctx context.Context, pagination *pagorminator.Pagination) (models.PageResponse[*models.Blog], error)
-	GetById(ctx context.Context, id int) (models.Blog, error)
+type PostService interface {
+	GetAll(ctx context.Context, pagination *pagorminator.Pagination) (models.PageResponse[*models.Post], error)
+	GetById(ctx context.Context, id int) (models.Post, error)
 }
 
-var _ BlogService = new(BlogServiceImpl)
+var _ PostService = new(PostServiceImpl)
 
-type BlogServiceImpl struct {
-	Repository repositories.BlogRepository
+type PostServiceImpl struct {
+	Repository repositories.PostRepository
 }
 
-func (b BlogServiceImpl) GetAll(ctx context.Context, pagination *pagorminator.Pagination) (models.PageResponse[*models.Blog], error) {
-	blogs, err := b.Repository.GetAll(ctx, pagination)
+func (b PostServiceImpl) GetAll(ctx context.Context, pagination *pagorminator.Pagination) (models.PageResponse[*models.Post], error) {
+	posts, err := b.Repository.GetAll(ctx, pagination)
 	if err != nil {
-		return models.PageResponse[*models.Blog]{}, err
+		return models.PageResponse[*models.Post]{}, err
 	}
-	return models.PageResponse[*models.Blog]{
-		Data: blogs,
+	return models.PageResponse[*models.Post]{
+		Data: posts,
 		Metadata: models.PageMetadata{
 			Page:       pagination.GetPage(),
 			Size:       pagination.GetSize(),
@@ -34,6 +34,6 @@ func (b BlogServiceImpl) GetAll(ctx context.Context, pagination *pagorminator.Pa
 	}, nil
 }
 
-func (b BlogServiceImpl) GetById(ctx context.Context, id int) (models.Blog, error) {
+func (b PostServiceImpl) GetById(ctx context.Context, id int) (models.Post, error) {
 	return b.Repository.GetById(ctx, id)
 }

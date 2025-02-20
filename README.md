@@ -56,22 +56,22 @@ As you can see in [user_repository.go](./internal/repositories/user_repository.g
 
 Try to explote this query concatenation by concatenating an `always true` sql statement (something like -OR '1'='1'-), and avoid the execution of the password clause (maybe by commenting the rest of the query with --)
 
-### 3. View Blogs
+### 3. View Posts
 
-Once you're logged in, you are redirected to http://localhost:8080/users/welcome. There you can see an Intro Blog.
+Once you're logged in, you are redirected to http://localhost:8080/users/welcome. There you can see an Intro Post.
 
 The vulnerabilities that we are going to check in this scenario:
 
 + [SSRF](https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29/)
 
-To follow along, check [blogs.http](./tools/blogs.http)
+To follow along, check [posts.http](./tools/posts.http)
 
 #### SSRF - Server Side Request Forgery
 
-If you open the network tab of the developer console of your web browser (F12 in Chrome), and refresh the welcome page, the program makes a call to http://localhost:8080/blogs?name=intro.txt.
-Let's check how the `GetBlogFileByName` method is implemented in [blogs_handler](/internal/handlers/blogs_handler.go).
+If you open the network tab of the developer console of your web browser (F12 in Chrome), and refresh the welcome page, the program makes a call to http://localhost:8080/posts?name=intro.txt.
+Let's check how the `GetPostFileByName` method is implemented in [posts_handler](/internal/handlers/posts_handler.go).
 We can see that we are using `os.Open`:
-> file, err := os.Open(fmt.Sprintf("./resources/blogs/%s", name))
+> file, err := os.Open(fmt.Sprintf("./resources/posts/%s", name))
 
 + What would happen in we change the name query parameter to point to a different file in a different location?, maybe we could try with `../internal/private.txt`
 + Try to also display `/etc/passwd` file content.
@@ -88,17 +88,17 @@ Vulnerabilities we are going to check here:
 
 #### Broken Access Control
 
-If we look at the Scenario 1 in the http tool [blog_comments.http](/tools/blog_comments.http), we can see that we can create a comment for a blog.
-But if we take a look at the payload, we can see that the blogID and the userID are sent as part of the payload. 
-We can manipulate these values and check that we can create comments for any user to any blog.
+If we look at the Scenario 1 in the http tool [post_comments.http](/tools/post_comments.http), we can see that we can create a comment for a post.
+But if we take a look at the payload, we can see that the postID and the userID are sent as part of the payload. 
+We can manipulate these values and check that we can create comments for any user to any post.
 
 There are several ways to implement a solution for this vulnerability in this case:
-+ Override the values given in userID and/or blogID by the proper values (the user id coming from the session cookie and the blogID coming from the url)
++ Override the values given in userID and/or postID by the proper values (the user id coming from the session cookie and the postID coming from the url)
 + (**preferred**) Implement a new struct that contains only the valid fields as we have in `UserSignup` struct.
 
 #### HTML Template Injection
 
-If we look at the comment section of the view blog page, we see that the comment is displayed. 
+If we look at the comment section of the view post page, we see that the comment is displayed. 
 Maybe we could try to inject some html/javascript code in the comment and check whether is displayed.
 
 Run the Scenario 2 http requests that tries to inject a <script> content in your comment.

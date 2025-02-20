@@ -15,7 +15,7 @@ import (
 
 type UsersHandler struct {
 	UserService services.UserService
-	BlogService services.BlogService
+	PostService services.PostService
 }
 
 func (h *UsersHandler) SignupPage(c *gin.Context) {
@@ -31,13 +31,13 @@ func (h *UsersHandler) WelcomePage(c *gin.Context) {
 	var user models.User
 	_ = json.Unmarshal(session.Get("user").([]byte), &user)
 
-	blogPageRequest, _ := pagorminator.PageRequest(0, 5)
-	latestBlogsPageResponse, err := h.BlogService.GetAll(c, blogPageRequest)
+	postPageRequest, _ := pagorminator.PageRequest(0, 5)
+	latestPostsPageResponse, err := h.PostService.GetAll(c, postPageRequest)
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-	c.HTML(http.StatusOK, "users/welcome.tpl", gin.H{"user": user, "latestBlogs": latestBlogsPageResponse.Data})
+	c.HTML(http.StatusOK, "users/welcome.tpl", gin.H{"user": user, "latestPosts": latestPostsPageResponse.Data})
 }
 
 func (h *UsersHandler) Signup(c *gin.Context) {

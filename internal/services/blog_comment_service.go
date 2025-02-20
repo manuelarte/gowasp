@@ -7,24 +7,24 @@ import (
 	"gowasp/internal/repositories"
 )
 
-type BlogCommentService interface {
-	Create(ctx context.Context, blogComment *models.BlogComment) error
-	GetAllForBlog(ctx context.Context, blogID uint, pagination *pagorminator.Pagination) (models.PageResponse[*models.BlogComment], error)
+type PostCommentService interface {
+	Create(ctx context.Context, postComment *models.PostComment) error
+	GetAllForPostID(ctx context.Context, postID uint, pagination *pagorminator.Pagination) (models.PageResponse[*models.PostComment], error)
 }
 
-var _ BlogCommentService = new(BlogCommentServiceImpl)
+var _ PostCommentService = new(PostCommentServiceImpl)
 
-type BlogCommentServiceImpl struct {
-	Repository repositories.BlogCommentRepository
+type PostCommentServiceImpl struct {
+	Repository repositories.PostCommentRepository
 }
 
-func (b BlogCommentServiceImpl) GetAllForBlog(ctx context.Context, blogID uint, pagination *pagorminator.Pagination) (models.PageResponse[*models.BlogComment], error) {
-	blogComments, err := b.Repository.GetAllForBlog(ctx, blogID, pagination)
+func (b PostCommentServiceImpl) GetAllForPostID(ctx context.Context, postID uint, pagination *pagorminator.Pagination) (models.PageResponse[*models.PostComment], error) {
+	postComments, err := b.Repository.GetAllForPostID(ctx, postID, pagination)
 	if err != nil {
-		return models.PageResponse[*models.BlogComment]{}, err
+		return models.PageResponse[*models.PostComment]{}, err
 	}
-	return models.PageResponse[*models.BlogComment]{
-		Data: blogComments,
+	return models.PageResponse[*models.PostComment]{
+		Data: postComments,
 		Metadata: models.PageMetadata{
 			Page:       pagination.GetPage(),
 			Size:       pagination.GetSize(),
@@ -34,6 +34,6 @@ func (b BlogCommentServiceImpl) GetAllForBlog(ctx context.Context, blogID uint, 
 	}, nil
 }
 
-func (b BlogCommentServiceImpl) Create(ctx context.Context, blogComment *models.BlogComment) error {
-	return b.Repository.Create(ctx, blogComment)
+func (b PostCommentServiceImpl) Create(ctx context.Context, postComment *models.PostComment) error {
+	return b.Repository.Create(ctx, postComment)
 }

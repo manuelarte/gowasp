@@ -1,0 +1,1 @@
+DELETE FROM post_comments WHERE id IN (1)

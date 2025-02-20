@@ -40,12 +40,12 @@ func main() {
 	}
 	_ = gormDB.Use(pagorminator.PaGormMinator{})
 	userService := services.UserServiceImpl{Repository: repositories.UserRepositoryDB{DB: gormDB}}
-	blogService := services.BlogServiceImpl{Repository: repositories.BlogRepositoryDB{DB: gormDB}}
-	blogCommentService := services.BlogCommentServiceImpl{Repository: repositories.BlogCommentRepositoryDB{DB: gormDB}}
+	postService := services.PostServiceImpl{Repository: repositories.PostRepositoryDB{DB: gormDB}}
+	postCommentService := services.PostCommentServiceImpl{Repository: repositories.PostCommentRepositoryDB{DB: gormDB}}
 
-	usersHandler := handlers.UsersHandler{UserService: userService, BlogService: blogService}
-	blogsHandler := handlers.BlogsHandler{BlogService: blogService, BlogCommentService: blogCommentService}
-	blogCommentHandler := handlers.BlogCommentsHandler{BlogCommentService: blogCommentService}
+	usersHandler := handlers.UsersHandler{UserService: userService, PostService: postService}
+	postsHandler := handlers.PostsHandler{PostService: postService, PostCommentService: postCommentService}
+	postCommentHandler := handlers.PostCommentsHandler{PostCommentService: postCommentService}
 
 	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
@@ -61,16 +61,16 @@ func main() {
 	r.GET("/users/login", usersHandler.LoginPage)
 
 	r.GET("/users/welcome", config.AuthMiddleware(), usersHandler.WelcomePage)
-	r.GET("/static/blogs", config.AuthMiddleware(), blogsHandler.GetStaticBlogFileByName)
-	r.GET("/blogs/:id/view", config.AuthMiddleware(), blogsHandler.ViewBlogPage)
+	r.GET("/static/posts", config.AuthMiddleware(), postsHandler.GetStaticPostFileByName)
+	r.GET("/posts/:id/view", config.AuthMiddleware(), postsHandler.ViewPostPage)
 
 	r.POST("/users/signup", usersHandler.Signup)
 	r.POST("/users/login", usersHandler.Login)
 	r.DELETE("/users/logout", usersHandler.Logout)
 
-	r.GET("/blogs", blogsHandler.GetAll)
-	r.GET("/blogs/:id/comments", blogCommentHandler.GetBlogComments)
-	r.POST("/blogs/:id/comments", config.AuthMiddleware(), blogCommentHandler.CreateBlogComment)
+	r.GET("/posts", postsHandler.GetAll)
+	r.GET("/posts/:id/comments", postCommentHandler.GetPostComments)
+	r.POST("/posts/:id/comments", config.AuthMiddleware(), postCommentHandler.CreatePostComment)
 
 	err = r.Run()
 	if err != nil {

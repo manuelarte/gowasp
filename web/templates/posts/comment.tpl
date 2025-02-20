@@ -1,4 +1,4 @@
-{{ define "blogs/comment.tpl"}}
+{{ define "posts/comment.tpl"}}
 <div class="comment-card">
   <div class="comment-container">
     <h4><b>{{ .User.Username }}</b></h4>

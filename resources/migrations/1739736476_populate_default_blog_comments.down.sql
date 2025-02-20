@@ -1,1 +1,0 @@
-DELETE FROM blog_comments WHERE id IN (1)

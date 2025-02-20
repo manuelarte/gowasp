@@ -12,11 +12,11 @@ import (
 	"time"
 )
 
-type BlogCommentsHandler struct {
-	BlogCommentService services.BlogCommentService
+type PostCommentsHandler struct {
+	PostCommentService services.PostCommentService
 }
 
-func (h *BlogCommentsHandler) GetBlogComments(c *gin.Context) {
+func (h *PostCommentsHandler) GetPostComments(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
@@ -28,56 +28,56 @@ func (h *BlogCommentsHandler) GetBlogComments(c *gin.Context) {
 	sizeString := c.DefaultQuery("size", "10")
 	size, _ := strconv.Atoi(sizeString)
 	pageRequest, _ := pagorminator.PageRequest(page, size)
-	pageResponse, err := h.BlogCommentService.GetAllForBlog(c, uint(id), pageRequest)
+	pageResponse, err := h.PostCommentService.GetAllForPostID(c, uint(id), pageRequest)
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
 		return
 	}
-	c.SetCookie("csrf", uuid.New().String(), 3600*24, fmt.Sprintf("/blogs/%d/comments", id), "localhost", false, true)
+	c.SetCookie("csrf", uuid.New().String(), 3600*24, fmt.Sprintf("/posts/%d/comments", id), "localhost", false, true)
 	c.JSON(200, pageResponse)
 }
 
-func (h *BlogCommentsHandler) CreateBlogComment(c *gin.Context) {
+func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
 	//id, err := strconv.Atoi(c.Param("id"))
 	//if err != nil {
 	//	code, response := ginerr.NewErrorResponse(c, err)
 	//	c.JSON(code, response)
 	//	return
 	//}
-	newBlogComment := NewBlogComment{}
-	newBlogComment.PostedAt = time.Now()
-	if err := c.BindJSON(&newBlogComment); err != nil {
+	newPostComment := NewPostComment{}
+	newPostComment.PostedAt = time.Now()
+	if err := c.BindJSON(&newPostComment); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
 		return
 	}
 	// create
 	// vulnerabilities, csrf, template injection, not validating that the user who created comment is the one authenticated
-	blogComment := newBlogComment.toBlogComment()
-	err := h.BlogCommentService.Create(c, &blogComment)
+	postComment := newPostComment.toPostComment()
+	err := h.PostCommentService.Create(c, &postComment)
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
 		return
 	}
-	c.JSON(200, blogComment)
+	c.JSON(200, postComment)
 }
 
-type NewBlogComment struct {
+type NewPostComment struct {
 	PostedAt time.Time `json:"postedAt" binding:"required"`
-	BlogID   uint      `json:"blogId" binding:"required"`
+	PostID   uint      `json:"postID" binding:"required"`
 	UserID   uint      `json:"userId" binding:"required"`
 	Comment  string    `json:"comment" binding:"required,max=1000"`
 }
 
-func (b *NewBlogComment) toBlogComment() models.BlogComment {
-	return models.BlogComment{
+func (b *NewPostComment) toPostComment() models.PostComment {
+	return models.PostComment{
 		ID:        0,
 		CreatedAt: time.Time{},
 		UpdatedAt: time.Time{},
 		PostedAt:  b.PostedAt,
-		BlogID:    b.BlogID,
+		PostID:    b.PostID,
 		UserID:    b.UserID,
 		Comment:   b.Comment,
 	}

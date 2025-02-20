@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-type Blog struct {
+type Post struct {
 	ID        uint      `json:"id"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
