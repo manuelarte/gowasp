@@ -56,10 +56,17 @@
         .btn:active {
             transform: scale(0.95);
         }
+
+        .btn:disabled {
+            pointer-events: none;
+        }
     </style>
     <script type="text/javascript">
         function uploadComment(event) {
             event.preventDefault()
+            const inputs = document.getElementsByTagName('INPUT')
+            inputs[0].setAttribute('disabled', 'disabled')
+            console.log(inputs[0])
             const postID = 2
             const userID = 2
             const newUserComment = {
@@ -81,11 +88,13 @@
                         console.error("did not succedded", response)
                         return
                     }
-                    console.log("comment added")
+                    alert("comment added")
                 })
                 .catch(error => {
                     console.error('There has been a problem with your fetch operation:', error);
-                });
+                }).finally(() => {
+                    inputs[0].removeAttribute('disabled', 'disabled')
+            });
         }
     </script>
 </head>
