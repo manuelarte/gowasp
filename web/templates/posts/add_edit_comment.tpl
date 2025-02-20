@@ -19,12 +19,11 @@
                 console.log(user)
                 const newUserComment = {
                     postID: postID,
-                    userID: user.ID,
+                    userID: user.id,
                     comment: comment,
                     csrf: csrf
                 };
                 console.log("Sending data:", JSON.stringify(newUserComment));
-                debugger
                 fetch('/posts/' + postID + '/comments', {
                     method: 'POST',
                     headers: {
@@ -39,6 +38,7 @@
                         }
                         document.getElementById("comment-error").style.visibility="hidden";
                         console.log("comment added")
+                        location.reload();
                     })
                 .catch(error => {
                     document.getElementById("comment-error").style.visibility="visible";
