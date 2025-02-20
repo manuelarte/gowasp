@@ -6,6 +6,7 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/manuelarte/pagorminator"
 	_ "github.com/mattn/go-sqlite3"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -13,8 +14,13 @@ import (
 	"gowasp/internal/handlers"
 	"gowasp/internal/repositories"
 	"gowasp/internal/services"
+	"html/template"
 	"log"
 )
+
+func renderUnsafe(s string) template.HTML {
+	return template.HTML(s)
+}
 
 func main() {
 	db, err := config.MigrateDatabase()
@@ -32,27 +38,39 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	_ = gormDB.Use(pagorminator.PaGormMinator{})
 	userService := services.UserServiceImpl{Repository: repositories.UserRepositoryDB{DB: gormDB}}
-	usersHandler := handlers.UsersHandler{UserService: userService}
+	blogService := services.BlogServiceImpl{Repository: repositories.BlogRepositoryDB{DB: gormDB}}
+	blogCommentService := services.BlogCommentServiceImpl{Repository: repositories.BlogCommentRepositoryDB{DB: gormDB}}
 
-	blogsHandler := handlers.BlogsHandler{}
+	usersHandler := handlers.UsersHandler{UserService: userService, BlogService: blogService}
+	blogsHandler := handlers.BlogsHandler{BlogService: blogService, BlogCommentService: blogCommentService}
+	blogCommentHandler := handlers.BlogCommentsHandler{BlogCommentService: blogCommentService}
 
 	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("mysession", store))
+	r.SetFuncMap(template.FuncMap{
+		"unsafe": renderUnsafe,
+	})
+	r.Static("/css", "web/css")
 	r.LoadHTMLGlob("web/templates/**/*")
 
 	r.GET("/users/signup", usersHandler.SignupPage)
 	r.GET("/users/login", usersHandler.LoginPage)
 
 	r.GET("/users/welcome", config.AuthMiddleware(), usersHandler.WelcomePage)
+	r.GET("/static/blogs", config.AuthMiddleware(), blogsHandler.GetStaticBlogFileByName)
+	r.GET("/blogs/:id/view", config.AuthMiddleware(), blogsHandler.ViewBlogPage)
 
 	r.POST("/users/signup", usersHandler.Signup)
 	r.POST("/users/login", usersHandler.Login)
 	r.DELETE("/users/logout", usersHandler.Logout)
 
-	r.GET("/blogs", config.AuthMiddleware(), blogsHandler.GetBlogFileByName)
+	r.GET("/blogs", blogsHandler.GetAll)
+	r.GET("/blogs/:id/comments", blogCommentHandler.GetBlogComments)
+	r.POST("/blogs/:id/comments", config.AuthMiddleware(), blogCommentHandler.CreateBlogComment)
 
 	err = r.Run()
 	if err != nil {

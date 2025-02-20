@@ -78,6 +78,40 @@ We can see that we are using `os.Open`:
 
 To solve this issue for this scenario we could validate the user input, and avoid path traversal with functions like [`filepath.Clean`](https://pkg.go.dev/path/filepath#Clean)
 
+### 4. Add Comments
+
+Vulnerabilities we are going to check here:
+
+- Broken Access Control
+- [CSRF](https://owasp.org/www-community/attacks/csrf)
+- HTML Template injection
+
+#### Broken Access Control
+
+If we look at the Scenario 1 in the http tool [blog_comments.http](/tools/blog_comments.http), we can see that we can create a comment for a blog.
+But if we take a look at the payload, we can see that the blogID and the userID are sent as part of the payload. 
+We can manipulate these values and check that we can create comments for any user to any blog.
+
+There are several ways to implement a solution for this vulnerability in this case:
++ Override the values given in userID and/or blogID by the proper values (the user id coming from the session cookie and the blogID coming from the url)
++ (**preferred**) Implement a new struct that contains only the valid fields as we have in `UserSignup` struct.
+
+#### HTML Template Injection
+
+If we look at the comment section of the view blog page, we see that the comment is displayed. 
+Maybe we could try to inject some html/javascript code in the comment and check whether is displayed.
+
+Run the Scenario 2 http requests that tries to inject a <script> content in your comment.
+
+To solve this remember to always escape/validate user input. 
+In this case, Gin provides already a mechanism against this attack, and we needed to avoid it by creating a custom function to avoid escaping the html characters.
+You can check [`gowasp.main`](cmd/gowasp/gowasp.go) how I created an `unsafe` function to render html content.
+
+#### CSRF - Cross Site Request Forgery
+
+TODO - add a form to insert a comment with the csrf value also 
+We are going to explode the feature of adding comments
+
 ## TODO
 
 ### NEXT CSRF, html injection

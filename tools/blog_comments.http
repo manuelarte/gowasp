@@ -1,0 +1,37 @@
+### Get one blog
+GET http://localhost:8080/blogs/1/view
+Content-Type: text/html
+
+### Get Blog comments
+GET http://localhost:8080/blogs/1/comments
+Content-Type: application/json
+
+### Scenario 1. Create blog comment
+POST http://localhost:8080/blogs/1/comments
+Content-Type: application/json
+
+{
+  "blogId": 1,
+  "userId": 2,
+  "comment": "Very nice article"
+}
+
+### Scenario 1. Create blog comment for another user (e.g. admin user userId=1)
+POST http://localhost:8080/blogs/1/comments
+Content-Type: application/json
+
+{
+  "blogId": 1,
+  "userId": 1,
+  "comment": "Horrible article, you should delete it."
+}
+
+### Scenario 2. HTML injection
+POST http://localhost:8080/blogs/1/comments
+Content-Type: application/json
+
+{
+  "blogId": 1,
+  "userId": 1,
+  "comment": "Horrible article, you should delete it. <script type='text/javascript'>alert('Hello')</script>"
+}

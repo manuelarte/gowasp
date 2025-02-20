@@ -5,16 +5,26 @@
         <p>Warning: This is just for information purposes: Password hash: {{ .user.Password }} </p>
 
         <br>
+        <h2>Blogs</h2>
         <div class="blog-post">
-            <h1>Intro Blog</h1>
+            <h3>Intro Blog</h1>
             <p id="first-blog"></p>
         </div>
+
+        <div id="latest-blogs">
+            <h2>Latest Blogs</h2>
+            <ul>
+                {{range $val := .latestBlogs}}
+                    <li><a href="/blogs/{{ $val.ID }}/view">{{ $val.Title }}</a></li>
+                {{end}}
+            </ul>
+        <div>
 
 
         <script type="text/javascript">
 
             const firstBlog = document.getElementById("first-blog")
-            fetch('/blogs?name=intro.txt', {
+            fetch('/static/blogs?name=intro.txt', {
                 method: 'GET',
                 headers: {
                     "Content-Type": "text/plain"
@@ -24,7 +34,6 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                console.log(firstBlog)
                 response.text().then(data => firstBlog.textContent = data)
             })
             .catch(error => {

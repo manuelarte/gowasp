@@ -36,11 +36,13 @@ func (u UserServiceImpl) LoginUser(ctx context.Context, username string, passwor
 	return u.Repository.Login(ctx, username, hashedPassword)
 }
 
+// CWE-328: Use of Weak Hash https://cwe.mitre.org/data/definitions/328.html
 func hashit(str string) string {
 	hash := md5.Sum([]byte(str))
 	return hex.EncodeToString(hash[:])
 }
 
+// CWE-521: Weak Password Requirements https://cwe.mitre.org/data/definitions/521.html
 func isValidPassword(password string) error {
 	if len(password) < 4 {
 		return errors.PasswordNotValid{Message: "Password must be at least 4 characters"}

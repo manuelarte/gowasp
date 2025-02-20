@@ -9,7 +9,9 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-playground/validator/v10 v10.24.0
 	github.com/golang-migrate/migrate/v4 v4.18.2
+	github.com/google/uuid v1.6.0
 	github.com/ing-bank/ginerr/v3 v3.0.0
+	github.com/manuelarte/pagorminator v0.0.1-rc4
 	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/sirupsen/logrus v1.9.3
 	gorm.io/driver/sqlite v1.5.7
