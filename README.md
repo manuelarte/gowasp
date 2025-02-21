@@ -1,6 +1,6 @@
-# Gowasp
+# GOwasp
 
-Example of vulnerable application written in Go.
+Example of vulnerable application written in GO.
 To run the app, in the root directory type
 
 > go run ./cmd/gowasp/.
@@ -54,11 +54,12 @@ As you can see in [user_repository.go](./internal/repositories/user_repository.g
 
 #### SQL Injection
 
-Try to explote this query concatenation by concatenating an `always true` sql statement (something like -OR '1'='1'-), and avoid the execution of the password clause (maybe by commenting the rest of the query with --)
+Try to explote this query concatenation by concatenating an `always true` sql statement (something like `-OR '1'='1'-`). 
+The goal is to avoid the execution of the password clause (maybe by injecting a comment (`--`) to comment out the rest of the query)
 
 ### 3. View Posts
 
-Once you're logged in, you are redirected to http://localhost:8080/users/welcome. There you can see an Intro Post.
+Once you're logged in, you are redirected to the [Welcome](http://localhost:8080/users/welcome) page. There you can see an **Intro Post**.
 
 The vulnerabilities that we are going to check in this scenario:
 
@@ -68,9 +69,9 @@ To follow along, check [posts.http](./tools/posts.http)
 
 #### SSRF - Server Side Request Forgery
 
-If you open the network tab of the developer console of your web browser (F12 in Chrome), and refresh the welcome page, the program makes a call to http://localhost:8080/posts?name=intro.txt.
-Let's check how the `GetPostFileByName` method is implemented in [posts_handler](/internal/handlers/posts_handler.go).
-We can see that we are using `os.Open`:
+If you open the network tab of the developer console of your web browser (normally F12), and **refresh the welcome page**, the program makes a call to http://localhost:8080/posts?name=intro.txt.
+Let's check how the `GetStaticPostFileByName` method is implemented in [posts_handler](./internal/handlers/posts_handlers.go).
+We can see that we are using [`os.Open`](https://pkg.go.dev/os#Open):
 > file, err := os.Open(fmt.Sprintf("./resources/posts/%s", name))
 
 + What would happen in we change the name query parameter to point to a different file in a different location?, maybe we could try with `../internal/private.txt`
@@ -80,7 +81,7 @@ To solve this issue for this scenario we could validate the user input, and avoi
 
 ### 4. Add Comments
 
-Vulnerabilities we are going to check here:
+The vulnerabilities we are going to check here:
 
 - Broken Access Control
 - [CSRF](https://owasp.org/www-community/attacks/csrf)
