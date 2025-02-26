@@ -108,7 +108,7 @@ The add comments endpoint is not protected against CSRF attacks. And we can chec
 The app has been exploit by two vulnerabilities, CSRF and HTML Template injection.
 
 To avoid CSRF attacks we can validate add a CSRF cookie in our requests, and validate in the payload that the cookie and the json field match.
-In the template [add_edit_comment.tpl](/web/templates/posts/add_edit_comment.tpl) you can check that we are sending a csrf value that:
+In the template [add_edit_comment.tpl](/web/templates/posts/add_edit_comment.tpl) you can check that we are sending a csrf value in:
 
 ```<input type='hidden' id='csrf' name="csrf" value='{{ .csrf }}'>```
 
