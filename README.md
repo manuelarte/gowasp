@@ -32,7 +32,7 @@ Once you have implemented these restrictions, test them using the http client.
 A detailed explanation of this vulnerability can be found [here](https://knowledge-base.secureflag.com/vulnerabilities/broken_cryptography/weak_hashing_algorithm_vulnerability.html)
 Run the http requests described in [#2. Scenario](./tools/users-signup.http) and: 
 + Get the generated MD5 hashed password, and check how long does it take for a computer to decrypt it (e.g. https://10015.io/tools/md5-encrypt-decrypt#google_vignette) 
-+ Check that password with same value generate the same hash.
++ Check that same passwords generate the same hash.
 
 > [!IMPORTANT]  
 > Never use outdated hashing algorithms like MD5.
