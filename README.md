@@ -5,13 +5,41 @@ To run the app, in the root directory type
 
 > go run ./cmd/gowasp/.
 
+## Functionality
+
+Let's first explore the functionality provided by this application.
+
+### Login/Signup Page
+
+If you go to [/users/signup][1], you can see a form to sign up. Let's try to create a user, for example, with:
+```
+username: test
+password: test
+```
+
+### Welcome Page
+
+After you login or create an account, you are redirected to the [welcome][3] page. In this page you can see an intro blog, and also links to the latest posts. Let's click in one of the latest posts.
+
+### Post Page
+
+In the post page, you can see the post, and also the comments for that post, along with a form to post your comment. Let's try to add a comment by typing something like:
+
+```
+very nice post!
+```
+
+---
+
+After this small guide, let's now try to hack this application.
+
 ## Vulnerabilities
 
 Let's explore different vulnerabilities by exploiting some of the functionalities that this app provides:
 
 ### 1. Create User - POST /users/signup
 
-We are going to explote the vulnerabilities related to the endpoint to create a user in [/users/signup](http://localhost:8080/users/signup).
+We are going to explote the vulnerabilities related to the endpoint to create a user in [/users/signup][1].
 The vulnerabilities that we are going to check are:
 + [Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)
 + [Weak Hash Algorithm](https://cwe.mitre.org/data/definitions/328.html)
@@ -44,7 +72,7 @@ To solve it, the best solution is to use up-to date hashing algorithms, like `bc
 
 ### 2. Login User - POST /users/login
 
-We are going to explote the vulnerabilities related to the endpoint to log in a user in [/users/login](http://localhost:8080/users/login).
+We are going to explote the vulnerabilities related to the endpoint to log in a user in [/users/login][2].
 The vulnerability that we are going to check is:
 
 + [SQL injection](https://owasp.org/www-community/attacks/SQL_Injection)
@@ -59,7 +87,7 @@ The goal is to avoid the execution of the password clause (maybe by injecting a 
 
 ### 3. View Posts
 
-Once you're logged in, you are redirected to the [Welcome](http://localhost:8080/users/welcome) page. There you can see an **Intro Post**.
+Once you're logged in, you are redirected to the [Welcome][3] page. There you can see an **Intro Post**.
 
 The vulnerabilities that we are going to check in this scenario:
 
@@ -124,3 +152,8 @@ Run the `#Scenario 2` http requests that tries to inject a `<script>` content in
 To solve this remember to always escape/validate user input.
 In this case, Gin provides already a mechanism against this attack, and we needed to avoid it by creating a custom function to avoid escaping the html characters.
 You can check [`gowasp.main`](cmd/gowasp/gowasp.go) how I created an `unsafe` function to render html content.
+
+
+[1]: http://localhost:8080/users/signup
+[2]: http://localhost:8080/users/login
+[3]: http://localhost:8080/users/welcome
