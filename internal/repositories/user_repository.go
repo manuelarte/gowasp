@@ -4,13 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
+	"github.com/manuelarte/gowasp/internal/models"
+
 	"gorm.io/gorm"
-	"gowasp/internal/models"
 )
 
-var (
-	ErrUserNotFound = errors.New("user and password not found")
-)
+var ErrUserNotFound = errors.New("user and password not found")
 
 type UserRepository interface {
 	Create(ctx context.Context, user *models.User) error
@@ -31,8 +31,10 @@ func (u UserRepositoryDB) Create(ctx context.Context, user *models.User) error {
 }
 
 func (u UserRepositoryDB) Login(ctx context.Context, username string, password string) (models.User, error) {
-	// CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') https://cwe.mitre.org/data/definitions/89.html
-	query := fmt.Sprintf("SELECT id, username, password FROM users WHERE username = '%s' AND PASSWORD = '%s';", username, password)
+	// CWE-89: Improper Neutralization of Special Elements used in an SQL Command
+	// ('SQL Injection') https://cwe.mitre.org/data/definitions/89.html
+	query := fmt.Sprintf("SELECT id, username, password FROM users "+
+		"WHERE username = '%s' AND PASSWORD = '%s';", username, password)
 
 	row := u.DB.WithContext(ctx).Raw(query).Row()
 	if row.Err() != nil {

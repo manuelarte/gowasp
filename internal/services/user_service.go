@@ -2,11 +2,13 @@ package services
 
 import (
 	"context"
+	//#nosec G501
 	"crypto/md5"
 	"encoding/hex"
-	"gowasp/internal/models"
-	"gowasp/internal/models/errors"
-	"gowasp/internal/repositories"
+
+	"github.com/manuelarte/gowasp/internal/models"
+	"github.com/manuelarte/gowasp/internal/models/errors"
+	"github.com/manuelarte/gowasp/internal/repositories"
 )
 
 type UserService interface {
@@ -38,14 +40,16 @@ func (u UserServiceImpl) LoginUser(ctx context.Context, username string, passwor
 
 // CWE-328: Use of Weak Hash https://cwe.mitre.org/data/definitions/328.html
 func hashit(str string) string {
+	//#nosec G401
 	hash := md5.Sum([]byte(str))
 	return hex.EncodeToString(hash[:])
 }
 
 // CWE-521: Weak Password Requirements https://cwe.mitre.org/data/definitions/521.html
 func isValidPassword(password string) error {
-	if len(password) < 4 {
-		return errors.PasswordNotValid{Message: "Password must be at least 4 characters"}
+	minPasswordLength := 4
+	if len(password) < minPasswordLength {
+		return errors.PasswordNotValidError{Message: "Password must be at least 4 characters"}
 	}
 	return nil
 }

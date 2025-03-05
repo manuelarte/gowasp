@@ -2,14 +2,16 @@ package repositories
 
 import (
 	"context"
+
+	"github.com/manuelarte/gowasp/internal/models"
+
 	"github.com/manuelarte/pagorminator"
 	"gorm.io/gorm"
-	"gowasp/internal/models"
 )
 
 type PostRepository interface {
 	GetAll(ctx context.Context, pageRequest *pagorminator.Pagination) ([]*models.Post, error)
-	GetById(ctx context.Context, id int) (models.Post, error)
+	GetByID(ctx context.Context, id uint64) (models.Post, error)
 }
 
 var _ PostRepository = new(PostRepositoryDB)
@@ -27,7 +29,7 @@ func (b PostRepositoryDB) GetAll(ctx context.Context, pageRequest *pagorminator.
 	return posts, tx.Error
 }
 
-func (b PostRepositoryDB) GetById(ctx context.Context, id int) (models.Post, error) {
+func (b PostRepositoryDB) GetByID(ctx context.Context, id uint64) (models.Post, error) {
 	var post models.Post
 	tx := b.DB.WithContext(ctx).First(&post, id)
 	if tx.Error != nil {
