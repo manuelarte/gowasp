@@ -2,6 +2,13 @@ package main
 
 import (
 	"database/sql"
+	"html/template"
+
+	"github.com/manuelarte/gowasp/internal/config"
+	"github.com/manuelarte/gowasp/internal/handlers"
+	"github.com/manuelarte/gowasp/internal/repositories"
+	"github.com/manuelarte/gowasp/internal/services"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -11,33 +18,25 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gowasp/internal/config"
-	"gowasp/internal/handlers"
-	"gowasp/internal/repositories"
-	"gowasp/internal/services"
-	"html/template"
-	"log"
 )
 
 func renderUnsafe(s string) template.HTML {
+	//#nosec G203
 	return template.HTML(s)
 }
 
 func main() {
 	db, err := config.MigrateDatabase()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-
-		}
+		_ = db.Close()
 	}(db)
 
 	gormDB, err := gorm.Open(sqlite.New(sqlite.Config{Conn: db}), &gorm.Config{})
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	_ = gormDB.Use(pagorminator.PaGormMinator{})
 	userService := services.UserServiceImpl{Repository: repositories.UserRepositoryDB{DB: gormDB}}
@@ -81,6 +80,6 @@ func main() {
 
 	err = r.Run()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 }

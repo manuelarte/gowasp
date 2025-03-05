@@ -2,15 +2,17 @@ package handlers
 
 import (
 	"encoding/json"
+	"net/http"
+	"time"
+
+	"github.com/manuelarte/gowasp/internal/models"
+	"github.com/manuelarte/gowasp/internal/services"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/ing-bank/ginerr/v3"
 	"github.com/manuelarte/pagorminator"
 	"github.com/sirupsen/logrus"
-	"gowasp/internal/models"
-	"gowasp/internal/services"
-	"net/http"
-	"time"
 )
 
 type UsersHandler struct {
@@ -29,9 +31,14 @@ func (h *UsersHandler) LoginPage(c *gin.Context) {
 func (h *UsersHandler) WelcomePage(c *gin.Context) {
 	session := sessions.Default(c)
 	var user models.User
-	_ = json.Unmarshal(session.Get("user").([]byte), &user)
+	sessionUserByte, ok := session.Get("user").([]byte)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
+	}
+	_ = json.Unmarshal(sessionUserByte, &user)
 
-	postPageRequest, _ := pagorminator.PageRequest(0, 5)
+	defaultPageSize := 5
+	postPageRequest, _ := pagorminator.PageRequest(0, defaultPageSize)
 	latestPostsPageResponse, err := h.PostService.GetAll(c, postPageRequest)
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)

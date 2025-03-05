@@ -3,18 +3,21 @@ package handlers
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin"
-	"github.com/ing-bank/ginerr/v3"
-	"github.com/manuelarte/pagorminator"
-	"gowasp/internal/models"
-	"gowasp/internal/services"
 	"io"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/manuelarte/gowasp/internal/models"
+	"github.com/manuelarte/gowasp/internal/services"
+
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
+	"github.com/ing-bank/ginerr/v3"
+	"github.com/manuelarte/pagorminator"
 )
 
 type PostsHandler struct {
@@ -23,25 +26,35 @@ type PostsHandler struct {
 }
 
 func (h *PostsHandler) ViewPostPage(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
 		return
 	}
-	post, err := h.PostService.GetById(c, id)
+	post, err := h.PostService.GetByID(c, id)
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
 		return
 	}
-	commentsPageRequest, _ := pagorminator.PageRequest(0, 10)
-	pageResponsePostComments, err := h.PostCommentService.GetAllForPostID(c, uint(id), commentsPageRequest)
+	defaultPageSize := 10
+	commentsPageRequest, _ := pagorminator.PageRequest(0, defaultPageSize)
+	pageResponsePostComments, errCmm := h.PostCommentService.GetAllForPostID(c, id, commentsPageRequest)
+	if errCmm != nil {
+		code, response := ginerr.NewErrorResponse(c, errCmm)
+		c.JSON(code, response)
+		return
+	}
 	pageResponsePostUserComments := models.Transform(pageResponsePostComments, toPostUserComment)
 
 	session := sessions.Default(c)
 	var user models.User
-	_ = json.Unmarshal(session.Get("user").([]byte), &user)
+	sessionUserByte, ok := session.Get("user").([]byte)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
+	}
+	_ = json.Unmarshal(sessionUserByte, &user)
 
 	c.HTML(http.StatusOK, "posts/post.tpl", gin.H{"user": user, "post": post, "comments": pageResponsePostUserComments})
 }
@@ -56,9 +69,9 @@ func (h *PostsHandler) GetStaticPostFileByName(c *gin.Context) {
 		return
 	}
 	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			code, response := ginerr.NewErrorResponse(c, err)
+		errCls := file.Close()
+		if errCls != nil {
+			code, response := ginerr.NewErrorResponse(c, errCls)
 			c.JSON(code, response)
 			return
 		}
@@ -74,13 +87,13 @@ func (h *PostsHandler) GetStaticPostFileByName(c *gin.Context) {
 	// Read the file into a byte slice
 	bs := make([]byte, stat.Size())
 	_, err = bufio.NewReader(file).Read(bs)
-	if err != nil && err != io.EOF {
+	if err != nil && !errors.Is(err, io.EOF) {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
 		return
 	}
 
-	c.Data(200, "text/plain", bs)
+	c.Data(http.StatusOK, "text/plain", bs)
 }
 
 func (h *PostsHandler) GetAll(c *gin.Context) {
@@ -95,7 +108,7 @@ func (h *PostsHandler) GetAll(c *gin.Context) {
 		c.JSON(code, response)
 		return
 	}
-	c.JSON(200, pagePostsResponse)
+	c.JSON(http.StatusOK, pagePostsResponse)
 }
 
 type PostUserComment struct {

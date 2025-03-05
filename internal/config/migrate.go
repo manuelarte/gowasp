@@ -3,19 +3,22 @@ package config
 import (
 	"database/sql"
 	"errors"
+	"time"
+
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
-	"time"
 )
 
 func MigrateDatabase() (*sql.DB, error) {
+	maxOpenConnections := 3
+	connMaxxTime := time.Hour
 	db, err := sql.Open("sqlite3", "file:test.db?cache=shared&mode=memory")
 	if err != nil {
 		return nil, err
 	}
-	db.SetConnMaxLifetime(time.Minute * 3)
-	db.SetMaxOpenConns(3)
-	db.SetMaxIdleConns(3)
+	db.SetConnMaxLifetime(connMaxxTime)
+	db.SetMaxOpenConns(maxOpenConnections)
+	db.SetMaxIdleConns(maxOpenConnections)
 
 	driver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
 	if err != nil {

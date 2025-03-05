@@ -2,14 +2,16 @@ package services
 
 import (
 	"context"
+	"github.com/manuelarte/gowasp/internal/models"
+	"github.com/manuelarte/gowasp/internal/repositories"
+
 	"github.com/manuelarte/pagorminator"
-	"gowasp/internal/models"
-	"gowasp/internal/repositories"
 )
 
 type PostCommentService interface {
 	Create(ctx context.Context, postComment *models.PostComment) error
-	GetAllForPostID(ctx context.Context, postID uint, pagination *pagorminator.Pagination) (models.PageResponse[*models.PostComment], error)
+	GetAllForPostID(ctx context.Context, postID uint64,
+		pagination *pagorminator.Pagination) (models.PageResponse[*models.PostComment], error)
 }
 
 var _ PostCommentService = new(PostCommentServiceImpl)
@@ -18,7 +20,8 @@ type PostCommentServiceImpl struct {
 	Repository repositories.PostCommentRepository
 }
 
-func (b PostCommentServiceImpl) GetAllForPostID(ctx context.Context, postID uint, pagination *pagorminator.Pagination) (models.PageResponse[*models.PostComment], error) {
+func (b PostCommentServiceImpl) GetAllForPostID(ctx context.Context, postID uint64,
+	pagination *pagorminator.Pagination) (models.PageResponse[*models.PostComment], error) {
 	postComments, err := b.Repository.GetAllForPostID(ctx, postID, pagination)
 	if err != nil {
 		return models.PageResponse[*models.PostComment]{}, err

@@ -1,14 +1,15 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	"net/http"
 )
 
 func GetTemplateByName(c *gin.Context) {
 	path := c.Query("path")
-	var body = make(map[string]any)
+	body := make(map[string]any)
 	if err := c.ShouldBind(&body); err != nil {
 		logrus.Info("bind error", err)
 	}

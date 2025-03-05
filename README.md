@@ -105,7 +105,7 @@ We can see that we are using [`os.Open`](https://pkg.go.dev/os#Open):
 + What would happen in we change the name query parameter to point to a different file in a different location?, maybe we could try with `../internal/private.txt`
 + Try to also display `/etc/passwd` file content.
 
-To solve this issue for this scenario we could validate the user input, and avoid path traversal with functions like [`filepath.Clean`](https://pkg.go.dev/path/filepath#Clean)
+To solve this issue for this scenario we could validate the user input, and avoid path traversal with functions like [`os.Root`](https://pkg.go.dev/os#Root)
 
 ### 4. Add Comments
 

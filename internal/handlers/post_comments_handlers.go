@@ -2,14 +2,17 @@ package handlers
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/manuelarte/gowasp/internal/models"
+	"github.com/manuelarte/gowasp/internal/services"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/ing-bank/ginerr/v3"
 	"github.com/manuelarte/pagorminator"
-	"gowasp/internal/models"
-	"gowasp/internal/services"
-	"strconv"
-	"time"
 )
 
 type PostCommentsHandler struct {
@@ -17,7 +20,7 @@ type PostCommentsHandler struct {
 }
 
 func (h *PostCommentsHandler) GetPostComments(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
@@ -28,14 +31,16 @@ func (h *PostCommentsHandler) GetPostComments(c *gin.Context) {
 	sizeString := c.DefaultQuery("size", "10")
 	size, _ := strconv.Atoi(sizeString)
 	pageRequest, _ := pagorminator.PageRequest(page, size)
-	pageResponse, err := h.PostCommentService.GetAllForPostID(c, uint(id), pageRequest)
+	pageResponse, err := h.PostCommentService.GetAllForPostID(c, id, pageRequest)
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
 		return
 	}
-	c.SetCookie("csrf", uuid.New().String(), 3600*24, fmt.Sprintf("/posts/%d/comments", id), "localhost", false, true)
-	c.JSON(200, pageResponse)
+	hourTime := time.Hour
+	c.SetCookie("csrf", uuid.New().String(), int(hourTime),
+		fmt.Sprintf("/posts/%d/comments", id), "localhost", false, true)
+	c.JSON(http.StatusOK, pageResponse)
 }
 
 func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
@@ -53,7 +58,7 @@ func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
 		c.JSON(code, response)
 		return
 	}
-	c.JSON(200, postComment)
+	c.JSON(http.StatusOK, postComment)
 }
 
 type NewPostComment struct {
