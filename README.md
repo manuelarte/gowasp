@@ -1,13 +1,13 @@
 # GOwasp
 
-Example of vulnerable application written in GO.
+GOwasp is an example of a vulnerable application written in [Go](https://go.dev/). The goal of this repository is to show some of the top vulnerabilities web applications suffer today, based on [OWASP](https://owasp.org/).
 To run the app, in the root directory type
 
-> go run ./cmd/gowasp/.
+> make r
 
 ## 🛠️ Functionality
 
-Let's first explore the functionality provided by this application.
+Once you have the application running, let's start first exploring the functionality provided by it.
 
 ### Login/Signup Page
 
@@ -23,7 +23,7 @@ After you login or create an account, you are redirected to the [welcome][3] pag
 
 ### Post Page
 
-In the post page, you can see the post, and also the comments for that post, along with a form to post your comment. Let's try to add a comment by typing something like:
+In the post page, you can see the post, and also the comments for that post, along with a form to post your own comment. Let's try to add a comment by typing something like:
 
 ```
 very nice post!
@@ -85,6 +85,9 @@ As you can see in [user_repository.go](./internal/repositories/user_repository.g
 Try to explote this query concatenation by concatenating an `always true` sql statement (something like `-OR '1'='1'-`). 
 The goal is to avoid the execution of the password clause (maybe by injecting a comment (`--`) to comment out the rest of the query)
 
+> [!IMPORTANT]  
+> Never concatenate strings in a query.
+
 ### 3. View Posts
 
 Once you're logged in, you are redirected to the [Welcome][3] page. There you can see an **Intro Post**.
@@ -106,6 +109,9 @@ We can see that we are using [`os.Open`](https://pkg.go.dev/os#Open):
 + Try to also display `/etc/passwd` file content.
 
 To solve this issue for this scenario we could validate the user input, and avoid path traversal with functions like [`os.Root`](https://pkg.go.dev/os#Root)
+
+> [!IMPORTANT]  
+> Always validate user input.
 
 ### 4. Add Comments
 
@@ -141,7 +147,7 @@ In the template [add_edit_comment.tpl](/web/templates/posts/add_edit_comment.tpl
 ```<input type='hidden' id='csrf' name="csrf" value='{{ .csrf }}'>```
 
 Validate that the value that we receive from that json field matches the value that we have in the `csrf` cookie in the Request.
-Restart the application and check that you can't create comments anymore using the win price button
+Restart the application and check that you can't create comments anymore using the `win price` button.
 
 #### 💉🌐 HTML Template Injection
 
@@ -150,9 +156,15 @@ Before we could see that we also suffered from template injection.
 Run the `#Scenario 2` http requests that tries to inject a `<script>` content in your comment.
 
 To solve this remember to always escape/validate user input.
-In this case, Gin provides already a mechanism against this attack, and we needed to avoid it by creating a custom function to avoid escaping the html characters.
+In this case, [Gin](https://gin-gonic.com/) provides already a mechanism against this attack, and we needed to avoid it by creating a custom function to avoid escaping the html characters.
 You can check [`gowasp.main`](cmd/gowasp/gowasp.go) how I created an `unsafe` function to render html content.
 
+## TODO
+
+- Add a dockerfile so people can follow without having Go installed.
+- Improve the css.
+- Avoiding brute force attacks.
+- Insufficient logging when adding the comment.
 
 [1]: http://localhost:8080/users/signup
 [2]: http://localhost:8080/users/login
