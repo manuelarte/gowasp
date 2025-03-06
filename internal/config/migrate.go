@@ -9,7 +9,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 )
 
-func MigrateDatabase() (*sql.DB, error) {
+func MigrateDatabase(migrationSourceURL string) (*sql.DB, error) {
 	maxOpenConnections := 3
 	connMaxxTime := time.Hour
 	db, err := sql.Open("sqlite3", "file:test.db?cache=shared&mode=memory")
@@ -25,7 +25,7 @@ func MigrateDatabase() (*sql.DB, error) {
 		return nil, err
 	}
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://./resources/migrations",
+		migrationSourceURL,
 		"test", driver)
 	if err != nil {
 		return nil, err

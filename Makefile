@@ -25,6 +25,9 @@ fmt: format-code
 format-code: tidy ## Format go code and run the fixer, alias: fmt
 	gofumpt -l -w .
 	golangci-lint run --fix ./...
-	# Separate linting step required as it doesn't include the tests automatically
-	cd test/integration-tests && golangci-lint run --fix ./...
 .PHONY: fmt format-code
+
+dr: docker-run
+docker-run:
+	docker build --tag github.com/manuelarte/gowasp .
+	docker run --publish 8080:8080 github.com/manuelarte/gowasp
