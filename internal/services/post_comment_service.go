@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+
 	"github.com/manuelarte/gowasp/internal/models"
 	"github.com/manuelarte/gowasp/internal/repositories"
 
@@ -21,7 +22,8 @@ type PostCommentServiceImpl struct {
 }
 
 func (b PostCommentServiceImpl) GetAllForPostID(ctx context.Context, postID uint64,
-	pagination *pagorminator.Pagination) (models.PageResponse[*models.PostComment], error) {
+	pagination *pagorminator.Pagination,
+) (models.PageResponse[*models.PostComment], error) {
 	postComments, err := b.Repository.GetAllForPostID(ctx, postID, pagination)
 	if err != nil {
 		return models.PageResponse[*models.PostComment]{}, err

@@ -1,9 +1,13 @@
 # GOwasp
 
 GOwasp is an example of a vulnerable application written in [Go](https://go.dev/). The goal of this repository is to show some of the top vulnerabilities web applications suffer today, based on [OWASP](https://owasp.org/).
-To run the app, in the root directory type
+To run the app, in the root directory type:
 
 > make r
+
+If you want to run it with Docker 🐳 use:
+
+> make dr
 
 ## 🛠️ Functionality
 

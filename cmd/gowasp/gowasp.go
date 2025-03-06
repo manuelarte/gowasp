@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"html/template"
 
+	"github.com/caarlos0/env/v11"
 	"github.com/manuelarte/gowasp/internal/config"
 	"github.com/manuelarte/gowasp/internal/handlers"
 	"github.com/manuelarte/gowasp/internal/repositories"
@@ -26,7 +27,12 @@ func renderUnsafe(s string) template.HTML {
 }
 
 func main() {
-	db, err := config.MigrateDatabase()
+	cfg, err := env.ParseAs[config.Config]()
+	if err != nil {
+		panic(err)
+	}
+
+	db, err := config.MigrateDatabase(cfg.MigrationSourceURL)
 	if err != nil {
 		panic(err)
 	}
@@ -59,7 +65,7 @@ func main() {
 		"unsafe": renderUnsafe,
 	})
 	r.Static("/css", "web/css")
-	r.LoadHTMLGlob("web/templates/**/*")
+	r.LoadHTMLGlob(cfg.TemplatesPath)
 
 	r.GET("/users/signup", usersHandler.SignupPage)
 	r.GET("/users/login", usersHandler.LoginPage)
