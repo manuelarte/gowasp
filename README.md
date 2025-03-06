@@ -85,6 +85,9 @@ As you can see in [user_repository.go](./internal/repositories/user_repository.g
 Try to explote this query concatenation by concatenating an `always true` sql statement (something like `-OR '1'='1'-`). 
 The goal is to avoid the execution of the password clause (maybe by injecting a comment (`--`) to comment out the rest of the query)
 
+> [!IMPORTANT]  
+> Never concatenate strings in a query.
+
 ### 3. View Posts
 
 Once you're logged in, you are redirected to the [Welcome][3] page. There you can see an **Intro Post**.
@@ -106,6 +109,9 @@ We can see that we are using [`os.Open`](https://pkg.go.dev/os#Open):
 + Try to also display `/etc/passwd` file content.
 
 To solve this issue for this scenario we could validate the user input, and avoid path traversal with functions like [`os.Root`](https://pkg.go.dev/os#Root)
+
+> [!IMPORTANT]  
+> Always validate user input.
 
 ### 4. Add Comments
 
