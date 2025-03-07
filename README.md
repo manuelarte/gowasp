@@ -1,3 +1,5 @@
+![version](https://img.shields.io/github/v/release/manuelarte/gowasp)
+
 # GOwasp
 
 GOwasp is an example of a vulnerable application written in [Go](https://go.dev/). The goal of this repository is to show some of the top vulnerabilities web applications suffer today, based on [OWASP](https://owasp.org/).
