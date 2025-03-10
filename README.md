@@ -167,7 +167,6 @@ You can check [`gowasp.main`](cmd/gowasp/gowasp.go) how I created an `unsafe` fu
 
 ## TODO
 
-- Add a dockerfile so people can follow without having Go installed.
 - Improve the css.
 - Avoiding brute force attacks.
 - Insufficient logging when adding the comment.
