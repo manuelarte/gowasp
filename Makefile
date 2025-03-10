@@ -1,5 +1,3 @@
-STACK_NAME := gowasp
-
 default: help
 
 help:

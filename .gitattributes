@@ -1,0 +1,2 @@
+# Set all files to use LF line endings in the repository
+* text=auto eol=lf
