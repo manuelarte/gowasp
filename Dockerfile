@@ -1,4 +1,5 @@
-FROM golang:1.23
+FROM golang:1.23.7-alpine3.21
+RUN apk --no-cache add make git gcc libtool musl-dev ca-certificates dumb-init
 
 # Set destination for COPY
 WORKDIR /app
@@ -7,8 +8,7 @@ WORKDIR /app
 # https://docs.docker.com/reference/dockerfile/#copy
 COPY ./ ./
 
-RUN go mod download
-RUN go mod tidy
+RUN go mod download && go mod tidy
 
 WORKDIR /app/cmd/gowasp
 # Build
@@ -16,8 +16,8 @@ RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s" -o /go/bin/gowasp
 
 EXPOSE 8080
 
-ENV MIGRATION_SOURCE_URL="file:///app/resources/migrations"
-ENV TEMPLATES_PATH="/app/web/templates/**/*"
+ENV MIGRATION_SOURCE_URL="file:///app/resources/migrations" \
+    TEMPLATES_PATH="/app/web/templates/**/*"
 
 # Run
 ENTRYPOINT ["/go/bin/gowasp"]
