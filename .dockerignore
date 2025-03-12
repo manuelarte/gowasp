@@ -1,0 +1,6 @@
+tools
+
+.golangci.yml
+CHANGELOG.md
+Makefile
+README.md
