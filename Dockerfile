@@ -1,4 +1,6 @@
-FROM golang:1.23.7-alpine3.21
+ARG VERSION=1.23.7
+
+FROM golang:${VERSION}-alpine AS builder
 RUN apk --no-cache add make git gcc libtool musl-dev ca-certificates dumb-init
 
 # Set destination for COPY
