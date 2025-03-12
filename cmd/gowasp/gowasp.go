@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 
 	"github.com/caarlos0/env/v11"
@@ -64,8 +65,8 @@ func main() {
 	r.SetFuncMap(template.FuncMap{
 		"unsafe": renderUnsafe,
 	})
-	r.Static("/css", "web/css")
-	r.LoadHTMLGlob(cfg.TemplatesPath)
+	r.Static("/css", fmt.Sprintf("%s/css", cfg.WebPath))
+	r.LoadHTMLGlob(fmt.Sprintf("%s%s", cfg.WebPath, "/templates/**/*"))
 
 	r.GET("/users/signup", usersHandler.SignupPage)
 	r.GET("/users/login", usersHandler.LoginPage)

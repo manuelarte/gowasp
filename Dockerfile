@@ -1,25 +1,36 @@
 ARG VERSION=1.23.7
 
+# Build Stage
 FROM golang:${VERSION}-alpine AS builder
 RUN apk --no-cache add make git gcc libtool musl-dev ca-certificates dumb-init
 
-# Set destination for COPY
 WORKDIR /app
 
-# Copy the source code. Note the slash at the end, as explained in
-# https://docs.docker.com/reference/dockerfile/#copy
+# Copy the source code
 COPY ./ ./
 
 RUN go mod download && go mod tidy
 
 WORKDIR /app/cmd/gowasp
-# Build
-RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s" -o /go/bin/gowasp
+
+# Build the binary
+RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s" -o /gowasp
+
+# Final Stage
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates dumb-init
+
+# Copy the binary from builder stage
+COPY --from=builder /app/resources/migrations /app/migrations
+COPY --from=builder /app/web /app/web
+
+# Copy the binary from builder stage
+COPY --from=builder /gowasp /usr/local/bin/gowasp
 
 EXPOSE 8080
 
-ENV MIGRATION_SOURCE_URL="file:///app/resources/migrations" \
-    TEMPLATES_PATH="/app/web/templates/**/*"
+ENV MIGRATION_SOURCE_URL="file:///app/migrations" \
+    WEB_PATH="/app/web"
 
 # Run
-ENTRYPOINT ["/go/bin/gowasp"]
+ENTRYPOINT ["/usr/local/bin/gowasp"]
