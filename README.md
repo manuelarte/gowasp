@@ -2,7 +2,10 @@
 
 # GOwasp
 
-GOwasp is an example of a vulnerable application written in [Go](https://go.dev/). The goal of this repository is to show some of the top vulnerabilities web applications suffer today, based on [OWASP](https://owasp.org/).
+GOwasp is a deliberately vulnerable web application written in [Go](https://go.dev/). This project demonstrates some of the most common security vulnerabilities affecting web applications today, based on the [OWASP](https://owasp.org/) top 10. The goal is to learn security concepts by exploiting and then fixing these vulnerabilities.
+
+🚀 Getting Started
+
 To run the app, in the root directory type:
 
 > make r
@@ -11,25 +14,25 @@ If you want to run it with Docker 🐳 use:
 
 > make dr
 
-## 🛠️ Functionality
+## 🛠️ Application Overview
 
 Once you have the application running, let's start first exploring the functionality provided by it.
 
-### Login/Signup Page
+### 🔑 Login/Signup Page
 
-If you go to [/users/signup][1], you can see a form to sign up. Let's try to create a user, for example, with:
+Navigate to  to access the signup form [/users/signup][1]. Let's try to create a user, for example, with:
 ```
 username: test
 password: test
 ```
 
-### Welcome Page
+### 🏠 Welcome Page
 
 After you login or create an account, you are redirected to the [welcome][3] page. In this page you can see an intro blog, and also links to the latest posts. Let's click in one of the latest posts.
 
-### Post Page
+### 📝 Post Page
 
-In the post page, you can see the post, and also the comments for that post, along with a form to post your own comment. Let's try to add a comment by typing something like:
+Clicking on a post takes you to its details page, where you can read the post, view comments, and submit your own comment. Try to submit a comment like:
 
 ```
 very nice post!
@@ -130,12 +133,12 @@ The vulnerabilities we are going to check here:
 #### 🩹 Broken Access Control
 
 If we look at the Scenario 1 in the http tool [post_comments.http](/tools/post_comments.http), we can see that we can create a comment for a post.
-But if we take a look at the payload, we can see that the postID and the userID are sent as part of the payload. 
+But if we take a look at the payload, we can see that the `postID` and the `userID` are sent as part of the payload. 
 We can manipulate these values and check that we can create comments for any user to any post.
 
 There are several ways to implement a solution for this vulnerability in this case:
-+ Override the values given in userID and/or postID by the proper values (the user id coming from the session cookie and the postID coming from the url)
-+ (**preferred**) Implement a new struct that contains only the valid fields as we have in `UserSignup` struct.
++ Override the values given in `userID` and/or `postID` by the proper values (the user id coming from the session cookie and the postID coming from the url)
++ (**Preferred**) Implement a new struct that contains only the valid fields as we have in `UserSignup` struct.
 
 #### 🔄 CSRF - Cross Site Request Forgery
 
@@ -143,7 +146,7 @@ The add comments endpoint is not protected against CSRF attacks. And we can chec
 + login in the application with your browser.
 + open [price-win.html](/tools/price-win.html) with that same browser. 
 + Click on the rewards button.
-+ Go to http://localhost:8080/posts/2/comments and check what happened.
++ Go to `http://localhost:8080/posts/2/comments` and check what happened.
 
 The app has been exploit by two vulnerabilities, CSRF and HTML Template injection.
 
@@ -165,7 +168,7 @@ To solve this remember to always escape/validate user input.
 In this case, [Gin](https://gin-gonic.com/) provides already a mechanism against this attack, and we needed to avoid it by creating a custom function to avoid escaping the html characters.
 You can check [`gowasp.main`](cmd/gowasp/gowasp.go) how I created an `unsafe` function to render html content.
 
-## TODO
+## 📝 TODO
 
 - Improve the css.
 - Avoiding brute force attacks.
