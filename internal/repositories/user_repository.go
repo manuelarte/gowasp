@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/manuelarte/gowasp/internal/models"
-
 	"gorm.io/gorm"
+
+	"github.com/manuelarte/gowasp/internal/models"
 )
 
 var ErrUserNotFound = errors.New("user and password not found")

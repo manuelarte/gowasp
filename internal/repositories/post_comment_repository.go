@@ -3,10 +3,10 @@ package repositories
 import (
 	"context"
 
-	"github.com/manuelarte/gowasp/internal/models"
-
 	"github.com/manuelarte/pagorminator"
 	"gorm.io/gorm"
+
+	"github.com/manuelarte/gowasp/internal/models"
 )
 
 type PostCommentRepository interface {

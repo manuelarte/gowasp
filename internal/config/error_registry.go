@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/manuelarte/gowasp/internal/models/errors"
-	"github.com/manuelarte/gowasp/internal/repositories"
-
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/ing-bank/ginerr/v3"
 	"github.com/mattn/go-sqlite3"
+
+	"github.com/manuelarte/gowasp/internal/models/errors"
+	"github.com/manuelarte/gowasp/internal/repositories"
 )
 
 func validatorErrorHandler(_ context.Context, err *validator.ValidationErrors) (int, any) {

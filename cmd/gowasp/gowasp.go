@@ -6,11 +6,6 @@ import (
 	"html/template"
 
 	"github.com/caarlos0/env/v11"
-	"github.com/manuelarte/gowasp/internal/config"
-	"github.com/manuelarte/gowasp/internal/handlers"
-	"github.com/manuelarte/gowasp/internal/repositories"
-	"github.com/manuelarte/gowasp/internal/services"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -20,6 +15,11 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+
+	"github.com/manuelarte/gowasp/internal/config"
+	"github.com/manuelarte/gowasp/internal/handlers"
+	"github.com/manuelarte/gowasp/internal/repositories"
+	"github.com/manuelarte/gowasp/internal/services"
 )
 
 func renderUnsafe(s string) template.HTML {

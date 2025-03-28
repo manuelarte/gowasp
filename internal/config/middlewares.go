@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/manuelarte/gowasp/internal/models"
-
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+
+	"github.com/manuelarte/gowasp/internal/models"
 )
 
 func AuthMiddleware() gin.HandlerFunc {

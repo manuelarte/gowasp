@@ -3,11 +3,10 @@ package services
 import (
 	"context"
 
-	"github.com/manuelarte/gowasp/internal/repositories"
+	"github.com/manuelarte/pagorminator"
 
 	"github.com/manuelarte/gowasp/internal/models"
-
-	"github.com/manuelarte/pagorminator"
+	"github.com/manuelarte/gowasp/internal/repositories"
 )
 
 type PostService interface {

@@ -5,14 +5,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/manuelarte/gowasp/internal/models"
-	"github.com/manuelarte/gowasp/internal/services"
-
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/ing-bank/ginerr/v3"
 	"github.com/manuelarte/pagorminator"
 	"github.com/sirupsen/logrus"
+
+	"github.com/manuelarte/gowasp/internal/models"
+	"github.com/manuelarte/gowasp/internal/services"
 )
 
 type UsersHandler struct {
