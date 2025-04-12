@@ -38,6 +38,7 @@ linters:
     - fatcontext
     - forbidigo
     - funlen
+    - funcorder
     - gocheckcompilerdirectives
     - gochecknoglobals
     - gochecknoinits
