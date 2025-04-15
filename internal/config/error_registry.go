@@ -14,26 +14,6 @@ import (
 	"github.com/manuelarte/gowasp/internal/repositories"
 )
 
-func validatorErrorHandler(_ context.Context, err *validator.ValidationErrors) (int, any) {
-	return http.StatusBadRequest, errors.ErrorResponse{
-		Data: gin.H{
-			"message": err.Error(),
-		},
-	}
-}
-
-func jsonSyntaxErrorHandler(_ context.Context, err *json.SyntaxError) (int, any) {
-	return http.StatusBadRequest, errors.ErrorResponse{
-		Data: gin.H{"message": err.Error()},
-	}
-}
-
-func sqlite3ErrorHandler(_ context.Context, err sqlite3.Error) (int, any) {
-	return http.StatusBadRequest, errors.ErrorResponse{
-		Data: gin.H{"message": err.Error()},
-	}
-}
-
 func RegisterErrorResponseHandlers() {
 	ginerr.RegisterErrorHandler(&validator.ValidationErrors{}, validatorErrorHandler)
 	ginerr.RegisterErrorHandler(&json.SyntaxError{}, jsonSyntaxErrorHandler)
@@ -57,4 +37,24 @@ func RegisterErrorResponseHandlers() {
 			},
 		}
 	})
+}
+
+func jsonSyntaxErrorHandler(_ context.Context, err *json.SyntaxError) (int, any) {
+	return http.StatusBadRequest, errors.ErrorResponse{
+		Data: gin.H{"message": err.Error()},
+	}
+}
+
+func sqlite3ErrorHandler(_ context.Context, err sqlite3.Error) (int, any) {
+	return http.StatusBadRequest, errors.ErrorResponse{
+		Data: gin.H{"message": err.Error()},
+	}
+}
+
+func validatorErrorHandler(_ context.Context, err *validator.ValidationErrors) (int, any) {
+	return http.StatusBadRequest, errors.ErrorResponse{
+		Data: gin.H{
+			"message": err.Error(),
+		},
+	}
 }
