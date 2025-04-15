@@ -25,10 +25,12 @@ import (
 )
 
 func main() {
+	logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
+
 	cfg, err := env.ParseAs[config.Config]()
 	if err != nil {
-		slog.Error("error parsing the configuration", "error", err)
-		os.Exit(1)
+		logger.Error("error parsing the configuration", "error", err)
+		return
 	}
 
 	db, err := config.MigrateDatabase(cfg.MigrationSourceURL)
@@ -85,8 +87,8 @@ func main() {
 
 	err = r.Run()
 	if err != nil {
-		slog.Error("error running the application", "error", err)
-		os.Exit(1)
+		logger.Error("error running the application", "error", err)
+		return
 	}
 }
 
