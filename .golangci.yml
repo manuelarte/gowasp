@@ -199,6 +199,9 @@ linters:
     reassign:
       patterns:
         - .*
+    revive:
+      rules:
+        - name: deep-exit
     rowserrcheck:
       packages:
         - github.com/jmoiron/sqlx

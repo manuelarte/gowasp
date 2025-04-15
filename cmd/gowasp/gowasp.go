@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"html/template"
+	"log/slog"
+	"os"
 
 	"github.com/caarlos0/env/v11"
 	"github.com/gin-contrib/cors"
@@ -22,15 +24,13 @@ import (
 	"github.com/manuelarte/gowasp/internal/services"
 )
 
-func renderUnsafe(s string) template.HTML {
-	//#nosec G203
-	return template.HTML(s)
-}
-
 func main() {
+	logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
+
 	cfg, err := env.ParseAs[config.Config]()
 	if err != nil {
-		panic(err)
+		logger.Error("error parsing the configuration", "error", err)
+		return
 	}
 
 	db, err := config.MigrateDatabase(cfg.MigrationSourceURL)
@@ -87,6 +87,12 @@ func main() {
 
 	err = r.Run()
 	if err != nil {
-		panic(err)
+		logger.Error("error running the application", "error", err)
+		return
 	}
+}
+
+func renderUnsafe(s string) template.HTML {
+	//#nosec G203
+	return template.HTML(s)
 }
