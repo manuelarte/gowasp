@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"html/template"
-	"log"
+	"log/slog"
+	"os"
 
 	"github.com/caarlos0/env/v11"
 	"github.com/gin-contrib/cors"
@@ -26,7 +27,8 @@ import (
 func main() {
 	cfg, err := env.ParseAs[config.Config]()
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error parsing the configuration", "error", err)
+		os.Exit(1)
 	}
 
 	db, err := config.MigrateDatabase(cfg.MigrationSourceURL)
@@ -83,7 +85,8 @@ func main() {
 
 	err = r.Run()
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error running the application", "error", err)
+		os.Exit(1)
 	}
 }
 
