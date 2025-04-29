@@ -17,7 +17,7 @@ WORKDIR /app/cmd/gowasp
 RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s" -o /gowasp
 
 # Final Stage
-FROM alpine:latest
+FROM alpine:3
 RUN apk --no-cache add ca-certificates dumb-init
 
 # Copy the binary from builder stage
