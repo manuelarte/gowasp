@@ -30,6 +30,7 @@ func main() {
 	cfg, err := env.ParseAs[config.Config]()
 	if err != nil {
 		logger.Error("error parsing the configuration", "error", err)
+
 		return
 	}
 
@@ -45,6 +46,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	_ = gormDB.Use(pagorminator.PaGormMinator{})
 	userService := services.UserServiceImpl{Repository: repositories.UserRepositoryDB{DB: gormDB}}
 	postService := services.PostServiceImpl{Repository: repositories.PostRepositoryDB{DB: gormDB}}
@@ -88,6 +90,7 @@ func main() {
 	err = r.Run()
 	if err != nil {
 		logger.Error("error running the application", "error", err)
+
 		return
 	}
 }

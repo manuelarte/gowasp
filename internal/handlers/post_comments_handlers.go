@@ -24,6 +24,7 @@ func (h *PostCommentsHandler) GetPostComments(c *gin.Context) {
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	pageString := c.DefaultQuery("page", "0")
@@ -35,6 +36,7 @@ func (h *PostCommentsHandler) GetPostComments(c *gin.Context) {
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	hourTime := time.Hour
@@ -49,6 +51,7 @@ func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
 	if err := c.BindJSON(&newPostComment); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	postComment := newPostComment.toPostComment()
@@ -56,16 +59,17 @@ func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	c.JSON(http.StatusOK, postComment)
 }
 
 type NewPostComment struct {
-	PostedAt time.Time `json:"postedAt" binding:"required"`
-	PostID   uint      `json:"postID" binding:"required"`
-	UserID   uint      `json:"userID" binding:"required"`
-	Comment  string    `json:"comment" binding:"required,min=1,max=1000"`
+	PostedAt time.Time `binding:"required" json:"postedAt"`
+	PostID   uint      `binding:"required" json:"postID" `
+	UserID   uint      `binding:"required" json:"userID"`
+	Comment  string    `binding:"required,min=1,max=1000" json:"comment"`
 }
 
 func (b *NewPostComment) toPostComment() models.PostComment {

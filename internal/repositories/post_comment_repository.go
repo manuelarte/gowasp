@@ -30,6 +30,7 @@ func (b PostCommentRepositoryDB) GetAllForPostID(ctx context.Context, postID uin
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
+
 	return postComments, tx.Error
 }
 

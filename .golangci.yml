@@ -1,98 +1,58 @@
+---
 version: "2"
-run:
-  relative-path-mode: gomod
 
 formatters:
   enable:
     - gofmt
+    - gofumpt
     - gci
   settings:
     gofmt:
       simplify: true
       rewrite-rules:
-        - pattern: 'interface{}'
-          replacement: 'any'
+        - pattern: "interface{}"
+          replacement: "any"
+    gofumpt:
+      extra-rules: true
     gci:
       sections:
         - standard
         - default
         - localmodule
+
 linters:
-  default: none
-  enable:
-    - asasalint
-    - asciicheck
-    - bidichk
-    - bodyclose
-    - canonicalheader
-    - copyloopvar
-    - cyclop
-    - depguard
-    - dupl
-    - durationcheck
-    - errcheck
-    - errname
-    - errorlint
-    - exhaustive
-    - exptostd
-    - fatcontext
-    - forbidigo
-    - funlen
-    - funcorder
-    - gocheckcompilerdirectives
-    - gochecknoglobals
-    - gochecknoinits
-    - gochecksumtype
-    - gocognit
-    - goconst
-    - gocritic
-    - gocyclo
-    - godot
-    - gomoddirectives
-    - goprintffuncname
-    - gosec
-    - govet
-    - iface
-    - ineffassign
-    - intrange
-    - lll
-    - loggercheck
-    - makezero
-    - mirror
-    - mnd
-    - musttag
-    - nakedret
-    - nestif
-    - nilerr
-    - nilnesserr
-    - nilnil
-    - noctx
-    - nolintlint
-    - nonamedreturns
-    - nosprintfhostport
-    - perfsprint
-    - predeclared
-    - promlinter
-    - protogetter
-    - reassign
-    - recvcheck
-    - revive
-    - rowserrcheck
-    - sloglint
-    - spancheck
-    - sqlclosecheck
-    - staticcheck
-    - testableexamples
-    - testifylint
-    - testpackage
-    - tparallel
-    - unconvert
-    - unparam
-    - unused
-    - usestdlibvars
-    - usetesting
-    - wastedassign
-    - whitespace
+  default: all
+  disable:
+    - decorder  # If applicable, to be checked in code reviews.
+    - dupl  # Too many false positives.
+    - err113  # This leads to lots of unnecessary allocations and boilerplate.
+    - errchkjson  # No json.
+    - exhaustruct  # If applicable, to be checked in code reviews.
+    - forcetypeassert  # Used in a different linter
+    - ginkgolinter # Related to Ginkgo.
+    - goheader  # No need of copyright headers.
+    - gomodguard  # Not needed for a linter
+    - gosmopolitan  # No i18n.
+    - grouper  # No need of checking expression groups.
+    - importas  # No need of aliasing imports.
+    - inamedparam  # Not important.
+    - ireturn  # No need for this linter here.
+    - paralleltest  # We can't test in parallel.
+    - promlinter # Related to prometheus.
+    - protogetter # Related to protocol buffer.
+    - rowserrcheck # Related to SQL.
+    - spancheck # Related to OpenTelemetry.
+    - sqlclosecheck # Related to SQL.
+    - tagliatelle  # No need for tags.
+    - testpackage  # We are testing using google tools.
+    - thelper  # We are testing using google tools.
+    - noinlineerr  # I prefer having inline errors.
+    - varnamelen  # If applicable, to be checked in a code review.
+    - wrapcheck  # Too many false positives for return values defined in internal packages.
+    - wsl  # Deprecated, using wsl_v5
+    - wsl_v5  # Too strict.
+    - zerologlint  # Not using zerolog.
+
   settings:
     cyclop:
       max-complexity: 30
@@ -111,13 +71,13 @@ linters:
               desc: Use github.com/gofrs/uuid/v5 or later, it was not a go module before v5
         non-main files:
           files:
-            - '!**/main.go'
+            - "!**/main.go"
           deny:
             - pkg: log$
               desc: Use log/slog instead, see https://go.dev/blog/slog
         non-test files:
           files:
-            - '!$test'
+            - "!$test"
           deny:
             - pkg: math/rand$
               desc: Use math/rand/v2 instead, see https://go.dev/blog/randv2
@@ -129,41 +89,25 @@ linters:
         - map
     exhaustruct:
       exclude:
-        - ^net/http.Client$
-        - ^net/http.Cookie$
-        - ^net/http.Request$
-        - ^net/http.Response$
-        - ^net/http.Server$
-        - ^net/http.Transport$
-        - ^net/url.URL$
         - ^os/exec.Cmd$
         - ^reflect.StructField$
-        - ^github.com/Shopify/sarama.Config$
-        - ^github.com/Shopify/sarama.ProducerMessage$
-        - ^github.com/mitchellh/mapstructure.DecoderConfig$
-        - ^github.com/prometheus/client_golang/.+Opts$
-        - ^github.com/spf13/cobra.Command$
-        - ^github.com/spf13/cobra.CompletionOptions$
-        - ^github.com/stretchr/testify/mock.Mock$
-        - ^github.com/testcontainers/testcontainers-go.+Request$
-        - ^github.com/testcontainers/testcontainers-go.FromDockerfile$
-        - ^golang.org/x/tools/go/analysis.Analyzer$
-        - ^google.golang.org/protobuf/.+Options$
-        - ^gopkg.in/yaml.v3.Node$
     funlen:
-      lines: 100
+      lines: -1
       statements: 50
       ignore-comments: true
-    gocognit:
-      min-complexity: 20
     gochecksumtype:
       default-signifies-exhaustive: false
+    gocognit:
+      min-complexity: 20
     gocritic:
       settings:
         captLocal:
           paramsOnly: false
         underef:
           skipRecvDeref: false
+    godox:
+      keywords:
+        - FIXME
     govet:
       disable:
         - fieldalignment
@@ -185,8 +129,6 @@ linters:
         - os.Mkdir.*
         - os.OpenFile
         - os.WriteFile
-        - prometheus.ExponentialBuckets.*
-        - prometheus.LinearBuckets
     nolintlint:
       require-explanation: true
       require-specific: true
@@ -201,42 +143,31 @@ linters:
         - .*
     revive:
       rules:
-        - name: deep-exit
-    rowserrcheck:
-      packages:
-        - github.com/jmoiron/sqlx
+        - name: filename-format
+          arguments:
+            - ^[a-z][_a-z0-9]*.go$
+        - name: var-naming # badPackageNames not working
     sloglint:
       no-global: all
       context: scope
+    tagalign:
+      align: false
     usetesting:
       os-temp-dir: true
+
   exclusions:
-    generated: lax
     presets:
       - comments
       - common-false-positives
-      - legacy
       - std-error-handling
     rules:
       - linters:
-          - godot
-        source: (noinspection|TODO)
-      - linters:
-          - gocritic
-        source: //noinspection
-      - linters:
-          - bodyclose
-          - dupl
           - errcheck
           - funlen
           - goconst
           - gosec
-          - noctx
-          - wrapcheck
         path: _test\.go
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
+
 issues:
-  max-same-issues: 50
+  max-same-issues: 0
+  max-issues-per-linter: 0

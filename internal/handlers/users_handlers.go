@@ -42,6 +42,7 @@ func (h *UsersHandler) WelcomePage(c *gin.Context) {
 	latestPostsPageResponse, err := h.PostService.GetAll(c, postPageRequest)
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
+
 		return
 	}
 	c.HTML(http.StatusOK, "users/welcome.tpl", gin.H{"user": user, "latestPosts": latestPostsPageResponse.Data})
@@ -52,6 +53,7 @@ func (h *UsersHandler) Signup(c *gin.Context) {
 	if err := c.BindJSON(&userSignup); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	user := userSignup.toUser()
@@ -59,6 +61,7 @@ func (h *UsersHandler) Signup(c *gin.Context) {
 		logrus.Infof("Signup attempt failed for User '%s'", user.Username)
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	session := sessions.Default(c)
@@ -68,6 +71,7 @@ func (h *UsersHandler) Signup(c *gin.Context) {
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	logrus.Infof("Signup for User '%s'", user.Username)
@@ -79,6 +83,7 @@ func (h *UsersHandler) Login(c *gin.Context) {
 	if err := c.BindJSON(&user); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	user, err := h.UserService.LoginUser(c, user.Username, user.Password)
@@ -86,6 +91,7 @@ func (h *UsersHandler) Login(c *gin.Context) {
 		logrus.Infof("Login attempt failed for User '%s'", user.Username)
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	session := sessions.Default(c)
@@ -96,6 +102,7 @@ func (h *UsersHandler) Login(c *gin.Context) {
 		logrus.Infof("Login attempt failed for User '%s'", user.Username)
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	logrus.Infof("User %s logged in", user.Username)
@@ -108,8 +115,8 @@ func (h *UsersHandler) Logout(c *gin.Context) {
 }
 
 type UserSignup struct {
-	Username string `json:"username" binding:"required,max=18"`
-	Password string `json:"password" binding:"required,max=18"`
+	Username string `binding:"required,max=18" json:"username" `
+	Password string `binding:"required,max=18" json:"password"`
 }
 
 func (u UserSignup) toUser() models.User {
