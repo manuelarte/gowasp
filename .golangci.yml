@@ -50,6 +50,7 @@ linters:
     - varnamelen  # If applicable, to be checked in a code review.
     - wrapcheck  # Too many false positives for return values defined in internal packages.
     - wsl  # Deprecated, using wsl_v5
+    - wsl_v5  # Too strict.
     - zerologlint  # Not using zerolog.
 
   settings:

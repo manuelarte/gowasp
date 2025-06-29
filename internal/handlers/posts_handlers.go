@@ -56,6 +56,8 @@ func (h *PostsHandler) ViewPostPage(c *gin.Context) {
 	sessionUserByte, ok := session.Get("user").([]byte)
 	if !ok {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
+
+		return
 	}
 	_ = json.Unmarshal(sessionUserByte, &user)
 

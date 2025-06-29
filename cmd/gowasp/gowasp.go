@@ -46,6 +46,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	_ = gormDB.Use(pagorminator.PaGormMinator{})
 	userService := services.UserServiceImpl{Repository: repositories.UserRepositoryDB{DB: gormDB}}
 	postService := services.PostServiceImpl{Repository: repositories.PostRepositoryDB{DB: gormDB}}

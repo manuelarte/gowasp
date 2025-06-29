@@ -16,6 +16,7 @@ func MigrateDatabase(migrationSourceURL string) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	db.SetConnMaxLifetime(connMaxxTime)
 	db.SetMaxOpenConns(maxOpenConnections)
 	db.SetMaxIdleConns(maxOpenConnections)

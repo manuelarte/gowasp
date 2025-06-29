@@ -26,6 +26,7 @@ func (u UserServiceImpl) CreateUser(ctx context.Context, user *models.User) erro
 	if err := isValidPassword(user.Password); err != nil {
 		return err
 	}
+
 	user.Password = hashit(user.Password)
 	if err := u.Repository.Create(ctx, user); err != nil {
 		return err

@@ -24,7 +24,10 @@ func AuthMiddleware() gin.HandlerFunc {
 		byteSession, ok := sessionUser.([]byte)
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
+
+			return
 		}
+
 		err := json.Unmarshal(byteSession, &user)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})

@@ -115,8 +115,8 @@ func (h *UsersHandler) Logout(c *gin.Context) {
 }
 
 type UserSignup struct {
-	Username string `json:"username" binding:"required,max=18"`
-	Password string `json:"password" binding:"required,max=18"`
+	Username string `binding:"required,max=18" json:"username" `
+	Password string `binding:"required,max=18" json:"password"`
 }
 
 func (u UserSignup) toUser() models.User {

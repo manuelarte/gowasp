@@ -9,5 +9,5 @@ type Post struct {
 	PostedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP()" json:"postedAt"`
 	UserID    uint      `json:"userId"`
 	Title     string    `json:"title"`
-	Content   string    `json:"content" binding:"required"`
+	Content   string    `binding:"required" json:"content"`
 }
