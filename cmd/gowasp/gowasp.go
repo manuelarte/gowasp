@@ -30,6 +30,7 @@ func main() {
 	cfg, err := env.ParseAs[config.Config]()
 	if err != nil {
 		logger.Error("error parsing the configuration", "error", err)
+
 		return
 	}
 
@@ -88,6 +89,7 @@ func main() {
 	err = r.Run()
 	if err != nil {
 		logger.Error("error running the application", "error", err)
+
 		return
 	}
 }

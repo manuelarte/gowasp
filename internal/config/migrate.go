@@ -34,5 +34,6 @@ func MigrateDatabase(migrationSourceURL string) (*sql.DB, error) {
 	if err = m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		return nil, err
 	}
+
 	return db, nil
 }

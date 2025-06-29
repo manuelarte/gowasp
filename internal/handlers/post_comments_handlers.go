@@ -24,6 +24,7 @@ func (h *PostCommentsHandler) GetPostComments(c *gin.Context) {
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	pageString := c.DefaultQuery("page", "0")
@@ -35,6 +36,7 @@ func (h *PostCommentsHandler) GetPostComments(c *gin.Context) {
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	hourTime := time.Hour
@@ -49,6 +51,7 @@ func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
 	if err := c.BindJSON(&newPostComment); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	postComment := newPostComment.toPostComment()
@@ -56,6 +59,7 @@ func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	c.JSON(http.StatusOK, postComment)
