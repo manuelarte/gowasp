@@ -37,6 +37,7 @@ func (u UserServiceImpl) CreateUser(ctx context.Context, user *models.User) erro
 
 func (u UserServiceImpl) LoginUser(ctx context.Context, username, password string) (models.User, error) {
 	hashedPassword := hashit(password)
+
 	return u.Repository.Login(ctx, username, hashedPassword)
 }
 
