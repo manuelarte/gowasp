@@ -36,9 +36,7 @@ func (u UserServiceImpl) CreateUser(ctx context.Context, user *models.User) erro
 }
 
 func (u UserServiceImpl) LoginUser(ctx context.Context, username, password string) (models.User, error) {
-	hashedPassword := hashit(password)
-
-	return u.Repository.Login(ctx, username, hashedPassword)
+	return u.Repository.Login(ctx, username, hashit(password))
 }
 
 // CWE-328: Use of Weak Hash https://cwe.mitre.org/data/definitions/328.html
