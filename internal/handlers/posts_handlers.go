@@ -30,12 +30,14 @@ func (h *PostsHandler) ViewPostPage(c *gin.Context) {
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	post, err := h.PostService.GetByID(c, id)
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	defaultPageSize := 10
@@ -44,6 +46,7 @@ func (h *PostsHandler) ViewPostPage(c *gin.Context) {
 	if errCmm != nil {
 		code, response := ginerr.NewErrorResponse(c, errCmm)
 		c.JSON(code, response)
+
 		return
 	}
 	pageResponsePostUserComments := models.Transform(pageResponsePostComments, toPostUserComment)
@@ -66,6 +69,7 @@ func (h *PostsHandler) GetStaticPostFileByName(c *gin.Context) {
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	defer func(file *os.File) {
@@ -73,6 +77,7 @@ func (h *PostsHandler) GetStaticPostFileByName(c *gin.Context) {
 		if errCls != nil {
 			code, response := ginerr.NewErrorResponse(c, errCls)
 			c.JSON(code, response)
+
 			return
 		}
 	}(file)
@@ -81,6 +86,7 @@ func (h *PostsHandler) GetStaticPostFileByName(c *gin.Context) {
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 
@@ -90,6 +96,7 @@ func (h *PostsHandler) GetStaticPostFileByName(c *gin.Context) {
 	if err != nil && !errors.Is(err, io.EOF) {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 
@@ -106,6 +113,7 @@ func (h *PostsHandler) GetAll(c *gin.Context) {
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
+
 		return
 	}
 	c.JSON(http.StatusOK, pagePostsResponse)

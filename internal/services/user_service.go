@@ -30,6 +30,7 @@ func (u UserServiceImpl) CreateUser(ctx context.Context, user *models.User) erro
 	if err := u.Repository.Create(ctx, user); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -42,6 +43,7 @@ func (u UserServiceImpl) LoginUser(ctx context.Context, username, password strin
 func hashit(str string) string {
 	//#nosec G401
 	hash := md5.Sum([]byte(str))
+
 	return hex.EncodeToString(hash[:])
 }
 
@@ -51,5 +53,6 @@ func isValidPassword(password string) error {
 	if len(password) < minPasswordLength {
 		return errors.PasswordNotValidError{Message: "Password must be at least 4 characters"}
 	}
+
 	return nil
 }

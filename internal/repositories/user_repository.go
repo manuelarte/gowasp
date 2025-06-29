@@ -27,6 +27,7 @@ func (u UserRepositoryDB) Create(ctx context.Context, user *models.User) error {
 	if err := u.DB.WithContext(ctx).Create(user).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -45,5 +46,6 @@ func (u UserRepositoryDB) Login(ctx context.Context, username, password string) 
 	if err != nil {
 		return models.User{}, ErrUserNotFound
 	}
+
 	return user, nil
 }
