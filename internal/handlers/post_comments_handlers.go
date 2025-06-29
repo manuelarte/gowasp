@@ -66,10 +66,10 @@ func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
 }
 
 type NewPostComment struct {
-	PostedAt time.Time `json:"postedAt" binding:"required"`
-	PostID   uint      `json:"postID" binding:"required"`
-	UserID   uint      `json:"userID" binding:"required"`
-	Comment  string    `json:"comment" binding:"required,min=1,max=1000"`
+	PostedAt time.Time `binding:"required" json:"postedAt"`
+	PostID   uint      `binding:"required" json:"postID" `
+	UserID   uint      `binding:"required" json:"userID"`
+	Comment  string    `binding:"required,min=1,max=1000" json:"comment"`
 }
 
 func (b *NewPostComment) toPostComment() models.PostComment {

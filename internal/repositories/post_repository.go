@@ -26,6 +26,7 @@ func (b PostRepositoryDB) GetAll(ctx context.Context, pageRequest *pagorminator.
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
+
 	return posts, tx.Error
 }
 
@@ -35,5 +36,6 @@ func (b PostRepositoryDB) GetByID(ctx context.Context, id uint64) (models.Post, 
 	if tx.Error != nil {
 		return models.Post{}, tx.Error
 	}
+
 	return post, nil
 }

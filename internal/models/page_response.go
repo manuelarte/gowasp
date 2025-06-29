@@ -17,6 +17,7 @@ func Transform[T, Y any](original PageResponse[T], f func(t T) Y) PageResponse[Y
 	for i, item := range original.Data {
 		data[i] = f(item)
 	}
+
 	return PageResponse[Y]{
 		Data:     data,
 		Metadata: original.Metadata,

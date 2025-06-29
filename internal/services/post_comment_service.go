@@ -28,6 +28,7 @@ func (b PostCommentServiceImpl) GetAllForPostID(ctx context.Context, postID uint
 	if err != nil {
 		return models.PageResponse[*models.PostComment]{}, err
 	}
+
 	return models.PageResponse[*models.PostComment]{
 		Data: postComments,
 		Metadata: models.PageMetadata{

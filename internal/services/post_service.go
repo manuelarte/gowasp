@@ -27,6 +27,7 @@ func (b PostServiceImpl) GetAll(ctx context.Context,
 	if err != nil {
 		return models.PageResponse[*models.Post]{}, err
 	}
+
 	return models.PageResponse[*models.Post]{
 		Data: posts,
 		Metadata: models.PageMetadata{

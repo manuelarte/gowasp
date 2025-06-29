@@ -42,6 +42,7 @@ func (h *UsersHandler) WelcomePage(c *gin.Context) {
 	latestPostsPageResponse, err := h.PostService.GetAll(c, postPageRequest)
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
+
 		return
 	}
 	c.HTML(http.StatusOK, "users/welcome.tpl", gin.H{"user": user, "latestPosts": latestPostsPageResponse.Data})

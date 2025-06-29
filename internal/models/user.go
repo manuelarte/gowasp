@@ -6,6 +6,6 @@ type User struct {
 	ID        uint      `json:"id"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
-	Username  string    `json:"username" binding:"required" form:"username"`
-	Password  string    `json:"password" binding:"required" form:"password"`
+	Username  string    `binding:"required" form:"username" json:"username"`
+	Password  string    `binding:"required" form:"password" json:"password"`
 }
