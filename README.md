@@ -4,15 +4,19 @@
 
 GOwasp is a deliberately vulnerable web application written in [Go](https://go.dev/). This project demonstrates some of the most common security vulnerabilities affecting web applications today, based on the [OWASP](https://owasp.org/) top 10. The goal is to learn security concepts by exploiting and then fixing these vulnerabilities.
 
-🚀 Getting Started
+## 🚀Getting Started
 
 To run the app, in the root directory type:
 
-> make r
+```bash
+make r
+```
 
 If you want to run it with Docker 🐳 use:
 
-> make dr
+```bash
+make dr
+```
 
 ## 🛠️ Application Overview
 
