@@ -1,17 +1,17 @@
 module github.com/manuelarte/gowasp
 
-go 1.23.0
+go 1.23.10
 
 require (
 	github.com/caarlos0/env/v11 v11.3.1
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-contrib/sessions v1.0.4
 	github.com/gin-gonic/gin v1.10.1
-	github.com/go-playground/validator/v10 v10.26.0
+	github.com/go-playground/validator/v10 v10.27.0
 	github.com/golang-migrate/migrate/v4 v4.18.3
 	github.com/google/uuid v1.6.0
 	github.com/ing-bank/ginerr/v3 v3.0.0
-	github.com/manuelarte/pagorminator v0.0.4
+	github.com/manuelarte/pagorminator v0.0.5
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/sirupsen/logrus v1.9.3
 	gorm.io/driver/sqlite v1.6.0
