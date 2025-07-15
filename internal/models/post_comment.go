@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type PostComment struct {
 	ID        uint      `json:"id"`

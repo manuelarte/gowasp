@@ -1,4 +1,4 @@
-package repositories
+package posts
 
 import (
 	"context"
@@ -9,18 +9,22 @@ import (
 	"github.com/manuelarte/gowasp/internal/models"
 )
 
-type PostRepository interface {
+type Repository interface {
 	GetAll(ctx context.Context, pageRequest *pagorminator.Pagination) ([]*models.Post, error)
 	GetByID(ctx context.Context, id uint64) (models.Post, error)
 }
 
-var _ PostRepository = new(PostRepositoryDB)
+var _ Repository = new(gormRepository)
 
-type PostRepositoryDB struct {
+type gormRepository struct {
 	DB *gorm.DB
 }
 
-func (b PostRepositoryDB) GetAll(ctx context.Context, pageRequest *pagorminator.Pagination) ([]*models.Post, error) {
+func NewRepository(db *gorm.DB) Repository {
+	return &gormRepository{DB: db}
+}
+
+func (b gormRepository) GetAll(ctx context.Context, pageRequest *pagorminator.Pagination) ([]*models.Post, error) {
 	var posts []*models.Post
 	tx := b.DB.WithContext(ctx).Clauses(pageRequest).Order("posted_at asc").Find(&posts)
 	if tx.Error != nil {
@@ -30,7 +34,7 @@ func (b PostRepositoryDB) GetAll(ctx context.Context, pageRequest *pagorminator.
 	return posts, tx.Error
 }
 
-func (b PostRepositoryDB) GetByID(ctx context.Context, id uint64) (models.Post, error) {
+func (b gormRepository) GetByID(ctx context.Context, id uint64) (models.Post, error) {
 	var post models.Post
 	tx := b.DB.WithContext(ctx).First(&post, id)
 	if tx.Error != nil {

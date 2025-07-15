@@ -1,4 +1,4 @@
-package services
+package postcomments
 
 import (
 	"context"
@@ -6,22 +6,25 @@ import (
 	"github.com/manuelarte/pagorminator"
 
 	"github.com/manuelarte/gowasp/internal/models"
-	"github.com/manuelarte/gowasp/internal/repositories"
 )
 
-type PostCommentService interface {
+type Service interface {
 	Create(ctx context.Context, postComment *models.PostComment) error
 	GetAllForPostID(ctx context.Context, postID uint64,
 		pagination *pagorminator.Pagination) (models.PageResponse[*models.PostComment], error)
 }
 
-var _ PostCommentService = new(PostCommentServiceImpl)
+var _ Service = new(serviceImpl)
 
-type PostCommentServiceImpl struct {
-	Repository repositories.PostCommentRepository
+type serviceImpl struct {
+	Repository Repository
 }
 
-func (b PostCommentServiceImpl) GetAllForPostID(ctx context.Context, postID uint64,
+func NewService(repository Repository) Service {
+	return &serviceImpl{Repository: repository}
+}
+
+func (b serviceImpl) GetAllForPostID(ctx context.Context, postID uint64,
 	pagination *pagorminator.Pagination,
 ) (models.PageResponse[*models.PostComment], error) {
 	postComments, err := b.Repository.GetAllForPostID(ctx, postID, pagination)
@@ -40,6 +43,6 @@ func (b PostCommentServiceImpl) GetAllForPostID(ctx context.Context, postID uint
 	}, nil
 }
 
-func (b PostCommentServiceImpl) Create(ctx context.Context, postComment *models.PostComment) error {
+func (b serviceImpl) Create(ctx context.Context, postComment *models.PostComment) error {
 	return b.Repository.Create(ctx, postComment)
 }

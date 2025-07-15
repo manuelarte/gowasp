@@ -17,12 +17,13 @@ import (
 	"github.com/manuelarte/pagorminator"
 
 	"github.com/manuelarte/gowasp/internal/models"
-	"github.com/manuelarte/gowasp/internal/services"
+	"github.com/manuelarte/gowasp/internal/posts"
+	"github.com/manuelarte/gowasp/internal/posts/postcomments"
 )
 
 type PostsHandler struct {
-	PostService        services.PostService
-	PostCommentService services.PostCommentService
+	PostService        posts.Service
+	PostCommentService postcomments.Service
 }
 
 func (h *PostsHandler) ViewPostPage(c *gin.Context) {

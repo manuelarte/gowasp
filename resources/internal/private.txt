@@ -1,1 +1,5 @@
-File containing passwords and strategy for the future
+File containing users passwords and personal details.
+
+admin,admin
+gowasp,gowasp
+johndoe,johndoe

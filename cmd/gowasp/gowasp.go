@@ -20,8 +20,9 @@ import (
 
 	"github.com/manuelarte/gowasp/internal/config"
 	"github.com/manuelarte/gowasp/internal/handlers"
-	"github.com/manuelarte/gowasp/internal/repositories"
-	"github.com/manuelarte/gowasp/internal/services"
+	"github.com/manuelarte/gowasp/internal/posts"
+	"github.com/manuelarte/gowasp/internal/posts/postcomments"
+	"github.com/manuelarte/gowasp/internal/users"
 )
 
 func main() {
@@ -48,9 +49,9 @@ func main() {
 	}
 
 	_ = gormDB.Use(pagorminator.PaGormMinator{})
-	userService := services.UserServiceImpl{Repository: repositories.UserRepositoryDB{DB: gormDB}}
-	postService := services.PostServiceImpl{Repository: repositories.PostRepositoryDB{DB: gormDB}}
-	postCommentService := services.PostCommentServiceImpl{Repository: repositories.PostCommentRepositoryDB{DB: gormDB}}
+	userService := users.NewService(users.NewRepository(gormDB))
+	postService := posts.NewService(posts.NewRepository(gormDB))
+	postCommentService := postcomments.NewService(postcomments.NewRepository(gormDB))
 
 	usersHandler := handlers.UsersHandler{UserService: userService, PostService: postService}
 	postsHandler := handlers.PostsHandler{PostService: postService, PostCommentService: postCommentService}

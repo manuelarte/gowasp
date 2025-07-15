@@ -12,12 +12,13 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/manuelarte/gowasp/internal/models"
-	"github.com/manuelarte/gowasp/internal/services"
+	"github.com/manuelarte/gowasp/internal/posts"
+	"github.com/manuelarte/gowasp/internal/users"
 )
 
 type UsersHandler struct {
-	UserService services.UserService
-	PostService services.PostService
+	UserService users.Service
+	PostService posts.Service
 }
 
 func (h *UsersHandler) SignupPage(c *gin.Context) {
@@ -57,7 +58,7 @@ func (h *UsersHandler) Signup(c *gin.Context) {
 		return
 	}
 	user := userSignup.toUser()
-	if err := h.UserService.CreateUser(c, &user); err != nil {
+	if err := h.UserService.Create(c, &user); err != nil {
 		logrus.Infof("Signup attempt failed for User '%s'", user.Username)
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
@@ -86,7 +87,7 @@ func (h *UsersHandler) Login(c *gin.Context) {
 
 		return
 	}
-	user, err := h.UserService.LoginUser(c, user.Username, user.Password)
+	user, err := h.UserService.Login(c, user.Username, user.Password)
 	if err != nil {
 		logrus.Infof("Login attempt failed for User '%s'", user.Username)
 		code, response := ginerr.NewErrorResponse(c, err)

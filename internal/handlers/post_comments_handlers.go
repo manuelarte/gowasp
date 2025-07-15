@@ -12,11 +12,11 @@ import (
 	"github.com/manuelarte/pagorminator"
 
 	"github.com/manuelarte/gowasp/internal/models"
-	"github.com/manuelarte/gowasp/internal/services"
+	"github.com/manuelarte/gowasp/internal/posts/postcomments"
 )
 
 type PostCommentsHandler struct {
-	PostCommentService services.PostCommentService
+	PostCommentService postcomments.Service
 }
 
 func (h *PostCommentsHandler) GetPostComments(c *gin.Context) {
