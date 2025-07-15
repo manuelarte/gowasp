@@ -1,4 +1,4 @@
-package repositories
+package users
 
 import (
 	"context"
@@ -12,32 +12,37 @@ import (
 
 var ErrUserNotFound = errors.New("user and password not found")
 
-type UserRepository interface {
+//nolint:iface // repository does not need to have the same methods as service
+type Repository interface {
 	Create(ctx context.Context, user *models.User) error
 	Login(ctx context.Context, username, password string) (models.User, error)
 }
 
-var _ UserRepository = new(UserRepositoryDB)
+var _ Repository = new(gormRepository)
 
-type UserRepositoryDB struct {
-	DB *gorm.DB
+type gormRepository struct {
+	db *gorm.DB
 }
 
-func (u UserRepositoryDB) Create(ctx context.Context, user *models.User) error {
-	if err := u.DB.WithContext(ctx).Create(user).Error; err != nil {
+func NewRepository(db *gorm.DB) Repository {
+	return &gormRepository{db: db}
+}
+
+func (u gormRepository) Create(ctx context.Context, user *models.User) error {
+	if err := u.db.WithContext(ctx).Create(user).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (u UserRepositoryDB) Login(ctx context.Context, username, password string) (models.User, error) {
+func (u gormRepository) Login(ctx context.Context, username, password string) (models.User, error) {
 	// CWE-89: Improper Neutralization of Special Elements used in an SQL Command
 	// ('SQL Injection') https://cwe.mitre.org/data/definitions/89.html
 	query := fmt.Sprintf("SELECT id, username, password FROM users "+
 		"WHERE username = '%s' AND PASSWORD = '%s';", username, password)
 
-	row := u.DB.WithContext(ctx).Raw(query).Row()
+	row := u.db.WithContext(ctx).Raw(query).Row()
 	if row.Err() != nil {
 		return models.User{}, row.Err()
 	}

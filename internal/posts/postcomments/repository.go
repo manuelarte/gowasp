@@ -1,4 +1,4 @@
-package repositories
+package postcomments
 
 import (
 	"context"
@@ -9,23 +9,27 @@ import (
 	"github.com/manuelarte/gowasp/internal/models"
 )
 
-type PostCommentRepository interface {
+type Repository interface {
 	Create(ctx context.Context, postComment *models.PostComment) error
 	GetAllForPostID(ctx context.Context, postID uint64,
 		pageRequest *pagorminator.Pagination) ([]*models.PostComment, error)
 }
 
-var _ PostCommentRepository = new(PostCommentRepositoryDB)
+var _ Repository = new(gormRepository)
 
-type PostCommentRepositoryDB struct {
-	DB *gorm.DB
+type gormRepository struct {
+	db *gorm.DB
 }
 
-func (b PostCommentRepositoryDB) GetAllForPostID(ctx context.Context, postID uint64,
+func NewRepository(db *gorm.DB) Repository {
+	return &gormRepository{db: db}
+}
+
+func (b gormRepository) GetAllForPostID(ctx context.Context, postID uint64,
 	pageRequest *pagorminator.Pagination,
 ) ([]*models.PostComment, error) {
 	var postComments []*models.PostComment
-	tx := b.DB.WithContext(ctx).Clauses(pageRequest).Order("posted_at asc").
+	tx := b.db.WithContext(ctx).Clauses(pageRequest).Order("posted_at asc").
 		Where("post_id = ?", postID).Preload("User").Find(&postComments)
 	if tx.Error != nil {
 		return nil, tx.Error
@@ -34,6 +38,6 @@ func (b PostCommentRepositoryDB) GetAllForPostID(ctx context.Context, postID uin
 	return postComments, tx.Error
 }
 
-func (b PostCommentRepositoryDB) Create(ctx context.Context, postComment *models.PostComment) error {
-	return b.DB.WithContext(ctx).Create(postComment).Error
+func (b gormRepository) Create(ctx context.Context, postComment *models.PostComment) error {
+	return b.db.WithContext(ctx).Create(postComment).Error
 }
