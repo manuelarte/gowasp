@@ -11,7 +11,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.18.3
 	github.com/google/uuid v1.6.0
 	github.com/ing-bank/ginerr/v3 v3.0.0
-	github.com/manuelarte/pagorminator v0.0.5
+	github.com/manuelarte/pagorminator v0.1.0
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/sirupsen/logrus v1.9.3
 	gorm.io/driver/sqlite v1.6.0

@@ -48,7 +48,7 @@ func main() {
 		panic(err)
 	}
 
-	_ = gormDB.Use(pagorminator.PaGormMinator{})
+	_ = gormDB.Use(pagorminator.PaGorminator{})
 	userService := users.NewService(users.NewRepository(gormDB))
 	postService := posts.NewService(posts.NewRepository(gormDB))
 	postCommentService := postcomments.NewService(postcomments.NewRepository(gormDB))
