@@ -127,7 +127,7 @@ type PostUserComment struct {
 	CreatedAt time.Time   `json:"createdAt"`
 	UpdatedAt time.Time   `json:"updatedAt,omitempty"`
 	PostedAt  time.Time   `gorm:"now" json:"postedAt"`
-	PostID    uint        `json:"postID"`
+	PostID    uint        `json:"postId"`
 	User      UserComment `json:"user"`
 	Comment   string      `json:"comment"`
 }

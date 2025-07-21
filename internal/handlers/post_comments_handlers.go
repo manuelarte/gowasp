@@ -67,8 +67,8 @@ func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
 
 type NewPostComment struct {
 	PostedAt time.Time `binding:"required" json:"postedAt"`
-	PostID   uint      `binding:"required" json:"postID" `
-	UserID   uint      `binding:"required" json:"userID"`
+	PostID   uint      `binding:"required" json:"postId" `
+	UserID   uint      `binding:"required" json:"userId"`
 	Comment  string    `binding:"required,min=1,max=1000" json:"comment"`
 }
 

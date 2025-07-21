@@ -67,15 +67,15 @@
             const inputs = document.getElementsByTagName('INPUT')
             inputs[0].setAttribute('disabled', 'disabled')
             console.log(inputs[0])
-            const postID = 2
-            const userID = 2
+            const postId = 2
+            const userId = 2
             const newUserComment = {
-                postID: postID,
-                userID: userID,
+                postId: postId,
+                userId: userId,
                 comment: "<script>alert('You have been hacked')<\/script>",
             };
-            console.log("Sending data:", '/posts/' + postID + '/comments', JSON.stringify(newUserComment));
-            fetch('http://localhost:8080/posts/' + postID + '/comments', {
+            console.log("Sending data:", '/posts/' + postId + '/comments', JSON.stringify(newUserComment));
+            fetch('http://localhost:8080/api/posts/' + postId + '/comments', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"

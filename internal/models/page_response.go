@@ -1,7 +1,8 @@
 package models
 
 type PageResponse[T any] struct {
-	Data     []T          `json:"data"`
+	Data []T `json:"data"`
+	//nolint:tagliatelle // good name
 	Metadata PageMetadata `json:"_metadata"`
 }
 
