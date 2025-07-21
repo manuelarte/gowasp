@@ -121,6 +121,7 @@ type UserSignup struct {
 	Password string `binding:"required,max=18" json:"password"`
 }
 
+//nolint:unused // to be used later
 func (u UserSignup) toUser() models.User {
 	return models.User{
 		ID:        0,
