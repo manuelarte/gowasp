@@ -2,4 +2,4 @@
 [codespell]
 # Comma separated list of words to be ignored. Words must be lowercased.
 ignore-words-list = decorder
-skip = go.sum
+skip = go.sum,.gitignore
