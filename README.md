@@ -24,7 +24,7 @@ Once you have the application running, let's start first exploring the functiona
 
 ### 🔑 Login/Signup Page
 
-Navigate to the signup form [/users/signup][1]. Let's try to create an user, for example, with:
+Navigate to the signup form [/users/signup][signup]. Let's try to create an user, for example, with:
 
 ```yaml
 username: test
@@ -33,7 +33,7 @@ password: test
 
 ### 🏠 Welcome Page
 
-After you login or create an account, you are redirected to the [welcome][3] page. In this page you can see an intro blog, and also links to the latest posts. Let's click in one of the latest posts.
+After you login or create an account, you are redirected to the [welcome][welcome] page. In this page you can see an intro blog, and also links to the latest posts. Let's click in one of the latest posts.
 
 ### 📝 Post Page
 
@@ -49,7 +49,7 @@ Let's explore different vulnerabilities by exploiting some of the functionalitie
 
 ### 1. Create User - POST /users/signup
 
-We are going to explote the vulnerabilities related to the endpoint to create a user in [/users/signup][1].
+We are going to explote the vulnerabilities related to the endpoint to create a user in [/users/signup][signup].
 The vulnerabilities that we are going to check are:
 
 + [Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)
@@ -69,7 +69,7 @@ Once you have implemented these restrictions, test them using the http client.
 
 #### 🤖 Weak Hash Algorithm
 
-A detailed explanation of this vulnerability can be found [here](https://knowledge-base.secureflag.com/vulnerabilities/broken_cryptography/weak_hashing_algorithm_vulnerability.html)
+A detailed explanation of this vulnerability can be found [here](https://knowledge-base.secureflag.com/vulnerabilities/broken_cryptography/weak_hashing_algorithm_vulnerability.html).
 Run the http requests described in [#2. Scenario](./tools/users-signup.http) and:
 
 + Get the generated MD5 hashed password, and check how long does it take for a computer to decrypt it (e.g. https://10015.io/tools/md5-encrypt-decrypt#google_vignette)
@@ -84,9 +84,17 @@ To solve it, the best solution is to use up-to date hashing algorithms, like `bc
 + Use a different salt for every user.
 + Repeat `#2 Scenario` and check that the same password generates different hashes.
 
+#### 📝 Mass Assignment
+
+A detailed explanation of this vulnerability can be found [here](https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html).
+We are going to explote the vulnerability related to the API endpoint [/users/signup][signup].
+
+If you check the login endpoint, we see that we are returning a field called `isAdmin`. That field is not available in the html form.
+But what about if we use the API endpoint.
+
 ### 2. Login User - POST /users/login
 
-We are going to explote the vulnerabilities related to the endpoint to log in a user in [/users/login][2].
+We are going to explote the vulnerabilities related to the endpoint to log in a user in [/users/login][login].
 The vulnerability that we are going to check is:
 
 + [SQL injection](https://owasp.org/www-community/attacks/SQL_Injection)
@@ -104,7 +112,7 @@ The goal is to avoid the execution of the password clause (maybe by injecting a 
 
 ### 3. View Posts
 
-Once you're logged in, you are redirected to the [Welcome][3] page. There you can see an **Intro Post**.
+Once you're logged in, you are redirected to the [Welcome][welcome] page. There you can see an **Intro Post**.
 
 The vulnerabilities that we are going to check in this scenario:
 
@@ -181,6 +189,6 @@ You can check [`gowasp.main`](cmd/gowasp/gowasp.go) how I created an `unsafe` fu
 + Avoiding brute force attacks.
 + Insufficient logging when adding the comment.
 
-[1]: http://localhost:8080/users/signup
-[2]: http://localhost:8080/users/login
-[3]: http://localhost:8080/users/welcome
+[signup]: http://localhost:8080/users/signup
+[login]: http://localhost:8080/users/login
+[welcome]: http://localhost:8080/users/welcome

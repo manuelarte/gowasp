@@ -1,7 +1,7 @@
 ### HTTP Client example to use for '1. User Signup - POST /users/signup'
 
 ### 1. Scenario: Password not long enough
-POST http://localhost:8080/users/signup
+POST http://localhost:8080/api/users/signup
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
 
 ### 2. Scenario: Using md5 hash algorithm, check how long it takes for a computer to decrypt that hash
 #### 2.1 Create one user
-POST http://localhost:8080/users/signup
+POST http://localhost:8080/api/users/signup
 Content-Type: application/json
 
 {
@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 #### 2.2 Create another user with the same password and check that the hashed passwords are the same
-POST http://localhost:8080/users/signup
+POST http://localhost:8080/api/users/signup
 Content-Type: application/json
 
 {
@@ -31,7 +31,7 @@ Content-Type: application/json
 ###### Implement solutions ###########
 
 ### 3. Create User - Using md5 hash algorithm, check how long it takes for a computer to decrypt that hash
-POST http://localhost:8080/users/signup
+POST http://localhost:8080/api/users/signup
 Content-Type: application/json
 
 {

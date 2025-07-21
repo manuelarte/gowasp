@@ -13,7 +13,7 @@
                   password: password
                 };
                 console.log("Sending data:", JSON.stringify(userSignup));
-                fetch('/users/signup', {
+                fetch('/api/users/signup', {
                   method: 'POST',
                   headers: {
                     "Content-Type": "application/json"
