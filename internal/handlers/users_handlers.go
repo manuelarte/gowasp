@@ -50,14 +50,14 @@ func (h *UsersHandler) WelcomePage(c *gin.Context) {
 }
 
 func (h *UsersHandler) Signup(c *gin.Context) {
-	userSignup := UserSignup{}
+	userSignup := models.User{}
 	if err := c.BindJSON(&userSignup); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
 
 		return
 	}
-	user := userSignup.toUser()
+	user := userSignup
 	if err := h.UserService.Create(c, &user); err != nil {
 		logrus.Infof("Signup attempt failed for User '%s'", user.Username)
 		code, response := ginerr.NewErrorResponse(c, err)
@@ -106,6 +106,7 @@ func (h *UsersHandler) Login(c *gin.Context) {
 
 		return
 	}
+	c.JSON(http.StatusOK, user)
 	logrus.Infof("User %s logged in", user.Username)
 }
 

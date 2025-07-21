@@ -1,7 +1,7 @@
 ### HTTP Client example to use for '1. Login User - POST /users/login'
 
 ### 1. Scenario: normal login
-POST http://localhost:8080/users/login
+POST http://localhost:8080/api/users/login
 Content-Type: application/json
 
 {
@@ -14,7 +14,7 @@ Content-Type: application/json
 DELETE http://localhost:8080/users/logout
 
 ### 2.2 Try to log in without knowing any credentials
-POST http://localhost:8080/users/login
+POST http://localhost:8080/api/users/login
 Content-Type: application/json
 
 {

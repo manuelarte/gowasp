@@ -4,6 +4,7 @@ CREATE TABLE users (
     updated_at datetime,
     username VARCHAR(18) NOT NULL UNIQUE,
     password VARCHAR(18) NOT NULL,
+    is_admin boolean NOT NULL,
     PRIMARY KEY (id),
     UNIQUE (username)
 );

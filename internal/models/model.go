@@ -8,4 +8,5 @@ type User struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 	Username  string    `binding:"required" form:"username" json:"username"`
 	Password  string    `binding:"required" form:"password" json:"password"`
+	IsAdmin   bool      `json:"isAdmin"`
 }

@@ -73,20 +73,19 @@ func main() {
 
 	r.GET("/users/signup", usersHandler.SignupPage)
 	r.GET("/users/login", usersHandler.LoginPage)
+	r.DELETE("/users/logout", usersHandler.Logout)
 
 	r.GET("/users/welcome", config.AuthMiddleware(), usersHandler.WelcomePage)
 	r.GET("/static/posts", config.AuthMiddleware(), postsHandler.GetStaticPostFileByName)
+	r.GET("/posts", postsHandler.GetAll)
 	r.GET("/posts/:id/view", config.AuthMiddleware(), postsHandler.ViewPostPage)
 
 	r.GET("/debug", handlers.GetTemplateByName)
 
-	r.POST("/users/signup", usersHandler.Signup)
-	r.POST("/users/login", usersHandler.Login)
-	r.DELETE("/users/logout", usersHandler.Logout)
-
-	r.GET("/posts", postsHandler.GetAll)
-	r.GET("/posts/:id/comments", postCommentHandler.GetPostComments)
-	r.POST("/posts/:id/comments", config.AuthMiddleware(), postCommentHandler.CreatePostComment)
+	r.POST("/api/users/signup", usersHandler.Signup)
+	r.POST("/api/users/login", usersHandler.Login)
+	r.GET("/api/posts/:id/comments", postCommentHandler.GetPostComments)
+	r.POST("/api/posts/:id/comments", config.AuthMiddleware(), postCommentHandler.CreatePostComment)
 
 	err = r.Run()
 	if err != nil {

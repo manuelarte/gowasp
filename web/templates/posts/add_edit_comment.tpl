@@ -24,7 +24,7 @@
                     csrf: csrf
                 };
                 console.log("Sending data:", JSON.stringify(newUserComment));
-                fetch('/posts/' + postID + '/comments', {
+                fetch('/api/posts/' + postID + '/comments', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"
