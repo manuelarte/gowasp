@@ -2,8 +2,9 @@
 
 ![version](https://img.shields.io/github/v/release/manuelarte/gowasp)
 
-GOwasp is a deliberately vulnerable web application written in [Go](https://go.dev/). 
-This project demonstrates some of the most common security vulnerabilities affecting web applications today, based on the [OWASP](https://owasp.org/) top 10. 
+GOwasp is a deliberately vulnerable web application written in [Go](https://go.dev/).
+This project demonstrates some of the most common security vulnerabilities affecting web applications today.
+This vulnerabilities are based on the [OWASP](https://owasp.org/) top 10.
 The goal is to learn security concepts by exploiting and then fixing these vulnerabilities.
 
 ## 🚀Getting Started
@@ -41,7 +42,7 @@ Let's click on one of the latest posts.
 
 ### 📝 Post Page
 
-Clicking on a post takes you to its details page, where you can read the post, view comments, and submit your own comment. 
+Clicking on a post takes you to its details page, where you can read the post, view comments, and submit your own comment.
 
 > [!NOTE]  
 > Try to submit a comment like:
@@ -78,7 +79,7 @@ Once you have implemented these restrictions, test them using the http client.
 A detailed explanation of this vulnerability can be found in [weak_hashing_algorithm_vulnerability](https://knowledge-base.secureflag.com/vulnerabilities/broken_cryptography/weak_hashing_algorithm_vulnerability.html).
 Run the http requests described in [#2. Scenario](./tools/users-signup.http) and:
 
-+ Get the generated MD5 hashed password, and check how long it takes for a computer to decrypt it (e.g. https://10015.io/tools/md5-encrypt-decrypt#google_vignette)
++ Get the generated MD5 hashed password, and check how long it takes for a computer to decrypt it (e.g. <https://10015.io/tools/md5-encrypt-decrypt#google_vignette>)
 + Check that same password generates the same hash.
 
 > [!IMPORTANT]  
@@ -92,7 +93,7 @@ To solve it, the best solution is to use up-to date hashing algorithms, like `bc
 
 #### 📝 Mass Assignment
 
-A detailed explanation of this vulnerability can be found [here](https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html).
+A detailed explanation of this vulnerability can be found [mass assignment](https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html).
 We are going to explote the vulnerability related to the API endpoint [/api/users/signup][signup].
 
 If you check the login endpoint, we see that we are returning a field called `isAdmin`. That field is not available in the html form.
