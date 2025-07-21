@@ -1,6 +1,6 @@
 {{ define "posts/add_edit_comment.tpl"}}
     <script type="text/javascript">
-        function addOrEditComment(event, postID, user, originalComment) {
+        function addOrEditComment(event, postId, user, originalComment) {
             event.preventDefault(); // Prevent form from refreshing the page
             const inputs = document.getElementsByTagName('INPUT')
             inputs[1].setAttribute('disabled', 'disabled')
@@ -18,13 +18,13 @@
                 // new
                 console.log(user)
                 const newUserComment = {
-                    postID: postID,
-                    userID: user.id,
+                    postId: postId,
+                    userId: user.id,
                     comment: comment,
                     csrf: csrf
                 };
                 console.log("Sending data:", JSON.stringify(newUserComment));
-                fetch('/api/posts/' + postID + '/comments', {
+                fetch('/api/posts/' + postId + '/comments', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"

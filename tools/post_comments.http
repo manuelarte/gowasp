@@ -11,8 +11,8 @@ POST http://localhost:8080/api/posts/1/comments
 Content-Type: application/json
 
 {
-  "postID": 1,
-  "userID": 2,
+  "postId": 1,
+  "userId": 2,
   "comment": "Very nice article"
 }
 
@@ -21,8 +21,8 @@ POST http://localhost:8080/api/posts/1/comments
 Content-Type: application/json
 
 {
-  "postID": 1,
-  "userID": 1,
+  "postId": 1,
+  "userId": 1,
   "comment": "Horrible article, you should delete it."
 }
 
@@ -31,7 +31,7 @@ POST http://localhost:8080/api/posts/1/comments
 Content-Type: application/json
 
 {
-  "postID": 1,
-  "userID": 1,
+  "postId": 1,
+  "userId": 1,
   "comment": "Horrible article, you should delete it. <script type='text/javascript'>alert('Hello')</script>"
 }

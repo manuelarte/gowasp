@@ -43,7 +43,6 @@ linters:
     - rowserrcheck # Related to SQL.
     - spancheck # Related to OpenTelemetry.
     - sqlclosecheck # Related to SQL.
-    - tagliatelle  # No need for tags.
     - testpackage  # We are testing using google tools.
     - thelper  # We are testing using google tools.
     - noinlineerr  # I prefer having inline errors.
