@@ -56,7 +56,7 @@ Let's explore different vulnerabilities by exploiting some of the functionalitie
 
 ### 1. Create User (POST /api/users/signup)
 
-We are going to explote the vulnerabilities related to the endpoint to create a user in [/api/users/signup][signup].
+We are going to exploit the vulnerabilities related to the endpoint to create a user in [/api/users/signup][signup].
 The vulnerabilities that we are going to check are:
 
 + [Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)
@@ -164,7 +164,7 @@ There are several ways to implement a solution for this vulnerability in this ca
 
 #### 🔄 CSRF - Cross Site Request Forgery
 
-The add comments endpoint is not protected against CSRF attacks. And we can check it by following this steps:
+The add comments endpoint is not protected against CSRF attacks. And we can check it by following these steps:
 
 + login in the application with your browser.
 + open [price-win.html](/tools/price-win.html) with that same browser.
