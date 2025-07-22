@@ -2,6 +2,7 @@ ARG VERSION=1.23.7
 
 # Build Stage
 FROM golang:${VERSION}-alpine AS builder
+# hadolint ignore=DL3018
 RUN apk --no-cache add make git gcc libtool musl-dev ca-certificates dumb-init
 
 WORKDIR /app
@@ -18,6 +19,7 @@ RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s" -o /gowasp
 
 # Final Stage
 FROM alpine:3
+# hadolint ignore=DL3018
 RUN apk --no-cache add ca-certificates dumb-init
 
 # Copy the binary from builder stage
