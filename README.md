@@ -4,7 +4,7 @@
 
 GOwasp is a deliberately vulnerable web application written in [Go](https://go.dev/).
 This project demonstrates some of the most common security vulnerabilities affecting web applications today.
-This vulnerabilities are based on the [OWASP](https://owasp.org/) top 10.
+These vulnerabilities are based on the [OWASP](https://owasp.org/) top 10.
 The goal is to learn security concepts by exploiting and then fixing these vulnerabilities.
 
 ## 🚀Getting Started
@@ -36,7 +36,7 @@ password: test
 
 ### 🏠 Welcome Page
 
-After you login or create an account, you are redirected to the [welcome][welcome] page.
+After you log in or create an account, you are redirected to the [welcome][welcome] page.
 In this page you can see an intro blog, and also links to the latest posts.
 Let's click on one of the latest posts.
 
@@ -95,14 +95,14 @@ To solve it, the best solution is to use up-to date hashing algorithms, like `bc
 #### 📝 Mass Assignment
 
 A detailed explanation of this vulnerability can be found [mass assignment](https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html).
-We are going to explote the vulnerability related to the API endpoint [/api/users/signup][signup].
+We are going to exploit the vulnerability related to the API endpoint [/api/users/signup][signup].
 
-If you check the login endpoint, we see that we are returning a field called `isAdmin`. That field is not available in the html form.
-But what about if we use the API endpoint.
+If you check the login endpoint, we see that we are returning a field called `isAdmin`. That field is not available in the HTML form.
+But what about if we use the API endpoint?
 
 ### 2. Login User (POST /users/login)
 
-We are going to explote the vulnerabilities related to the endpoint to log in a user in [/api/users/login][login].
+We are going to exploit the vulnerabilities related to the endpoint to log in a user in [/api/users/login][login].
 The vulnerability that we are going to check is:
 
 + [SQL injection](https://owasp.org/www-community/attacks/SQL_Injection)
@@ -112,7 +112,7 @@ As you can see in [users repository.go](./internal/users/repository.go), in the 
 
 #### 💉🛢 SQL Injection
 
-Try to explote this query concatenation by concatenating an `always true` sql statement (something like `-OR '1'='1'-`).
+Try to exploit this query concatenation by concatenating an `always true` SQL statement (something like `-OR '1'='1'-`).
 The goal is to avoid the execution of the password clause (maybe by injecting a comment (`--`) to comment out the rest of the query)
 
 > [!IMPORTANT]  
@@ -171,29 +171,29 @@ The add comments endpoint is not protected against CSRF attacks. And we can chec
 + Click on the rewards button.
 + Go to `http://localhost:8080/posts/2/comments` and check what happened.
 
-The app has been exploit by two vulnerabilities, CSRF and HTML Template injection.
+The app has been exploited by two vulnerabilities, CSRF and HTML Template injection.
 
-To avoid CSRF attacks we can validate add a CSRF cookie in our requests, and validate in the payload that the cookie and the json field match.
+To avoid CSRF attacks, we can validate add a CSRF cookie in our requests, and validate in the payload that the cookie and the json field match.
 In the template [add_edit_comment.tpl](/web/templates/posts/add_edit_comment.tpl) you can check that we are sending a csrf value in:
 
 ```<input type='hidden' id='csrf' name="csrf" value='{{ .csrf }}'>```
 
-Validate that the value that we receive from that json field matches the value that we have in the `csrf` cookie in the Request.
+Validate that the value that we receive from that JSON field matches the value that we have in the `csrf` cookie in the Request.
 Restart the application and check that you can't create comments anymore using the `win price` button.
 
 #### 💉🌐 HTML Template Injection
 
-Before we could see that we also suffered from template injection.
+Before we could see that, we also suffered from template injection.
 
 Run the `#Scenario 2` http requests that tries to inject a `<script>` content in your comment.
 
-To solve this remember to always escape/validate user input.
-In this case, [Gin](https://gin-gonic.com/) provides already a mechanism against this attack, and we needed to avoid it by creating a custom function to avoid escaping the html characters.
-You can check [`gowasp.main`](cmd/gowasp/gowasp.go) how I created an `unsafe` function to render html content.
+To solve this, remember to always escape/validate user input.
+In this case, [Gin](https://gin-gonic.com/) already provides a mechanism against this attack, and we needed to avoid it by creating a custom function to avoid escaping the HTML characters.
+You can check [`gowasp.main`](cmd/gowasp/gowasp.go) how I created an `unsafe` function to render HTML content.
 
 ## 📝 TODO
 
-+ Improve the css.
++ Improve the CSS.
 + Avoiding brute force attacks.
 + Insufficient logging when adding the comment.
 
