@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v0.0.2] 2025-07-22
 
+### BugFix
+
+- Fixing bug in Dockerfile
+
+## [v0.0.2] 2025-07-22
+
 ### Added
 
 - Added mass assignment vulnerability.
