@@ -61,12 +61,13 @@ The vulnerabilities that we are going to check are:
 
 + [Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)
 + [Weak Hash Algorithm](https://cwe.mitre.org/data/definitions/328.html)
++ [Mass Assignment](https://www.veracode.com/security/dotnet/cwe-915/)
 
 An HTTP client is provided in [users-signup.http](./tools/users-signup.http) to follow along.
 
 #### 🔐 Weak Password Requirements
 
-As you can see in [users_service.go](./internal/services/user_service.go), the only requirement for a password is to have *more than four characters* (`#1. Scenario`).
+As you can see in [users_service.go](./internal/users/service.go), the only requirement for a password is to have *more than four characters* (`#1. Scenario`).
 Let's try to improve that by adding **stronger requirements**:
 
 + minimum eight characters, (let's set also a maximum password length of 256)
@@ -107,7 +108,7 @@ The vulnerability that we are going to check is:
 + [SQL injection](https://owasp.org/www-community/attacks/SQL_Injection)
 
 An HTTP client is provided in [users-login.http](./tools/users-login.http) to follow along.
-As you can see in [user_repository.go](./internal/repositories/user_repository.go), in the `Login` method, the query is created by string concatenation.
+As you can see in [user_repository.go](./internal/users/repository.go), in the `Login` method, the query is created by string concatenation.
 
 #### 💉🛢 SQL Injection
 
