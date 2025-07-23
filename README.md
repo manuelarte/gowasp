@@ -2,10 +2,9 @@
 
 ![version](https://img.shields.io/github/v/release/manuelarte/gowasp)
 
-GOwasp is a deliberately vulnerable web application written in [Go](https://go.dev/).
-This project demonstrates some of the most common security vulnerabilities affecting web applications today.
-These vulnerabilities are based on the [OWASP](https://owasp.org/) top 10.
-The goal is to learn security concepts by exploiting and then fixing these vulnerabilities.
+GOwasp simulates a vulnerable web application built with Go. 
+It showcases some of the most common security flaws found in modern web applications, based on the [OWASP Top 10](https://owasp.org/www-project-top-ten/) list.
+The project encourages hands-on learning: exploit each vulnerability, understand the risk, and apply the fix.
 
 ## 🚀Getting Started
 
@@ -23,11 +22,11 @@ make dr
 
 ## 🛠️ Application Overview
 
-Once you have the application running, let's start first exploring the functionality provided by it.
+Once the application is up and running, you can begin by exploring its core features.
 
 ### 🔑 Login/Signup Page
 
-Navigate to the signup form [/users/signup][signup]. Let's try to create an `user`, for example, with:
+Start by navigating to the [signup page][signup]. Try creating a user account with the following credentials:
 
 ```yaml
 username: test
@@ -36,19 +35,19 @@ password: test
 
 ### 🏠 Welcome Page
 
-After you log in or create an account, you are redirected to the [welcome][welcome] page.
-In this page you can see an intro blog, and also links to the latest posts.
-Let's click on one of the latest posts.
+After logging in or creating an account, you’ll be redirected to the [welcome page][welcome].
+This page displays an introductory blog post along with links to the latest entries.
+Click on one of the recent posts to continue exploring.
 
 ### 📝 Post Page
 
-Clicking on a post takes you to its details page, where you can read the post, view comments, and submit your own comment.
+Clicking a post takes you to its detail page, where you can read the content, view existing comments, and submit your own.
 
 > [!NOTE]  
 > Try to submit a comment like:
 > *Very nice post!*
 
-After this small guide, let's now try to hack this application.
+Now that you've explored the basic functionality, it is time to dive into the fun part: *hacking the application*.
 
 ## ☣️ Vulnerabilities
 
@@ -56,62 +55,67 @@ Let's explore different vulnerabilities by exploiting some of the functionalitie
 
 ### 1. Create User (POST /api/users/signup)
 
-We are going to exploit the vulnerabilities related to the endpoint to create a user in [/api/users/signup][signup].
-The vulnerabilities that we are going to check are:
+We'll start by exploring vulnerabilities in the [/api/users/signup][signup] endpoint.
+Specifically, you'll investigate the following issues:
 
-+ [Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)
-+ [Weak Hash Algorithm](https://cwe.mitre.org/data/definitions/328.html)
-+ [Mass Assignment](https://www.veracode.com/security/dotnet/cwe-915/)
++ [Weak Password Requirements](#-weak-password-requirements)
++ [Weak Hash Algorithm](#-weak-hash-algorithm)
++ [Mass Assignment](#-mass-assignment)
 
-An HTTP client is provided in [users-signup.http](./tools/users-signup.http) to follow along.
+> [!TIP]
+> Use the provided HTTP client file [users-signup.http](./tools/users-signup.http), to follow along and test each case.
 
-#### 🔐 Weak Password Requirements
+#### 🔐 [Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)
 
-As you can see in [users service.go](./internal/users/service.go), the only requirement for a password is to have *more than four characters* (`#1. Scenario`).
-Let's try to improve that by adding **stronger requirements**:
+In [users/service.go](./internal/users/service.go), the password policy currently allows any value with *more than four characters* (`#1. Scenario`).
 
-+ minimum eight characters, (let's set also a maximum password length of 256)
-+ include non-alphanumerical characters
+To strengthen this, update the logic to enforce the following rules:
 
-Once you have implemented these restrictions, test them using the http client.
++ Require a minimum of 8 characters (and a maximum of 256).
++ Include at least one non-alphanumeric character.
 
-#### 🤖 Weak Hash Algorithm
+After applying these changes, verify the new password validation behavior.
 
-A detailed explanation of this vulnerability can be found in [weak_hashing_algorithm_vulnerability](https://knowledge-base.secureflag.com/vulnerabilities/broken_cryptography/weak_hashing_algorithm_vulnerability.html).
-Run the http requests described in [#2. Scenario](./tools/users-signup.http) and:
+#### 🤖 [Weak Hash Algorithm](https://cwe.mitre.org/data/definitions/328.html)
 
-+ Get the generated MD5 hashed password, and check how long it takes for a computer to decrypt it (e.g. <https://10015.io/tools/md5-encrypt-decrypt#google_vignette>)
-+ Check that same password generates the same hash.
+For a detailed explanation of this vulnerability, see the [Weak Hashing Algorithm Vulnerability](https://knowledge-base.secureflag.com/vulnerabilities/broken_cryptography/weak_hashing_algorithm_vulnerability.html).
+To explore this issue, follow the steps in [#2. Scenario](./tools/users-signup.http):
+
++ Submit a signup request and extract the generated MD5 hash.
++ Use a tool like [md5-encrypt-decrypt](https://10015.io/tools/md5-encrypt-decrypt#google_vignette) to estimate how quickly an attacker can reverse the hash.
++ Confirm that hashing the same password always produces the same result.
 
 > [!IMPORTANT]  
-> Never use outdated hashing algorithms like MD5.
+> Avoid outdated hashing algorithms like MD5. They offer weak protection against brute-force attacks.
 
-To solve it, the best solution is to use up-to date hashing algorithms, like `bcrypt`, `scrypt` or `PBKDF2`.
+To improve password security, the best solution is to use up-to date hashing algorithms, like `bcrypt`, `scrypt` or `PBKDF2`.
 
-+ Change the MD5 hashing algorithm for [bcrypt](https://pkg.go.dev/golang.org/x/crypto/bcrypt).
-+ Use a different salt for every user.
-+ Repeat `#2 Scenario` and check that the same password generates different hashes.
++ Replace MD5 with [bcrypt](https://pkg.go.dev/golang.org/x/crypto/bcrypt).
++ Generate a unique salt for each user.
++ Re-run `#2 Scenario` and verify that the same password produces different hashes.
 
-#### 📝 Mass Assignment
+#### 📝 [Mass Assignment](https://www.veracode.com/security/dotnet/cwe-915/)
 
-A detailed explanation of this vulnerability can be found [mass assignment](https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html).
+For a detailed explanation of this vulnerability, see the [OWASP Mass Assignment Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html).
 We are going to exploit the vulnerability related to the API endpoint [/api/users/signup][signup].
 
-If you check the login endpoint, we see that we are returning a field called `isAdmin`. That field is not available in the HTML form.
-But what about if we use the API endpoint?
+When inspecting the login response, you’ll notice a field named `isAdmin`. 
+The HTML signup form doesn’t expose this field, but what happens if you *include it directly in the API request?*
+Try sending a crafted request that sets `isAdmin` to true and observe the outcome.
 
 ### 2. Login User (POST /users/login)
 
 We are going to exploit the vulnerabilities related to the endpoint to log in a user in [/api/users/login][login].
 The vulnerability that we are going to check is:
 
-+ [SQL injection](https://owasp.org/www-community/attacks/SQL_Injection)
++ [SQL injection](#-sql-injection)
 
 An HTTP client is provided in [users-login.http](./tools/users-login.http) to follow along.
 As you can see in [users repository.go](./internal/users/repository.go), in the `Login` method, the query is created by string concatenation.
 
-#### 💉🛢 SQL Injection
+#### 💉🛢 [SQL injection](https://owasp.org/www-community/attacks/SQL_Injection)
 
+For a detailed explanation of this vulnerability, see the [OWASP SQL Injection Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html).
 Try to exploit this query concatenation by concatenating an `always true` SQL statement (something like `-OR '1'='1'-`).
 The goal is to avoid the execution of the password clause (maybe by injecting a comment (`--`) to comment out the rest of the query)
 
@@ -147,55 +151,54 @@ To solve this issue for this scenario, we could validate the user input, and avo
 
 The vulnerabilities we are going to check here:
 
-+ Broken Access Control
-+ [CSRF](https://owasp.org/www-community/attacks/csrf)
-+ HTML Template injection
++ [Broken Access Control](#-broken-access-control)
++ [CSRF](#-csrf---cross-site-request-forgery)
++ [HTML Template injection](#-html-template-injection)
 
-#### 🩹 Broken Access Control
+#### 🩹 [Broken Access Control](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)
 
-If we look at the Scenario 1 in the http tool [post_comments.http](/tools/post_comments.http), we can see that we can create a comment for a post.
-But if we take a look at the payload, we can see that the `postId` and the `userId` are sent as part of the payload.
-We can manipulate these values and check that we can create comments for any user to any post.
+For a detailed explanation of this vulnerability, see the [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html).
+In Scenario 1 of the http tool [post_comments.http](/tools/post_comments.http), you can create a comment for a post.
+However, the payload includes `postId` and `userId` fields that you can manipulate.
+By modifying these values, you can create comments as any user on any post.
 
-There are several ways to implement a solution for this vulnerability in this case:
+To fix this vulnerability, consider these approaches:
 
-+ Override the values given in `userId` and/or `postId` by the proper values (the user id coming from the session cookie and the `postId` coming from the url)
-+ (**Preferred**) Implement a new struct that contains only the valid fields as we have in `UserSignup` struct.
++ Override the `userId` and `postId` fields in the payload with trusted values (the user id coming from the session cookie and the `postId` coming from the url).
++ (**Preferred**) Define a dedicated struct that accepts only valid fields, similar to the `UserSignup` struct, to prevent unauthorized data injection.
 
-#### 🔄 CSRF - Cross Site Request Forgery
+#### 🔄 [CSRF - Cross Site Request Forgery](https://owasp.org/www-community/attacks/csrf)
 
-The add comments endpoint is not protected against CSRF attacks. And we can check it by following these steps:
+For a detailed explanation of this vulnerability, see the [Cross Site Request Forgery Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html).
+The add comments endpoint lacks protection against CSRF attacks. Verify this by following these steps:
 
-+ login in the application with your browser.
-+ open [price-win.html](/tools/price-win.html) with that same browser.
-+ Click on the rewards button.
-+ Go to `http://localhost:8080/posts/2/comments` and check what happened.
++ Log in to the application using your browser.
++ Open [price-win.html](/tools/price-win.html) in the same browser.
++ Click the rewards button.
++ Visit [/post/2/comments](http://localhost:8080/posts/2/comments) and observe the result.
 
-The app has been exploited by two vulnerabilities, CSRF and HTML Template injection.
+This exploit combines vulnerabilities from both CSRF and HTML template injection.
 
-To avoid CSRF attacks, we can validate add a CSRF cookie in our requests, and validate in the payload that the cookie and the json field match.
-In the template [add_edit_comment.tpl](/web/templates/posts/add_edit_comment.tpl) you can check that we are sending a csrf value in:
+Prevent CSRF attacks by adding a CSRF token cookie to requests and validating that the token in the JSON payload matches the cookie value.
+In the template [add_edit_comment.tpl](/web/templates/posts/add_edit_comment.tpl) the token appears as:
 
-```<input type='hidden' id='csrf' name="csrf" value='{{ .csrf }}'>```
+```html
+<input type='hidden' id='csrf' name="csrf" value='{{ .csrf }}'>
+```
 
-Validate that the value that we receive from that JSON field matches the value that we have in the `csrf` cookie in the Request.
-Restart the application and check that you can't create comments anymore using the `win price` button.
+Implement validation to ensure the `csrf` value from the JSON payload matches the `csrf` cookie sent in the request.
+After applying the fix, restart the application and confirm that creating comments via the `win price` button no longer works.
 
-#### 💉🌐 HTML Template Injection
+#### 💉🌐 [HTML Template Injection](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/11-Client-side_Testing/03-Testing_for_HTML_Injection)
 
-Before we could see that, we also suffered from template injection.
+Earlier, you encountered a template injection vulnerability.
 
-Run the `#Scenario 2` http requests that tries to inject a `<script>` content in your comment.
+Run the `#Scenario 2` HTTP requests that attempts to inject `<script>` tag in your comment.
 
-To solve this, remember to always escape/validate user input.
-In this case, [Gin](https://gin-gonic.com/) already provides a mechanism against this attack, and we needed to avoid it by creating a custom function to avoid escaping the HTML characters.
-You can check [`gowasp.main`](cmd/gowasp/gowasp.go) how I created an `unsafe` function to render HTML content.
-
-## 📝 TODO
-
-+ Improve the CSS.
-+ Avoiding brute force attacks.
-+ Insufficient logging when adding the comment.
+To solve this, remember to always escape and validate user input to prevent injection attacks.
+The [Gin Framework](https://gin-gonic.com/) provides built-in protection against this vulnerability.
+In this project, a custom `unsafe` function bypassed Gin’s escaping to render raw HTML.
+Check [`gowasp.main`](cmd/gowasp/gowasp.go) to see how `unsafe` function renders HTML content without escaping.
 
 [signup]: http://localhost:8080/api/users/signup
 [login]: http://localhost:8080/users/login
