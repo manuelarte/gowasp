@@ -4,7 +4,12 @@
 
 GOwasp simulates a vulnerable web application built with Go. 
 It showcases some of the most common security flaws found in modern web applications, based on the [OWASP Top 10](https://owasp.org/www-project-top-ten/) list.
-The project encourages hands-on learning: exploit each vulnerability, understand the risk, and apply the fix.
+
+The project encourages hands-on learning: 
+
+1. Exploit each vulnerability
+2. Understand the risk
+3. Apply the fix.
 
 ## 🚀Getting Started
 
@@ -45,6 +50,7 @@ Clicking a post takes you to its detail page, where you can read the content, vi
 
 > [!NOTE]  
 > Try to submit a comment like:
+> 
 > *Very nice post!*
 
 Now that you've explored the basic functionality, it is time to dive into the fun part: *hacking the application*.
@@ -79,6 +85,7 @@ After applying these changes, verify the new password validation behavior.
 #### 🤖 [Weak Hash Algorithm](https://cwe.mitre.org/data/definitions/328.html)
 
 For a detailed explanation of this vulnerability, see the [Weak Hashing Algorithm Vulnerability](https://knowledge-base.secureflag.com/vulnerabilities/broken_cryptography/weak_hashing_algorithm_vulnerability.html).
+
 To explore this issue, follow the steps in [#2. Scenario](./tools/users-signup.http):
 
 + Submit a signup request and extract the generated MD5 hash.
@@ -97,6 +104,7 @@ To improve password security, the best solution is to use up-to date hashing alg
 #### 📝 [Mass Assignment](https://www.veracode.com/security/dotnet/cwe-915/)
 
 For a detailed explanation of this vulnerability, see the [OWASP Mass Assignment Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html).
+
 We are going to exploit the vulnerability related to the API endpoint [/api/users/signup][signup].
 
 When inspecting the login response, you’ll notice a field named `isAdmin`. 
@@ -116,6 +124,7 @@ As you can see in [users repository.go](./internal/users/repository.go), in the 
 #### 💉🛢 [SQL injection](https://owasp.org/www-community/attacks/SQL_Injection)
 
 For a detailed explanation of this vulnerability, see the [OWASP SQL Injection Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html).
+
 Try to exploit this query concatenation by concatenating an `always true` SQL statement (something like `-OR '1'='1'-`).
 The goal is to avoid the execution of the password clause (maybe by injecting a comment (`--`) to comment out the rest of the query)
 
@@ -137,7 +146,10 @@ To follow along, check [posts.http](./tools/posts.http)
 If you open the network tab `developer console` in your web browser (by default F12), and **refresh the welcome page**, the program makes a call to [/posts?name=intro.txt](http://localhost:8080/posts?name=intro.txt).
 Let's check how the `GetStaticPostFileByName` method is implemented in [posts_handler](./internal/handlers/posts_handlers.go).
 We can see that we are using [`os.Open`](https://pkg.go.dev/os#Open):
-> file, err := os.Open(fmt.Sprintf("./resources/posts/%s", name))
+
+```go
+file, err := os.Open(fmt.Sprintf("./resources/posts/%s", name))
+```
 
 + What would happen in we change the name query parameter to point to a different file in a different location?, maybe we could try with `../internal/private.txt`
 + Try to also display `/etc/passwd` file content.
@@ -158,6 +170,7 @@ The vulnerabilities we are going to check here:
 #### 🩹 [Broken Access Control](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)
 
 For a detailed explanation of this vulnerability, see the [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html).
+
 In Scenario 1 of the http tool [post_comments.http](/tools/post_comments.http), you can create a comment for a post.
 However, the payload includes `postId` and `userId` fields that you can manipulate.
 By modifying these values, you can create comments as any user on any post.
@@ -170,6 +183,7 @@ To fix this vulnerability, consider these approaches:
 #### 🔄 [CSRF - Cross Site Request Forgery](https://owasp.org/www-community/attacks/csrf)
 
 For a detailed explanation of this vulnerability, see the [Cross Site Request Forgery Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html).
+
 The add comments endpoint lacks protection against CSRF attacks. Verify this by following these steps:
 
 + Log in to the application using your browser.
