@@ -144,7 +144,7 @@ linters:
       rules:
         - name: enforce-slice-style
           arguments:
-          - "make"
+            - make
         - name: filename-format
           arguments:
             - ^[a-z][_a-z0-9]*.go$
