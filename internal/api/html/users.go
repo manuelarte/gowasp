@@ -24,6 +24,12 @@ func (h *Users) LoginPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "users/login.tpl", gin.H{})
 }
 
+func (h *Users) Logout(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+	_ = session.Save()
+}
+
 func (h *Users) SignupPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "users/signup.tpl", gin.H{})
 }

@@ -80,7 +80,7 @@ func main() {
 
 	r.GET("/users/signup", htmlUsers.SignupPage)
 	r.GET("/users/login", htmlUsers.LoginPage)
-	r.DELETE("/users/logout", usersHandler.Logout)
+	r.DELETE("/users/logout", htmlUsers.Logout)
 
 	r.GET("/users/welcome", config.AuthMiddleware(), htmlUsers.WelcomePage)
 	r.GET("/static/posts", config.AuthMiddleware(), postsHandler.GetStaticPostFileByName)

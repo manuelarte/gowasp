@@ -51,12 +51,6 @@ func (h *UsersHandler) Login(c *gin.Context) {
 	logrus.Infof("User %s logged in", user.Username)
 }
 
-func (h *UsersHandler) Logout(c *gin.Context) {
-	session := sessions.Default(c)
-	session.Clear()
-	_ = session.Save()
-}
-
 type UserSignup struct {
 	Username string `binding:"required,max=20" json:"username" `
 	Password string `binding:"required,max=20" json:"password"`
