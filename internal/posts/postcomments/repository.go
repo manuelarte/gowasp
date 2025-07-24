@@ -9,6 +9,7 @@ import (
 	"github.com/manuelarte/gowasp/internal/models"
 )
 
+//nolint:iface // separate repository from service
 type Repository interface {
 	Create(ctx context.Context, postComment *models.PostComment) error
 	GetAllForPostID(ctx context.Context, postID uint,

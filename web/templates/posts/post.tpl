@@ -9,9 +9,9 @@
         </div>
 
         <div id="comments">
-        This post has {{ len .comments.Data }} comment(s)
+        This post has {{ len .comments }} comment(s)
         <br>
-        {{range $val := .comments.Data}}
+        {{range $val := .comments}}
             {{ template "posts/comment.tpl" $val }}
         {{end}}
         </div>

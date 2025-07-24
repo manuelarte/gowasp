@@ -46,11 +46,11 @@ func (h *Posts) GetPosts(c *gin.Context, params GetPostsParams) {
 
 		return
 	}
-	dto := pageRequestToDTO(postPage, pageRequest)
+	dto := postPageRequestToDTO(postPage, pageRequest)
 	c.JSON(http.StatusOK, dto)
 }
 
-func pageRequestToDTO(posts []*models.Post, pageRequest *pagorminator.Pagination) PagePosts {
+func postPageRequestToDTO(posts []*models.Post, pageRequest *pagorminator.Pagination) PagePosts {
 	return PagePosts{
 		UnderscoreMetadata: PageMetadata{
 			Page:       pageRequest.GetPage(),

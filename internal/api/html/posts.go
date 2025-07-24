@@ -20,6 +20,7 @@ import (
 	"github.com/manuelarte/gowasp/internal/models"
 	"github.com/manuelarte/gowasp/internal/posts"
 	"github.com/manuelarte/gowasp/internal/posts/postcomments"
+	"github.com/manuelarte/gowasp/internal/sliceutils"
 )
 
 type Posts struct {
@@ -67,7 +68,7 @@ func (h *Posts) ViewPostPage(c *gin.Context) {
 
 		return
 	}
-	pageResponsePostUserComments := models.Transform(pageResponsePostComments, toPostUserCommentExtended)
+	pageResponsePostUserComments := sliceutils.Transform(pageResponsePostComments, toPostUserCommentExtended)
 
 	session := sessions.Default(c)
 	var user models.User

@@ -12,6 +12,7 @@ import (
 
 	"github.com/manuelarte/gowasp/internal/models"
 	"github.com/manuelarte/gowasp/internal/posts/postcomments"
+	"github.com/manuelarte/gowasp/internal/sliceutils"
 )
 
 const defaultPageRequestSize = 10
@@ -39,7 +40,7 @@ func (h *Comments) GetPostComments(c *gin.Context, postID uint, params GetPostCo
 		return
 	}
 
-	pageResponse, err := h.service.GetAllForPostID(c, postID, pageRequest)
+	postComments, err := h.service.GetAllForPostID(c, postID, pageRequest)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
 			Code:    http.StatusBadRequest,
@@ -52,8 +53,7 @@ func (h *Comments) GetPostComments(c *gin.Context, postID uint, params GetPostCo
 	hourTime := time.Hour
 	c.SetCookie("csrf", uuid.New().String(), int(hourTime),
 		fmt.Sprintf("/posts/%d/comments", postID), "localhost", false, true)
-	// TODO(manuelarte): to DTO
-	c.JSON(http.StatusOK, pageResponse)
+	c.JSON(http.StatusOK, postPagePostCommentToDTO(postComments, pageRequest))
 }
 
 func (h *Comments) PostAPostComment(c *gin.Context, postID uint) {
@@ -87,5 +87,31 @@ func postCommentNewToDAO(dto PostCommentNew, postID uint, postedAt time.Time) mo
 		PostID:   postID,
 		UserID:   dto.UserID,
 		Comment:  dto.Comment,
+	}
+}
+
+func postPagePostCommentToDTO(
+	postComments []*models.PostComment,
+	pageRequest *pagorminator.Pagination,
+) PagePostComments {
+	return PagePostComments{
+		UnderscoreMetadata: PageMetadata{
+			Page:       pageRequest.GetPage(),
+			Size:       pageRequest.GetSize(),
+			TotalCount: int(pageRequest.GetTotalElements()),
+			TotalPages: pageRequest.GetTotalPages(),
+		},
+		Data: sliceutils.Transform(postComments, func(x *models.PostComment) PostComment {
+			return PostComment{
+				Comment:   x.Comment,
+				CreatedAt: x.CreatedAt,
+				ID:        x.ID,
+				PostID:    x.PostID,
+				PostedAt:  x.PostedAt,
+				UpdatedAt: x.UpdatedAt,
+				UserID:    x.UserID,
+			}
+		},
+		),
 	}
 }
