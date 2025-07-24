@@ -52,6 +52,7 @@ func (h *Comments) GetPostComments(c *gin.Context, postID uint, params GetPostCo
 	hourTime := time.Hour
 	c.SetCookie("csrf", uuid.New().String(), int(hourTime),
 		fmt.Sprintf("/posts/%d/comments", postID), "localhost", false, true)
+	// TODO(manuelarte): to DTO
 	c.JSON(http.StatusOK, pageResponse)
 }
 

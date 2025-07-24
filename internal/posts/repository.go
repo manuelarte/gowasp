@@ -9,6 +9,7 @@ import (
 	"github.com/manuelarte/gowasp/internal/models"
 )
 
+//nolint:iface // separate repository from service
 type Repository interface {
 	GetAll(ctx context.Context, pageRequest *pagorminator.Pagination) ([]*models.Post, error)
 	GetByID(ctx context.Context, id uint64) (models.Post, error)

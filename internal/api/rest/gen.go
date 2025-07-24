@@ -43,6 +43,36 @@ type PagePostComments struct {
 	Data               []PostComment `json:"data"`
 }
 
+// PagePosts defines model for PagePosts.
+type PagePosts struct {
+	UnderscoreMetadata PageMetadata `json:"_metadata"`
+	Data               []Post       `json:"data"`
+}
+
+// Post defines model for Post.
+type Post struct {
+	// Content The post content
+	Content string `json:"content"`
+
+	// CreatedAt Creating time of the comment
+	CreatedAt time.Time `json:"createdAt"`
+
+	// ID Id of the post
+	ID uint `json:"id"`
+
+	// PostedAt Posting time of the comment
+	PostedAt time.Time `json:"postedAt"`
+
+	// Title Title of the post
+	Title string `json:"title"`
+
+	// UpdatedAt Updating time of the comment
+	UpdatedAt time.Time `json:"updatedAt"`
+
+	// UserID Id of the user
+	UserID uint `json:"userId"`
+}
+
 // PostComment defines model for PostComment.
 type PostComment struct {
 	// Comment The comment value
@@ -97,6 +127,15 @@ type User struct {
 	Username string `json:"username"`
 }
 
+// GetPostsParams defines parameters for GetPosts.
+type GetPostsParams struct {
+	// Page Page to retrieve
+	Page *int `form:"page,omitempty" json:"page,omitempty"`
+
+	// Size Size of the page
+	Size *int `form:"size,omitempty" json:"size,omitempty"`
+}
+
 // GetPostCommentsParams defines parameters for GetPostComments.
 type GetPostCommentsParams struct {
 	// Page Page to retrieve
@@ -114,6 +153,9 @@ type UserSignupJSONRequestBody = User
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// get posts
+	// (GET /api/posts)
+	GetPosts(c *gin.Context, params GetPostsParams)
 	// get comments page
 	// (GET /api/posts/{postId}/comments)
 	GetPostComments(c *gin.Context, postID uint, params GetPostCommentsParams)
@@ -136,6 +178,40 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(c *gin.Context)
+
+// GetPosts operation middleware
+func (siw *ServerInterfaceWrapper) GetPosts(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetPostsParams
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "page", c.Request.URL.Query(), &params.Page)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter page: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "size" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "size", c.Request.URL.Query(), &params.Size)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter size: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetPosts(c, params)
+}
 
 // GetPostComments operation middleware
 func (siw *ServerInterfaceWrapper) GetPostComments(c *gin.Context) {
@@ -257,6 +333,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 		ErrorHandler:       errorHandler,
 	}
 
+	router.GET(options.BaseURL+"/api/posts", wrapper.GetPosts)
 	router.GET(options.BaseURL+"/api/posts/:postId/comments", wrapper.GetPostComments)
 	router.POST(options.BaseURL+"/api/posts/:postId/comments", wrapper.PostAPostComment)
 	router.POST(options.BaseURL+"/api/users/login", wrapper.UserLogin)

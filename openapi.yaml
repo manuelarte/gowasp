@@ -59,6 +59,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/posts:
+    get:
+      operationId: Get posts
+      description: Get posts
+      summary: get posts
+      tags:
+        - get
+        - posts
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Page to retrieve
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 20
+          description: Size of the page
+      responses:
+        "200":
+          description: Post page retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagePosts'
+        "400":
+          description: Error retrieving posts page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/posts/{postId}/comments:
     get:
       operationId: Get post comments
@@ -229,6 +267,61 @@ components:
             $ref: '#/components/schemas/PostComment'
         _metadata:
           $ref: '#/components/schemas/PageMetadata'
+    PagePosts:
+      type: object
+      required:
+        - data
+        - _metadata
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+        _metadata:
+          $ref: '#/components/schemas/PageMetadata'
+    Post:
+      type: object
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - postedAt
+        - userId
+        - title
+        - content
+      properties:
+        id:
+          type: integer
+          description: Id of the post
+          x-go-type: uint
+          x-go-name: ID
+        createdAt:
+          type: string
+          format: date-time
+          description: Creating time of the comment
+        updatedAt:
+          type: string
+          format: date-time
+          description: Updating time of the comment
+        postedAt:
+          type: string
+          format: date-time
+          description: Posting time of the comment
+        userId:
+          type: integer
+          description: Id of the user
+          x-go-type: uint
+          x-go-name: userID
+        title:
+          type: string
+          description: Title of the post
+          minimum: 3
+          maximum: 200
+        content:
+          type: string
+          description: The post content
+          minimum: 3
+          maximum: 2000
     PostCommentExtended:
       allOf:
         - $ref: "#/components/schemas/PostComment"

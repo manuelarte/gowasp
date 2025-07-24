@@ -21,7 +21,6 @@ import (
 	"github.com/manuelarte/gowasp/internal/api/html"
 	"github.com/manuelarte/gowasp/internal/api/rest"
 	"github.com/manuelarte/gowasp/internal/config"
-	"github.com/manuelarte/gowasp/internal/handlers"
 	"github.com/manuelarte/gowasp/internal/posts"
 	"github.com/manuelarte/gowasp/internal/posts/postcomments"
 	"github.com/manuelarte/gowasp/internal/users"
@@ -56,8 +55,6 @@ func main() {
 	postService := posts.NewService(posts.NewRepository(gormDB))
 	postCommentService := postcomments.NewService(postcomments.NewRepository(gormDB))
 
-	postsHandler := handlers.PostsHandler{PostService: postService, PostCommentService: postCommentService}
-
 	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
 	configCors := cors.DefaultConfig()
@@ -78,12 +75,11 @@ func main() {
 	html.RegisterPostsHandlers(r, htmlPosts)
 	html.RegisterDebugHandlers(r)
 
-	r.GET("/posts", postsHandler.GetAll)
-
 	// Rest API
 	restAPI := rest.API{
 		Users:    rest.NewUsers(userService),
 		Comments: rest.NewComments(postCommentService),
+		Posts:    rest.NewPosts(postService),
 	}
 	rest.RegisterHandlers(r, restAPI)
 

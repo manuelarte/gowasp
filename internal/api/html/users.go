@@ -46,13 +46,13 @@ func (h *Users) WelcomePage(c *gin.Context) {
 
 	defaultPageSize := 5
 	postPageRequest, _ := pagorminator.PageRequest(0, defaultPageSize)
-	latestPostsPageResponse, err := h.PostService.GetAll(c, postPageRequest)
+	latestPosts, err := h.PostService.GetAll(c, postPageRequest)
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
 
 		return
 	}
-	c.HTML(http.StatusOK, "users/welcome.tpl", gin.H{"user": user, "latestPosts": latestPostsPageResponse.Data})
+	c.HTML(http.StatusOK, "users/welcome.tpl", gin.H{"user": user, "latestPosts": latestPosts})
 }
 
 func RegisterUsersHandlers(r gin.IRouter, u *Users) {
