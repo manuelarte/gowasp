@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/manuelarte/pagorminator"
 
+	"github.com/manuelarte/gowasp/internal/config"
 	"github.com/manuelarte/gowasp/internal/models"
 	"github.com/manuelarte/gowasp/internal/posts"
 )
@@ -52,4 +53,11 @@ func (h *Users) WelcomePage(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "users/welcome.tpl", gin.H{"user": user, "latestPosts": latestPostsPageResponse.Data})
+}
+
+func RegisterUserHandlers(r gin.IRouter, u *Users) {
+	r.GET("/users/signup", u.SignupPage)
+	r.GET("/users/login", u.LoginPage)
+	r.DELETE("/users/logout", u.Logout)
+	r.GET("/users/welcome", config.AuthMiddleware(), u.WelcomePage)
 }

@@ -77,12 +77,8 @@ func main() {
 	r.LoadHTMLGlob(fmt.Sprintf("%s%s", cfg.WebPath, "/templates/**/*"))
 
 	htmlUsers := html.NewUsers(postService)
+	html.RegisterUserHandlers(r, htmlUsers)
 
-	r.GET("/users/signup", htmlUsers.SignupPage)
-	r.GET("/users/login", htmlUsers.LoginPage)
-	r.DELETE("/users/logout", htmlUsers.Logout)
-
-	r.GET("/users/welcome", config.AuthMiddleware(), htmlUsers.WelcomePage)
 	r.GET("/static/posts", config.AuthMiddleware(), postsHandler.GetStaticPostFileByName)
 	r.GET("/posts", postsHandler.GetAll)
 	r.GET("/posts/:id/view", config.AuthMiddleware(), postsHandler.ViewPostPage)
