@@ -32,7 +32,7 @@ func (h *Users) UserLogin(c *gin.Context) {
 
 		return
 	}
-	userDao := userToDao(userLogin)
+	userDao := userToDAO(userLogin)
 	user, err := h.service.Login(c, userDao.Username, userDao.Password)
 	if err != nil {
 		logrus.Infof("Login attempt failed for User %q", userDao.Username)
@@ -73,7 +73,7 @@ func (h *Users) UserSignup(c *gin.Context) {
 
 		return
 	}
-	user := userToDao(userSignup)
+	user := userToDAO(userSignup)
 	if err := h.service.Create(c, &user); err != nil {
 		logrus.Infof("Signup attempt failed for User %q", user.Username)
 		// TODO(manuelarte): this error can be 400 or 500, depending on what's happening
@@ -102,7 +102,7 @@ func (h *Users) UserSignup(c *gin.Context) {
 	c.JSON(http.StatusCreated, user)
 }
 
-func userToDao(u User) models.User {
+func userToDAO(u User) models.User {
 	return models.User{
 		Username: u.Username,
 		Password: u.Password,

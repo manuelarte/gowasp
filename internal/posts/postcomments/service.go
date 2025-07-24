@@ -10,7 +10,7 @@ import (
 
 type Service interface {
 	Create(ctx context.Context, postComment *models.PostComment) error
-	GetAllForPostID(ctx context.Context, postID uint64,
+	GetAllForPostID(ctx context.Context, postID uint,
 		pagination *pagorminator.Pagination) (models.PageResponse[*models.PostComment], error)
 }
 
@@ -24,7 +24,7 @@ func NewService(repository Repository) Service {
 	return &serviceImpl{Repository: repository}
 }
 
-func (b serviceImpl) GetAllForPostID(ctx context.Context, postID uint64,
+func (b serviceImpl) GetAllForPostID(ctx context.Context, postID uint,
 	pagination *pagorminator.Pagination,
 ) (models.PageResponse[*models.PostComment], error) {
 	postComments, err := b.Repository.GetAllForPostID(ctx, postID, pagination)

@@ -67,6 +67,18 @@ type PostComment struct {
 	UserId int `json:"userId"`
 }
 
+// PostCommentNew defines model for PostCommentNew.
+type PostCommentNew struct {
+	// Comment The comment value
+	Comment string `json:"comment"`
+
+	// PostID Id of the post
+	PostID uint `json:"postId"`
+
+	// UserID Id of the user who wrote the comment
+	UserID uint `json:"userId"`
+}
+
 // User defines model for User.
 type User struct {
 	// CreatedAt Creating time of the user
@@ -105,9 +117,12 @@ type UserSignupJSONRequestBody = User
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// post comments
+	// get comments page
 	// (GET /api/posts/{postId}/comments)
-	GetPostComments(c *gin.Context, postID uint64, params GetPostCommentsParams)
+	GetPostComments(c *gin.Context, postID uint, params GetPostCommentsParams)
+	// post comment
+	// (POST /api/posts/{postId}/comments)
+	PostAPostComment(c *gin.Context, postID uint)
 	// Login
 	// (POST /api/users/login)
 	UserLogin(c *gin.Context)
@@ -131,7 +146,7 @@ func (siw *ServerInterfaceWrapper) GetPostComments(c *gin.Context) {
 	var err error
 
 	// ------------- Path parameter "postId" -------------
-	var postID uint64
+	var postID uint
 
 	err = runtime.BindStyledParameterWithOptions("simple", "postId", c.Param("postId"), &postID, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
@@ -166,6 +181,30 @@ func (siw *ServerInterfaceWrapper) GetPostComments(c *gin.Context) {
 	}
 
 	siw.Handler.GetPostComments(c, postID, params)
+}
+
+// PostAPostComment operation middleware
+func (siw *ServerInterfaceWrapper) PostAPostComment(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "postId" -------------
+	var postID uint
+
+	err = runtime.BindStyledParameterWithOptions("simple", "postId", c.Param("postId"), &postID, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter postId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.PostAPostComment(c, postID)
 }
 
 // UserLogin operation middleware
@@ -222,6 +261,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.GET(options.BaseURL+"/api/posts/:postId/comments", wrapper.GetPostComments)
+	router.POST(options.BaseURL+"/api/posts/:postId/comments", wrapper.PostAPostComment)
 	router.POST(options.BaseURL+"/api/users/login", wrapper.UserLogin)
 	router.POST(options.BaseURL+"/api/users/signup", wrapper.UserSignup)
 }

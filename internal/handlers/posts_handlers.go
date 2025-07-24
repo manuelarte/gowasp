@@ -43,7 +43,7 @@ func (h *PostsHandler) ViewPostPage(c *gin.Context) {
 	}
 	defaultPageSize := 10
 	commentsPageRequest, _ := pagorminator.PageRequest(0, defaultPageSize)
-	pageResponsePostComments, errCmm := h.PostCommentService.GetAllForPostID(c, id, commentsPageRequest)
+	pageResponsePostComments, errCmm := h.PostCommentService.GetAllForPostID(c, uint(id), commentsPageRequest)
 	if errCmm != nil {
 		code, response := ginerr.NewErrorResponse(c, errCmm)
 		c.JSON(code, response)

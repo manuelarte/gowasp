@@ -11,7 +11,7 @@ import (
 
 type Repository interface {
 	Create(ctx context.Context, postComment *models.PostComment) error
-	GetAllForPostID(ctx context.Context, postID uint64,
+	GetAllForPostID(ctx context.Context, postID uint,
 		pageRequest *pagorminator.Pagination) ([]*models.PostComment, error)
 }
 
@@ -25,7 +25,7 @@ func NewRepository(db *gorm.DB) Repository {
 	return &gormRepository{db: db}
 }
 
-func (b gormRepository) GetAllForPostID(ctx context.Context, postID uint64,
+func (b gormRepository) GetAllForPostID(ctx context.Context, postID uint,
 	pageRequest *pagorminator.Pagination,
 ) ([]*models.PostComment, error) {
 	var postComments []*models.PostComment

@@ -57,7 +57,6 @@ func main() {
 	postCommentService := postcomments.NewService(postcomments.NewRepository(gormDB))
 
 	postsHandler := handlers.PostsHandler{PostService: postService, PostCommentService: postCommentService}
-	postCommentsHandler := handlers.PostCommentsHandler{PostCommentService: postCommentService}
 
 	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
@@ -87,10 +86,7 @@ func main() {
 		Users:    rest.NewUsers(userService),
 		Comments: rest.NewComments(postCommentService),
 	}
-
 	rest.RegisterHandlers(r, restAPI)
-
-	r.POST("/api/posts/:id/comments", config.AuthMiddleware(), postCommentsHandler.CreatePostComment)
 
 	err = r.Run()
 	if err != nil {

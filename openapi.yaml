@@ -63,9 +63,9 @@ paths:
     get:
       operationId: Get post comments
       description: Get the post comments
-      summary: post comments
+      summary: get comments page
       tags:
-        - post
+        - get
         - comments
       parameters:
         - in: path
@@ -73,7 +73,7 @@ paths:
           required: true
           schema:
             type: integer
-            x-go-type: uint64
+            x-go-type: uint
           x-go-name: postID
           description: Numeric ID of the post to get its comments
         - in: query
@@ -94,11 +94,46 @@ paths:
           description: Size of the page
       responses:
         "200":
-          description: Post comments retrieved
+          description: Comments page retrieved
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PagePostComments'
+        "400":
+          description: Error retrieving comments page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      operationId: Post a post comment
+      description: Post a post comment
+      summary: post comment
+      tags:
+        - post
+        - comments
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+            x-go-type: uint
+          x-go-name: postID
+          description: Numeric ID of the post to get its comments
+      responses:
+        "200":
+          description: Post comments added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCommentNew'
+        "400":
+          description: Error posting new comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
@@ -229,4 +264,17 @@ components:
         comment:
           type: string
           description: The comment value
-
+    PostCommentNew:
+      type: object
+      required:
+        - userId
+        - comment
+      properties:
+        userId:
+          type: integer
+          description: Id of the user who wrote the comment
+          x-go-type: uint
+          x-go-name: userID
+        comment:
+          type: string
+          description: The comment value
