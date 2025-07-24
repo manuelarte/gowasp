@@ -4,9 +4,12 @@
 package rest
 
 import (
+	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/oapi-codegen/runtime"
 )
 
 // ErrorResponse defines model for ErrorResponse.
@@ -17,6 +20,51 @@ type ErrorResponse struct {
 
 	// Message Description of the error occurred
 	Message string `json:"message"`
+}
+
+// PageMetadata defines model for PageMetadata.
+type PageMetadata struct {
+	// Page The returned page
+	Page int `json:"page"`
+
+	// Size The size of the page
+	Size int `json:"size"`
+
+	// TotalCount The total number of items
+	TotalCount int `json:"totalCount"`
+
+	// TotalPages The total number of pages
+	TotalPages int `json:"totalPages"`
+}
+
+// PagePostComments defines model for PagePostComments.
+type PagePostComments struct {
+	UnderscoreMetadata PageMetadata  `json:"_metadata"`
+	Data               []PostComment `json:"data"`
+}
+
+// PostComment defines model for PostComment.
+type PostComment struct {
+	// Comment The comment value
+	Comment string `json:"comment"`
+
+	// CreatedAt Creating time of the comment
+	CreatedAt time.Time `json:"createdAt"`
+
+	// Id Id of the comment
+	Id int `json:"id"`
+
+	// PostId Id of the post
+	PostId int `json:"postId"`
+
+	// PostedAt Posting time of the comment
+	PostedAt time.Time `json:"postedAt"`
+
+	// UpdatedAt Updating time of the comment
+	UpdatedAt time.Time `json:"updatedAt"`
+
+	// UserId Id of the user who wrote the comment
+	UserId int `json:"userId"`
 }
 
 // User defines model for User.
@@ -40,6 +88,15 @@ type User struct {
 	Username string `json:"username"`
 }
 
+// GetPostCommentsParams defines parameters for GetPostComments.
+type GetPostCommentsParams struct {
+	// Page Page to retrieve
+	Page *int `form:"page,omitempty" json:"page,omitempty"`
+
+	// Size Size of the page
+	Size *int `form:"size,omitempty" json:"size,omitempty"`
+}
+
 // UserLoginJSONRequestBody defines body for UserLogin for application/json ContentType.
 type UserLoginJSONRequestBody = User
 
@@ -48,6 +105,9 @@ type UserSignupJSONRequestBody = User
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// post comments
+	// (GET /api/post/{postId}/comments)
+	GetPostComments(c *gin.Context, postID uint64, params GetPostCommentsParams)
 	// Login
 	// (POST /api/users/login)
 	UserLogin(c *gin.Context)
@@ -64,6 +124,49 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(c *gin.Context)
+
+// GetPostComments operation middleware
+func (siw *ServerInterfaceWrapper) GetPostComments(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "postId" -------------
+	var postID uint64
+
+	err = runtime.BindStyledParameterWithOptions("simple", "postId", c.Param("postId"), &postID, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter postId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetPostCommentsParams
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "page", c.Request.URL.Query(), &params.Page)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter page: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "size" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "size", c.Request.URL.Query(), &params.Size)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter size: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetPostComments(c, postID, params)
+}
 
 // UserLogin operation middleware
 func (siw *ServerInterfaceWrapper) UserLogin(c *gin.Context) {
@@ -118,6 +221,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 		ErrorHandler:       errorHandler,
 	}
 
+	router.GET(options.BaseURL+"/api/post/:postId/comments", wrapper.GetPostComments)
 	router.POST(options.BaseURL+"/api/users/login", wrapper.UserLogin)
 	router.POST(options.BaseURL+"/api/users/signup", wrapper.UserSignup)
 }

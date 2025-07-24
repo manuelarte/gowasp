@@ -59,6 +59,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/post/{postId}/comments:
+    get:
+      operationId: Get post comments
+      description: Get the post comments
+      summary: post comments
+      tags:
+        - post
+        - comments
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+            x-go-type: uint64
+          x-go-name: postID
+          description: Numeric ID of the post to get its comments
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Page to retrieve
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 20
+          description: Size of the page
+      responses:
+        "200":
+          description: Post comments retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagePostComments'
 
 components:
   schemas:
@@ -122,3 +162,71 @@ components:
           minLength: 4
           maxLength: 20
           description: Password of the user
+    PageMetadata:
+      type: object
+      required:
+        - page
+        - size
+        - totalPages
+        - totalCount
+      properties:
+        page:
+          type: integer
+          description: The returned page
+        size:
+          type: integer
+          description: The size of the page
+        totalPages:
+          type: integer
+          description: The total number of pages
+        totalCount:
+          type: integer
+          description: The total number of items
+    PagePostComments:
+      type: object
+      required:
+        - data
+        - _metadata
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostComment'
+        _metadata:
+          $ref: '#/components/schemas/PageMetadata'
+    PostComment:
+      type: object
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - postedAt
+        - postId
+        - userId
+        - comment
+      properties:
+        id:
+          type: integer
+          description: Id of the comment
+        createdAt:
+          type: string
+          format: date-time
+          description: Creating time of the comment
+        updatedAt:
+          type: string
+          format: date-time
+          description: Updating time of the comment
+        postedAt:
+          type: string
+          format: date-time
+          description: Posting time of the comment
+        postId:
+          type: integer
+          description: Id of the post
+        userId:
+          type: integer
+          description: Id of the user who wrote the comment
+        comment:
+          type: string
+          description: The comment value
+

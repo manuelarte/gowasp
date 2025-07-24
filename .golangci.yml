@@ -158,6 +158,8 @@ linters:
       os-temp-dir: true
 
   exclusions:
+    paths:
+      - internal/api/rest/gen\.go
     presets:
       - comments
       - common-false-positives
