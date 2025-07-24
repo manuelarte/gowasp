@@ -21,6 +21,47 @@ func NewUsers(service users.Service) *Users {
 	return &Users{service: service}
 }
 
+func (h *Users) UserLogin(c *gin.Context) {
+	userLogin := User{}
+	if err := c.BindJSON(&userLogin); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Details: err,
+			Message: "Failed to marshal user data",
+		})
+
+		return
+	}
+	userDao := userToDao(userLogin)
+	user, err := h.service.Login(c, userDao.Username, userDao.Password)
+	if err != nil {
+		logrus.Infof("Login attempt failed for User %q", userDao.Username)
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Details: err,
+			Message: "Login attempt failed",
+		})
+
+		return
+	}
+	session := sessions.Default(c)
+	userBytes, _ := json.Marshal(user)
+	session.Set("user", userBytes)
+	err = session.Save()
+	if err != nil {
+		logrus.Infof("Error saving session for User '%s'", user.Username)
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Details: err,
+			Message: "Error saving session",
+		})
+
+		return
+	}
+	c.JSON(http.StatusOK, user)
+	logrus.Infof("User %s logged in", user.Username)
+}
+
 func (h *Users) UserSignup(c *gin.Context) {
 	userSignup := User{}
 	if err := c.BindJSON(&userSignup); err != nil {

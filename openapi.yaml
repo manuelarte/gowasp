@@ -15,6 +15,11 @@ paths:
       tags:
         - user
         - signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
       responses:
         "200":
           description: User successfully signed up.
@@ -24,6 +29,32 @@ paths:
                 $ref: '#/components/schemas/User'
         "400":
           description: Input data is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/users/login:
+    post:
+      operationId: User login
+      description: Allow user to login
+      summary: Login
+      tags:
+        - user
+        - login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: User successfully log in.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Username and password combination not valid
           content:
             application/json:
               schema:

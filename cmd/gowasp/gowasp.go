@@ -58,7 +58,6 @@ func main() {
 	postService := posts.NewService(posts.NewRepository(gormDB))
 	postCommentService := postcomments.NewService(postcomments.NewRepository(gormDB))
 
-	usersHandler := handlers.UsersHandler{UserService: userService, PostService: postService}
 	postsHandler := handlers.PostsHandler{PostService: postService, PostCommentService: postCommentService}
 	postCommentHandler := handlers.PostCommentsHandler{PostCommentService: postCommentService}
 
@@ -89,7 +88,6 @@ func main() {
 	restUsers := rest.NewUsers(userService)
 	rest.RegisterHandlers(r, restUsers)
 
-	r.POST("/api/users/login", usersHandler.Login)
 	r.GET("/api/posts/:id/comments",
 		config.PaginationMiddleware(defaultPageRequestSize),
 		postCommentHandler.GetPostComments)

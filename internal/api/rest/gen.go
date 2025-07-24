@@ -40,8 +40,17 @@ type User struct {
 	Username string `json:"username"`
 }
 
+// UserLoginJSONRequestBody defines body for UserLogin for application/json ContentType.
+type UserLoginJSONRequestBody = User
+
+// UserSignupJSONRequestBody defines body for UserSignup for application/json ContentType.
+type UserSignupJSONRequestBody = User
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Login
+	// (POST /api/users/login)
+	UserLogin(c *gin.Context)
 	// Signup
 	// (POST /api/users/signup)
 	UserSignup(c *gin.Context)
@@ -55,6 +64,19 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(c *gin.Context)
+
+// UserLogin operation middleware
+func (siw *ServerInterfaceWrapper) UserLogin(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.UserLogin(c)
+}
 
 // UserSignup operation middleware
 func (siw *ServerInterfaceWrapper) UserSignup(c *gin.Context) {
@@ -96,5 +118,6 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 		ErrorHandler:       errorHandler,
 	}
 
+	router.POST(options.BaseURL+"/api/users/login", wrapper.UserLogin)
 	router.POST(options.BaseURL+"/api/users/signup", wrapper.UserSignup)
 }
