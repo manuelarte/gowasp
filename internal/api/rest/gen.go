@@ -106,7 +106,7 @@ type UserSignupJSONRequestBody = User
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// post comments
-	// (GET /api/post/{postId}/comments)
+	// (GET /api/posts/{postId}/comments)
 	GetPostComments(c *gin.Context, postID uint64, params GetPostCommentsParams)
 	// Login
 	// (POST /api/users/login)
@@ -221,7 +221,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 		ErrorHandler:       errorHandler,
 	}
 
-	router.GET(options.BaseURL+"/api/post/:postId/comments", wrapper.GetPostComments)
+	router.GET(options.BaseURL+"/api/posts/:postId/comments", wrapper.GetPostComments)
 	router.POST(options.BaseURL+"/api/users/login", wrapper.UserLogin)
 	router.POST(options.BaseURL+"/api/users/signup", wrapper.UserSignup)
 }

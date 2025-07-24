@@ -27,8 +27,6 @@ import (
 	"github.com/manuelarte/gowasp/internal/users"
 )
 
-const defaultPageRequestSize = 10
-
 //go:generate go tool oapi-codegen -config ../../cfg.yaml ../../openapi.yaml
 func main() {
 	logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
@@ -92,9 +90,6 @@ func main() {
 
 	rest.RegisterHandlers(r, restAPI)
 
-	r.GET("/api/posts/:id/comments",
-		config.PaginationMiddleware(defaultPageRequestSize),
-		postCommentsHandler.GetPostComments)
 	r.POST("/api/posts/:id/comments", config.AuthMiddleware(), postCommentsHandler.CreatePostComment)
 
 	err = r.Run()

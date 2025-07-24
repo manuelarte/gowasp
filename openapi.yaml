@@ -59,7 +59,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /api/post/{postId}/comments:
+  /api/posts/{postId}/comments:
     get:
       operationId: Get post comments
       description: Get the post comments
