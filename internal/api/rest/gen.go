@@ -51,11 +51,11 @@ type PostComment struct {
 	// CreatedAt Creating time of the comment
 	CreatedAt time.Time `json:"createdAt"`
 
-	// Id Id of the comment
-	Id int `json:"id"`
+	// ID Id of the comment
+	ID uint `json:"id"`
 
-	// PostId Id of the post
-	PostId int `json:"postId"`
+	// PostID Id of the post
+	PostID uint `json:"postId"`
 
 	// PostedAt Posting time of the comment
 	PostedAt time.Time `json:"postedAt"`
@@ -63,17 +63,14 @@ type PostComment struct {
 	// UpdatedAt Updating time of the comment
 	UpdatedAt time.Time `json:"updatedAt"`
 
-	// UserId Id of the user who wrote the comment
-	UserId int `json:"userId"`
+	// UserID Id of the user who wrote the comment
+	UserID uint `json:"userId"`
 }
 
 // PostCommentNew defines model for PostCommentNew.
 type PostCommentNew struct {
 	// Comment The comment value
 	Comment string `json:"comment"`
-
-	// PostID Id of the post
-	PostID uint `json:"postId"`
 
 	// UserID Id of the user who wrote the comment
 	UserID uint `json:"userId"`

@@ -229,6 +229,16 @@ components:
             $ref: '#/components/schemas/PostComment'
         _metadata:
           $ref: '#/components/schemas/PageMetadata'
+    PostCommentExtended:
+      allOf:
+        - $ref: "#/components/schemas/PostComment"
+        - type: object
+          required:
+            - username
+          properties:
+            username:
+              type: string
+
     PostComment:
       type: object
       required:
@@ -243,6 +253,8 @@ components:
         id:
           type: integer
           description: Id of the comment
+          x-go-type: uint
+          x-go-name: ID
         createdAt:
           type: string
           format: date-time
@@ -258,9 +270,13 @@ components:
         postId:
           type: integer
           description: Id of the post
+          x-go-type: uint
+          x-go-name: postID
         userId:
           type: integer
           description: Id of the user who wrote the comment
+          x-go-type: uint
+          x-go-name: userID
         comment:
           type: string
           description: The comment value

@@ -73,13 +73,12 @@ func main() {
 	r.LoadHTMLGlob(fmt.Sprintf("%s%s", cfg.WebPath, "/templates/**/*"))
 
 	htmlUsers := html.NewUsers(postService)
-	html.RegisterUserHandlers(r, htmlUsers)
+	htmlPosts := html.NewPosts(postService, postCommentService)
+	html.RegisterUsersHandlers(r, htmlUsers)
+	html.RegisterPostsHandlers(r, htmlPosts)
+	html.RegisterDebugHandlers(r)
 
-	r.GET("/static/posts", config.AuthMiddleware(), postsHandler.GetStaticPostFileByName)
 	r.GET("/posts", postsHandler.GetAll)
-	r.GET("/posts/:id/view", config.AuthMiddleware(), postsHandler.ViewPostPage)
-
-	r.GET("/debug", handlers.GetTemplateByName)
 
 	// Rest API
 	restAPI := rest.API{

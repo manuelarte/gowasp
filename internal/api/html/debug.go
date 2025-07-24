@@ -1,4 +1,4 @@
-package handlers
+package html
 
 import (
 	"net/http"
@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func GetTemplateByName(c *gin.Context) {
+func getTemplateByName(c *gin.Context) {
 	path := c.Query("path")
 	body := make(map[string]any)
 	if err := c.ShouldBind(&body); err != nil {
@@ -18,4 +18,8 @@ func GetTemplateByName(c *gin.Context) {
 	body["csrf"] = "csrf_value"
 	body["comment"] = nil
 	c.HTML(http.StatusOK, path, body)
+}
+
+func RegisterDebugHandlers(r gin.IRouter) {
+	r.GET("/debug", getTemplateByName)
 }
