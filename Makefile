@@ -5,6 +5,11 @@ help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z\._-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 .PHONY: help
 
+g: generate
+generate:
+	go generate ./...
+.PHONY: g generate
+
 tidy: ## Run go mod tidy in all directories
 	go mod tidy
 .PHONY: tidy

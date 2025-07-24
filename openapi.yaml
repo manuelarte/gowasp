@@ -1,0 +1,77 @@
+openapi: 3.0.1
+info:
+  contact:
+    name: manuelarte <https://github.com/manuelarte>
+  description: GOWasp, a vulnerable application to practice ethical hacking.
+  title: GOwasp
+  version: '0.0.4'
+
+paths:
+  /api/users/signup:
+    post:
+      operationId: User Signup
+      description: Allow user to signup
+      summary: Signup
+      tags:
+        - user
+        - signup
+      responses:
+        "200":
+          description: User successfully signed up.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Input data is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+        - details
+      properties:
+        code:
+          type: integer
+          description: The resulting http code
+        message:
+          type: string
+          description: Description of the error occurred
+        details: {}
+    User:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        id:
+          type: integer
+          description: Id of the user
+        createdAt:
+          type: string
+          format: date-time
+          description: Creating time of the user
+        updatedAt:
+          type: string
+          format: date-time
+          description: Updating time of the user
+        username:
+          type: string
+          minLength: 3
+          maxLength: 20
+          description: Username of the user
+        password:
+          type: string
+          minLength: 4
+          maxLength: 20
+          description: Password of the user
+        isAdmin:
+          type: boolean
+          description: Whether the user is admin or not

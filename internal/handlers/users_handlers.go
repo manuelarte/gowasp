@@ -8,7 +8,6 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/ing-bank/ginerr/v3"
-	"github.com/manuelarte/pagorminator"
 	"github.com/sirupsen/logrus"
 
 	"github.com/manuelarte/gowasp/internal/models"
@@ -19,64 +18,6 @@ import (
 type UsersHandler struct {
 	UserService users.Service
 	PostService posts.Service
-}
-
-func (h *UsersHandler) SignupPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "users/signup.tpl", gin.H{})
-}
-
-func (h *UsersHandler) LoginPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "users/login.tpl", gin.H{})
-}
-
-func (h *UsersHandler) WelcomePage(c *gin.Context) {
-	session := sessions.Default(c)
-	var user models.User
-	sessionUserByte, ok := session.Get("user").([]byte)
-	if !ok {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
-	}
-	_ = json.Unmarshal(sessionUserByte, &user)
-
-	defaultPageSize := 5
-	postPageRequest, _ := pagorminator.PageRequest(0, defaultPageSize)
-	latestPostsPageResponse, err := h.PostService.GetAll(c, postPageRequest)
-	if err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
-
-		return
-	}
-	c.HTML(http.StatusOK, "users/welcome.tpl", gin.H{"user": user, "latestPosts": latestPostsPageResponse.Data})
-}
-
-func (h *UsersHandler) Signup(c *gin.Context) {
-	userSignup := models.User{}
-	if err := c.BindJSON(&userSignup); err != nil {
-		code, response := ginerr.NewErrorResponse(c, err)
-		c.JSON(code, response)
-
-		return
-	}
-	user := userSignup
-	if err := h.UserService.Create(c, &user); err != nil {
-		logrus.Infof("Signup attempt failed for User '%s'", user.Username)
-		code, response := ginerr.NewErrorResponse(c, err)
-		c.JSON(code, response)
-
-		return
-	}
-	session := sessions.Default(c)
-	userBytes, _ := json.Marshal(user)
-	session.Set("user", userBytes)
-	err := session.Save()
-	if err != nil {
-		code, response := ginerr.NewErrorResponse(c, err)
-		c.JSON(code, response)
-
-		return
-	}
-	logrus.Infof("Signup for User '%s'", user.Username)
-	c.JSON(http.StatusCreated, user)
 }
 
 func (h *UsersHandler) Login(c *gin.Context) {
@@ -117,8 +58,8 @@ func (h *UsersHandler) Logout(c *gin.Context) {
 }
 
 type UserSignup struct {
-	Username string `binding:"required,max=18" json:"username" `
-	Password string `binding:"required,max=18" json:"password"`
+	Username string `binding:"required,max=20" json:"username" `
+	Password string `binding:"required,max=20" json:"password"`
 }
 
 //nolint:unused // to be used later

@@ -18,6 +18,8 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
+	"github.com/manuelarte/gowasp/internal/api/html"
+	"github.com/manuelarte/gowasp/internal/api/rest"
 	"github.com/manuelarte/gowasp/internal/config"
 	"github.com/manuelarte/gowasp/internal/handlers"
 	"github.com/manuelarte/gowasp/internal/posts"
@@ -25,6 +27,9 @@ import (
 	"github.com/manuelarte/gowasp/internal/users"
 )
 
+const defaultPageRequestSize = 10
+
+//go:generate go tool oapi-codegen -config ../../cfg.yaml ../../openapi.yaml
 func main() {
 	logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
@@ -71,20 +76,27 @@ func main() {
 	r.Static("/css", fmt.Sprintf("%s/css", cfg.WebPath))
 	r.LoadHTMLGlob(fmt.Sprintf("%s%s", cfg.WebPath, "/templates/**/*"))
 
-	r.GET("/users/signup", usersHandler.SignupPage)
-	r.GET("/users/login", usersHandler.LoginPage)
+	htmlUsers := html.NewUsers(postService)
+
+	r.GET("/users/signup", htmlUsers.SignupPage)
+	r.GET("/users/login", htmlUsers.LoginPage)
 	r.DELETE("/users/logout", usersHandler.Logout)
 
-	r.GET("/users/welcome", config.AuthMiddleware(), usersHandler.WelcomePage)
+	r.GET("/users/welcome", config.AuthMiddleware(), htmlUsers.WelcomePage)
 	r.GET("/static/posts", config.AuthMiddleware(), postsHandler.GetStaticPostFileByName)
 	r.GET("/posts", postsHandler.GetAll)
 	r.GET("/posts/:id/view", config.AuthMiddleware(), postsHandler.ViewPostPage)
 
 	r.GET("/debug", handlers.GetTemplateByName)
 
-	r.POST("/api/users/signup", usersHandler.Signup)
+	// Rest API
+	restUsers := rest.NewUsers(userService)
+	rest.RegisterHandlers(r, restUsers)
+
 	r.POST("/api/users/login", usersHandler.Login)
-	r.GET("/api/posts/:id/comments", postCommentHandler.GetPostComments)
+	r.GET("/api/posts/:id/comments",
+		config.PaginationMiddleware(defaultPageRequestSize),
+		postCommentHandler.GetPostComments)
 	r.POST("/api/posts/:id/comments", config.AuthMiddleware(), postCommentHandler.CreatePostComment)
 
 	err = r.Run()

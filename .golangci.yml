@@ -142,6 +142,9 @@ linters:
         - .*
     revive:
       rules:
+        - name: enforce-slice-style
+          arguments:
+          - "make"
         - name: filename-format
           arguments:
             - ^[a-z][_a-z0-9]*.go$

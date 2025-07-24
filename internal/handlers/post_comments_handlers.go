@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -27,11 +28,14 @@ func (h *PostCommentsHandler) GetPostComments(c *gin.Context) {
 
 		return
 	}
-	pageString := c.DefaultQuery("page", "0")
-	page, _ := strconv.Atoi(pageString)
-	sizeString := c.DefaultQuery("size", "10")
-	size, _ := strconv.Atoi(sizeString)
-	pageRequest, _ := pagorminator.PageRequest(page, size)
+	pageRequest, err := getPageRequest(c)
+	if err != nil {
+		code, response := ginerr.NewErrorResponse(c, err)
+		c.JSON(code, response)
+
+		return
+	}
+
 	pageResponse, err := h.PostCommentService.GetAllForPostID(c, id, pageRequest)
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
@@ -47,14 +51,13 @@ func (h *PostCommentsHandler) GetPostComments(c *gin.Context) {
 
 func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
 	newPostComment := NewPostComment{}
-	newPostComment.PostedAt = time.Now()
 	if err := c.BindJSON(&newPostComment); err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
 		c.JSON(code, response)
 
 		return
 	}
-	postComment := newPostComment.toPostComment()
+	postComment := newPostComment.toPostComment(time.Now())
 	err := h.PostCommentService.Create(c, &postComment)
 	if err != nil {
 		code, response := ginerr.NewErrorResponse(c, err)
@@ -65,21 +68,30 @@ func (h *PostCommentsHandler) CreatePostComment(c *gin.Context) {
 	c.JSON(http.StatusOK, postComment)
 }
 
-type NewPostComment struct {
-	PostedAt time.Time `binding:"required" json:"postedAt"`
-	PostID   uint      `binding:"required" json:"postId" `
-	UserID   uint      `binding:"required" json:"userId"`
-	Comment  string    `binding:"required,min=1,max=1000" json:"comment"`
+func getPageRequest(c *gin.Context) (*pagorminator.Pagination, error) {
+	pageRequestI, ok := c.Get("pageRequest")
+	if !ok {
+		return nil, errors.New("missing 'pageRequest' field")
+	}
+	pageRequest, ok := pageRequestI.(*pagorminator.Pagination)
+	if !ok {
+		return nil, errors.New("invalid 'pageRequest' field")
+	}
+
+	return pageRequest, nil
 }
 
-func (b *NewPostComment) toPostComment() models.PostComment {
+type NewPostComment struct {
+	PostID  uint   `binding:"required" json:"postId" `
+	UserID  uint   `binding:"required" json:"userId"`
+	Comment string `binding:"required,min=1,max=1000" json:"comment"`
+}
+
+func (dto *NewPostComment) toPostComment(postedAt time.Time) models.PostComment {
 	return models.PostComment{
-		ID:        0,
-		CreatedAt: time.Time{},
-		UpdatedAt: time.Time{},
-		PostedAt:  b.PostedAt,
-		PostID:    b.PostID,
-		UserID:    b.UserID,
-		Comment:   b.Comment,
+		PostedAt: postedAt,
+		PostID:   dto.PostID,
+		UserID:   dto.UserID,
+		Comment:  dto.Comment,
 	}
 }
