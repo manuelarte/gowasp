@@ -18,7 +18,6 @@
                 // new
                 console.log(user)
                 const newUserComment = {
-                    postId: postId,
                     userId: user.id,
                     comment: comment,
                     csrf: csrf

@@ -8,8 +8,9 @@ import (
 	"github.com/manuelarte/gowasp/internal/models"
 )
 
+//nolint:iface // separate repository from service
 type Service interface {
-	GetAll(ctx context.Context, pagination *pagorminator.Pagination) (models.PageResponse[*models.Post], error)
+	GetAll(ctx context.Context, pagination *pagorminator.Pagination) ([]*models.Post, error)
 	GetByID(ctx context.Context, id uint64) (models.Post, error)
 }
 
@@ -25,21 +26,13 @@ func NewService(repository Repository) Service {
 
 func (b serviceImpl) GetAll(ctx context.Context,
 	pagination *pagorminator.Pagination,
-) (models.PageResponse[*models.Post], error) {
+) ([]*models.Post, error) {
 	posts, err := b.repository.GetAll(ctx, pagination)
 	if err != nil {
-		return models.PageResponse[*models.Post]{}, err
+		return nil, err
 	}
 
-	return models.PageResponse[*models.Post]{
-		Data: posts,
-		Metadata: models.PageMetadata{
-			Page:       pagination.GetPage(),
-			Size:       pagination.GetSize(),
-			TotalCount: pagination.GetTotalElements(),
-			TotalPages: pagination.GetTotalPages(),
-		},
-	}, nil
+	return posts, nil
 }
 
 func (b serviceImpl) GetByID(ctx context.Context, id uint64) (models.Post, error) {

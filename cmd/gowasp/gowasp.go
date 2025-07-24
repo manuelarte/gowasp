@@ -18,13 +18,15 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
+	"github.com/manuelarte/gowasp/internal/api/html"
+	"github.com/manuelarte/gowasp/internal/api/rest"
 	"github.com/manuelarte/gowasp/internal/config"
-	"github.com/manuelarte/gowasp/internal/handlers"
 	"github.com/manuelarte/gowasp/internal/posts"
 	"github.com/manuelarte/gowasp/internal/posts/postcomments"
 	"github.com/manuelarte/gowasp/internal/users"
 )
 
+//go:generate go tool oapi-codegen -config ../../cfg.yaml ../../openapi.yaml
 func main() {
 	logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
@@ -53,10 +55,6 @@ func main() {
 	postService := posts.NewService(posts.NewRepository(gormDB))
 	postCommentService := postcomments.NewService(postcomments.NewRepository(gormDB))
 
-	usersHandler := handlers.UsersHandler{UserService: userService, PostService: postService}
-	postsHandler := handlers.PostsHandler{PostService: postService, PostCommentService: postCommentService}
-	postCommentHandler := handlers.PostCommentsHandler{PostCommentService: postCommentService}
-
 	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
 	configCors := cors.DefaultConfig()
@@ -71,21 +69,19 @@ func main() {
 	r.Static("/css", fmt.Sprintf("%s/css", cfg.WebPath))
 	r.LoadHTMLGlob(fmt.Sprintf("%s%s", cfg.WebPath, "/templates/**/*"))
 
-	r.GET("/users/signup", usersHandler.SignupPage)
-	r.GET("/users/login", usersHandler.LoginPage)
-	r.DELETE("/users/logout", usersHandler.Logout)
+	htmlUsers := html.NewUsers(postService)
+	htmlPosts := html.NewPosts(postService, postCommentService)
+	html.RegisterUsersHandlers(r, htmlUsers)
+	html.RegisterPostsHandlers(r, htmlPosts)
+	html.RegisterDebugHandlers(r)
 
-	r.GET("/users/welcome", config.AuthMiddleware(), usersHandler.WelcomePage)
-	r.GET("/static/posts", config.AuthMiddleware(), postsHandler.GetStaticPostFileByName)
-	r.GET("/posts", postsHandler.GetAll)
-	r.GET("/posts/:id/view", config.AuthMiddleware(), postsHandler.ViewPostPage)
-
-	r.GET("/debug", handlers.GetTemplateByName)
-
-	r.POST("/api/users/signup", usersHandler.Signup)
-	r.POST("/api/users/login", usersHandler.Login)
-	r.GET("/api/posts/:id/comments", postCommentHandler.GetPostComments)
-	r.POST("/api/posts/:id/comments", config.AuthMiddleware(), postCommentHandler.CreatePostComment)
+	// Rest API
+	restAPI := rest.API{
+		Users:    rest.NewUsers(userService),
+		Comments: rest.NewComments(postCommentService),
+		Posts:    rest.NewPosts(postService),
+	}
+	rest.RegisterHandlers(r, restAPI)
 
 	err = r.Run()
 	if err != nil {

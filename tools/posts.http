@@ -12,5 +12,5 @@ GET http://localhost:8080/static/posts?name=...
 
 ### Get all posts
 
-GET http://localhost:8080/posts
+GET http://localhost:8080/api/posts
 Content-Type: application/json

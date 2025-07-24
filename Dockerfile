@@ -1,4 +1,4 @@
-ARG VERSION=1.23.10
+ARG VERSION=1.24.0
 
 # Build Stage
 FROM golang:${VERSION}-alpine AS builder

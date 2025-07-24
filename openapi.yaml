@@ -1,0 +1,390 @@
+---
+openapi: 3.0.1
+info:
+  contact:
+    name: manuelarte <https://github.com/manuelarte>
+  description: GOWasp, a vulnerable application to practice ethical hacking.
+  title: GOwasp
+  version: '0.0.4'
+
+paths:
+  /api/users/signup:
+    post:
+      operationId: User Signup
+      description: Allow user to signup
+      summary: Signup
+      tags:
+        - user
+        - signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: User successfully signed up.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Input data is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/users/login:
+    post:
+      operationId: User login
+      description: Allow user to login
+      summary: Login
+      tags:
+        - user
+        - login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: User successfully log in.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Username and password combination not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/posts:
+    get:
+      operationId: Get posts
+      description: Get posts
+      summary: get posts
+      tags:
+        - get
+        - posts
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Page to retrieve
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 20
+          description: Size of the page
+      responses:
+        "200":
+          description: Post page retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagePosts'
+        "400":
+          description: Error retrieving posts page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/posts/{postId}/comments:
+    get:
+      operationId: Get post comments
+      description: Get the post comments
+      summary: get comments page
+      tags:
+        - get
+        - comments
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+            x-go-type: uint
+          x-go-name: postID
+          description: Numeric ID of the post to get its comments
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Page to retrieve
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 20
+          description: Size of the page
+      responses:
+        "200":
+          description: Comments page retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagePostComments'
+        "400":
+          description: Error retrieving comments page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      operationId: Post a post comment
+      description: Post a post comment
+      summary: post comment
+      tags:
+        - post
+        - comments
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+            x-go-type: uint
+          x-go-name: postID
+          description: Numeric ID of the post to get its comments
+      responses:
+        "200":
+          description: Post comments added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCommentNew'
+        "400":
+          description: Error posting new comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+        - details
+      properties:
+        code:
+          type: integer
+          description: The resulting http code
+        message:
+          type: string
+          description: Description of the error occurred
+        details: {}
+    User:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        id:
+          type: integer
+          description: Id of the user
+        createdAt:
+          type: string
+          format: date-time
+          description: Creating time of the user
+        updatedAt:
+          type: string
+          format: date-time
+          description: Updating time of the user
+        username:
+          type: string
+          minLength: 3
+          maxLength: 20
+          description: Username of the user
+        password:
+          type: string
+          minLength: 4
+          maxLength: 20
+          description: Password of the user
+        isAdmin:
+          type: boolean
+          description: Whether the user is admin or not
+    UserSignup:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 20
+          description: Username of the user
+        password:
+          type: string
+          minLength: 4
+          maxLength: 20
+          description: Password of the user
+    PageMetadata:
+      type: object
+      required:
+        - page
+        - size
+        - totalPages
+        - totalCount
+      properties:
+        page:
+          type: integer
+          description: The returned page
+        size:
+          type: integer
+          description: The size of the page
+        totalPages:
+          type: integer
+          description: The total number of pages
+        totalCount:
+          type: integer
+          description: The total number of items
+    PagePostComments:
+      type: object
+      required:
+        - data
+        - _metadata
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostComment'
+        _metadata:
+          $ref: '#/components/schemas/PageMetadata'
+    PagePosts:
+      type: object
+      required:
+        - data
+        - _metadata
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+        _metadata:
+          $ref: '#/components/schemas/PageMetadata'
+    Post:
+      type: object
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - postedAt
+        - userId
+        - title
+        - content
+      properties:
+        id:
+          type: integer
+          description: Id of the post
+          x-go-type: uint
+          x-go-name: ID
+        createdAt:
+          type: string
+          format: date-time
+          description: Creating time of the comment
+        updatedAt:
+          type: string
+          format: date-time
+          description: Updating time of the comment
+        postedAt:
+          type: string
+          format: date-time
+          description: Posting time of the comment
+        userId:
+          type: integer
+          description: Id of the user
+          x-go-type: uint
+          x-go-name: userID
+        title:
+          type: string
+          description: Title of the post
+          minimum: 3
+          maximum: 200
+        content:
+          type: string
+          description: The post content
+          minimum: 3
+          maximum: 2000
+    PostCommentExtended:
+      allOf:
+        - $ref: "#/components/schemas/PostComment"
+        - type: object
+          required:
+            - username
+          properties:
+            username:
+              type: string
+
+    PostComment:
+      type: object
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - postedAt
+        - postId
+        - userId
+        - comment
+      properties:
+        id:
+          type: integer
+          description: Id of the comment
+          x-go-type: uint
+          x-go-name: ID
+        createdAt:
+          type: string
+          format: date-time
+          description: Creating time of the comment
+        updatedAt:
+          type: string
+          format: date-time
+          description: Updating time of the comment
+        postedAt:
+          type: string
+          format: date-time
+          description: Posting time of the comment
+        postId:
+          type: integer
+          description: Id of the post
+          x-go-type: uint
+          x-go-name: postID
+        userId:
+          type: integer
+          description: Id of the user who wrote the comment
+          x-go-type: uint
+          x-go-name: userID
+        comment:
+          type: string
+          description: The comment value
+    PostCommentNew:
+      type: object
+      required:
+        - userId
+        - comment
+      properties:
+        userId:
+          type: integer
+          description: Id of the user who wrote the comment
+          x-go-type: uint
+          x-go-name: userID
+        comment:
+          type: string
+          description: The comment value
