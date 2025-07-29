@@ -137,14 +137,14 @@ Once you're logged in, you are redirected to the [Welcome][welcome] page. There 
 
 The vulnerabilities that we are going to check in this scenario:
 
-+ [SSRF](https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29/)
++ [SSRF](#-ssrf---server-side-request-forgery)
 
 To follow along, check [posts.http](./tools/posts.http)
 
-#### 📥 SSRF - Server Side Request Forgery
+#### 📥 [SSRF - Server Side Request Forgery](https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29/)
 
 If you open the network tab `developer console` in your web browser (by default F12), and **refresh the welcome page**, the program makes a call to [/posts?name=intro.txt](http://localhost:8080/posts?name=intro.txt).
-Let's check how the `GetStaticPostFileByName` method is implemented in [posts_handler](./internal/handlers/posts_handlers.go).
+Let's check how the `GetStaticPostFileByName` method is implemented in [posts controller](./internal/api/rest/posts.go).
 We can see that we are using [`os.Open`](https://pkg.go.dev/os#Open):
 
 ```go
@@ -184,7 +184,7 @@ To fix this vulnerability, consider these approaches:
 
 For a detailed explanation of this vulnerability, see the [Cross Site Request Forgery Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html).
 
-The add comments endpoint lacks protection against CSRF attacks. Verify this by following these steps:
+The post-comments endpoint lacks protection against CSRF attacks. Verify this by following these steps:
 
 + Log in to the application using your browser.
 + Open [price-win.html](/tools/price-win.html) in the same browser.
