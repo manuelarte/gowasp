@@ -29,10 +29,10 @@ COPY --from=builder /app/web /app/web
 # Copy the binary from builder stage
 COPY --from=builder /gowasp /usr/local/bin/gowasp
 
-EXPOSE 8080
+EXPOSE 8083
 
 ENV MIGRATION_SOURCE_URL="file:///app/migrations" \
-    WEB_PATH="/app/web"
+  WEB_PATH="/app/web"
 
 # Run
 ENTRYPOINT ["/usr/local/bin/gowasp"]

@@ -58,7 +58,7 @@ func main() {
 	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
 	configCors := cors.DefaultConfig()
-	configCors.AllowOrigins = []string{"http://localhost:8080", "http://localhost:63342"}
+	configCors.AllowOrigins = []string{"http://localhost:8083", "http://localhost:63342"}
 	configCors.AllowCredentials = true
 	r.Use(cors.New(configCors))
 	store := cookie.NewStore([]byte("secret"))
@@ -69,21 +69,25 @@ func main() {
 	r.Static("/css", fmt.Sprintf("%s/css", cfg.WebPath))
 	r.LoadHTMLGlob(fmt.Sprintf("%s%s", cfg.WebPath, "/templates/**/*"))
 
-	htmlUsers := html.NewUsers(postService)
-	htmlPosts := html.NewPosts(postService, postCommentService)
-	html.RegisterUsersHandlers(r, htmlUsers)
-	html.RegisterPostsHandlers(r, htmlPosts)
-	html.RegisterDebugHandlers(r)
-
-	// Rest API
-	restAPI := rest.API{
-		Users:    rest.NewUsers(userService),
-		Comments: rest.NewComments(postCommentService),
-		Posts:    rest.NewPosts(postService),
+	{
+		htmlUsers := html.NewUsers(postService)
+		htmlPosts := html.NewPosts(postService, postCommentService)
+		html.RegisterUsersHandlers(r, htmlUsers)
+		html.RegisterPostsHandlers(r, htmlPosts)
+		html.RegisterDebugHandlers(r)
 	}
-	rest.RegisterHandlers(r, restAPI)
 
-	err = r.Run()
+	{
+		// Rest API
+		restAPI := rest.API{
+			Users:    rest.NewUsers(userService),
+			Comments: rest.NewComments(postCommentService),
+			Posts:    rest.NewPosts(postService),
+		}
+		rest.RegisterHandlers(r, restAPI)
+	}
+
+	err = r.Run(cfg.Address)
 	if err != nil {
 		logger.Error("error running the application", "error", err)
 

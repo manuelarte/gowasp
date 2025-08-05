@@ -33,4 +33,4 @@ format-code: tidy ## Format go code and run the fixer, alias: fmt
 dr: docker-run
 docker-run:
 	docker build --tag github.com/manuelarte/gowasp .
-	docker run --publish 8080:8080 github.com/manuelarte/gowasp
+	docker run --publish 8083:8083 github.com/manuelarte/gowasp
