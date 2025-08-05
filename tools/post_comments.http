@@ -1,13 +1,13 @@
 ### Get one Post
-GET http://localhost:8080/posts/1/view
+GET {{baseUrl}}/posts/1/view
 Content-Type: text/html
 
 ### Get Post comments
-GET http://localhost:8080/api/posts/1/comments
+GET {{baseUrl}}/api/posts/1/comments
 Content-Type: application/json
 
 ### Scenario 1. Create Post Comment
-POST http://localhost:8080/api/posts/1/comments
+POST {{baseUrl}}/api/posts/1/comments
 Content-Type: application/json
 
 {
@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ### Scenario 1. Create Post comment for another user (e.g. admin user userId=1)
-POST http://localhost:8080/api/posts/1/comments
+POST {{baseUrl}}/api/posts/1/comments
 Content-Type: application/json
 
 {
@@ -27,7 +27,7 @@ Content-Type: application/json
 }
 
 ### Scenario 2. HTML injection
-POST http://localhost:8080/api/posts/1/comments
+POST {{baseUrl}}/api/posts/1/comments
 Content-Type: application/json
 
 {
