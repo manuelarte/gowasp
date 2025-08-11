@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
+	"github.com/manuelarte/gowasp/internal/api/dtos"
 	"github.com/manuelarte/gowasp/internal/models"
 	"github.com/manuelarte/gowasp/internal/users"
 )
@@ -44,7 +45,12 @@ func (h *Users) UserLogin(c *gin.Context) {
 		return
 	}
 	session := sessions.Default(c)
-	userBytes, _ := json.Marshal(user)
+	userBytes, _ := json.Marshal(dtos.UserSession{
+		ID:       user.ID,
+		Username: user.Username,
+		Password: user.Password,
+		IsAdmin:  user.IsAdmin,
+	})
 	session.Set("user", userBytes)
 	err = session.Save()
 	if err != nil {
@@ -85,7 +91,12 @@ func (h *Users) UserSignup(c *gin.Context) {
 		return
 	}
 	session := sessions.Default(c)
-	userBytes, _ := json.Marshal(user)
+	userBytes, _ := json.Marshal(dtos.UserSession{
+		ID:       user.ID,
+		Username: user.Username,
+		Password: user.Password,
+		IsAdmin:  user.IsAdmin,
+	})
 	session.Set("user", userBytes)
 	err := session.Save()
 	if err != nil {
@@ -100,6 +111,7 @@ func (h *Users) UserSignup(c *gin.Context) {
 	logrus.Infof("Signup for User %q completed", user.Username)
 	c.JSON(http.StatusCreated, User{
 		CreatedAt: user.CreatedAt,
+		//#nosec G115
 		Id:        int(user.ID),
 		IsAdmin:   user.IsAdmin,
 		Password:  user.Password,

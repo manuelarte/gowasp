@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/manuelarte/pagorminator"
 
+	"github.com/manuelarte/gowasp/internal/api/dtos"
 	"github.com/manuelarte/gowasp/internal/config"
-	"github.com/manuelarte/gowasp/internal/models"
 	"github.com/manuelarte/gowasp/internal/posts"
 )
 
@@ -37,12 +37,19 @@ func (h *Users) SignupPage(c *gin.Context) {
 
 func (h *Users) WelcomePage(c *gin.Context) {
 	session := sessions.Default(c)
-	var user models.User
+	var user dtos.UserSession
 	sessionUserByte, ok := session.Get("user").([]byte)
 	if !ok {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
+
+		return
 	}
-	_ = json.Unmarshal(sessionUserByte, &user)
+	err := json.Unmarshal(sessionUserByte, &user)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
+
+		return
+	}
 
 	defaultPageSize := 5
 	postPageRequest, _ := pagorminator.PageRequest(0, defaultPageSize)

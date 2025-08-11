@@ -7,7 +7,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
-	"github.com/manuelarte/gowasp/internal/models"
+	"github.com/manuelarte/gowasp/internal/api/dtos"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
@@ -20,7 +20,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		var user models.User
+		var user dtos.UserSession
 		byteSession, ok := sessionUser.([]byte)
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})

@@ -15,6 +15,7 @@ import (
 	"github.com/ing-bank/ginerr/v3"
 	"github.com/manuelarte/pagorminator"
 
+	"github.com/manuelarte/gowasp/internal/api/dtos"
 	"github.com/manuelarte/gowasp/internal/api/rest"
 	"github.com/manuelarte/gowasp/internal/config"
 	"github.com/manuelarte/gowasp/internal/models"
@@ -71,7 +72,7 @@ func (h *Posts) ViewPostPage(c *gin.Context) {
 	pageResponsePostUserComments := sliceutils.Transform(pageResponsePostComments, toPostUserCommentExtended)
 
 	session := sessions.Default(c)
-	var user models.User
+	var user dtos.UserSession
 	sessionUserByte, ok := session.Get("user").([]byte)
 	if !ok {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
