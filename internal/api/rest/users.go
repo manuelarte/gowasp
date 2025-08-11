@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/manuelarte/ptrutils"
 	"github.com/sirupsen/logrus"
 
 	"github.com/manuelarte/gowasp/internal/models"
@@ -22,7 +21,7 @@ func NewUsers(service users.Service) *Users {
 }
 
 func (h *Users) UserLogin(c *gin.Context) {
-	userLogin := User{}
+	userLogin := UserSignup{}
 	if err := c.BindJSON(&userLogin); err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
 			Code:    http.StatusBadRequest,
@@ -63,7 +62,7 @@ func (h *Users) UserLogin(c *gin.Context) {
 }
 
 func (h *Users) UserSignup(c *gin.Context) {
-	userSignup := User{}
+	userSignup := UserSignup{}
 	if err := c.BindJSON(&userSignup); err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
 			Code:    http.StatusBadRequest,
@@ -99,13 +98,19 @@ func (h *Users) UserSignup(c *gin.Context) {
 		return
 	}
 	logrus.Infof("Signup for User %q completed", user.Username)
-	c.JSON(http.StatusCreated, user)
+	c.JSON(http.StatusCreated, User{
+		CreatedAt: user.CreatedAt,
+		Id:        int(user.ID),
+		IsAdmin:   user.IsAdmin,
+		Password:  user.Password,
+		UpdatedAt: user.UpdatedAt,
+		Username:  user.Username,
+	})
 }
 
-func userToDAO(u User) models.User {
+func userToDAO(u UserSignup) models.User {
 	return models.User{
 		Username: u.Username,
 		Password: u.Password,
-		IsAdmin:  ptrutils.DerefOr(u.IsAdmin, false),
 	}
 }

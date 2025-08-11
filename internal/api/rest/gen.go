@@ -109,19 +109,28 @@ type PostCommentNew struct {
 // User defines model for User.
 type User struct {
 	// CreatedAt Creating time of the user
-	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	CreatedAt time.Time `json:"createdAt"`
 
 	// Id Id of the user
-	Id *int `json:"id,omitempty"`
+	Id int `json:"id"`
 
 	// IsAdmin Whether the user is admin or not
-	IsAdmin *bool `json:"isAdmin,omitempty"`
+	IsAdmin bool `json:"isAdmin"`
 
 	// Password Password of the user
 	Password string `json:"password"`
 
 	// UpdatedAt Updating time of the user
-	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	UpdatedAt time.Time `json:"updatedAt"`
+
+	// Username Username of the user
+	Username string `json:"username"`
+}
+
+// UserSignup defines model for UserSignup.
+type UserSignup struct {
+	// Password Password of the user
+	Password string `json:"password"`
 
 	// Username Username of the user
 	Username string `json:"username"`
@@ -145,11 +154,14 @@ type GetPostCommentsParams struct {
 	Size *int `form:"size,omitempty" json:"size,omitempty"`
 }
 
+// PostAPostCommentJSONRequestBody defines body for PostAPostComment for application/json ContentType.
+type PostAPostCommentJSONRequestBody = PostCommentNew
+
 // UserLoginJSONRequestBody defines body for UserLogin for application/json ContentType.
-type UserLoginJSONRequestBody = User
+type UserLoginJSONRequestBody = UserSignup
 
 // UserSignupJSONRequestBody defines body for UserSignup for application/json ContentType.
-type UserSignupJSONRequestBody = User
+type UserSignupJSONRequestBody = UserSignup
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {

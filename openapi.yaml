@@ -20,7 +20,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserSignup'
       responses:
         "200":
           description: User successfully signed up.
@@ -30,6 +30,12 @@ paths:
                 $ref: '#/components/schemas/User'
         "400":
           description: Input data is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal error
           content:
             application/json:
               schema:
@@ -46,7 +52,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserSignup'
       responses:
         "200":
           description: User successfully log in.
@@ -134,6 +140,11 @@ paths:
       responses:
         "200":
           description: Comments page retrieved
+          headers:
+            Set-Cookie:
+              description: CSRF cookie
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -160,13 +171,19 @@ paths:
             x-go-type: uint
           x-go-name: postID
           description: Numeric ID of the post to get its comments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCommentNew'
       responses:
         "200":
           description: Post comments added
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostCommentNew'
+                $ref: '#/components/schemas/PostComment'
         "400":
           description: Error posting new comment
           content:
@@ -193,8 +210,12 @@ components:
     User:
       type: object
       required:
+        - id
+        - createdAt
+        - updatedAt
         - username
         - password
+        - isAdmin
       properties:
         id:
           type: integer
