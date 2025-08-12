@@ -13,7 +13,7 @@ require (
 	github.com/ing-bank/ginerr/v3 v3.0.0
 	github.com/manuelarte/pagorminator v0.1.0
 	github.com/manuelarte/ptrutils v1.0.1
-	github.com/mattn/go-sqlite3 v1.14.30
+	github.com/mattn/go-sqlite3 v1.14.31
 	github.com/oapi-codegen/runtime v1.1.2
 	github.com/sirupsen/logrus v1.9.3
 	gorm.io/driver/sqlite v1.6.0
