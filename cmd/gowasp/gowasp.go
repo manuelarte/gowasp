@@ -12,12 +12,11 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/manuelarte/pagorminator"
-	_ "github.com/mattn/go-sqlite3"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
+	"github.com/manuelarte/gowasp"
 	"github.com/manuelarte/gowasp/internal/api/html"
 	"github.com/manuelarte/gowasp/internal/api/rest"
 	"github.com/manuelarte/gowasp/internal/config"
@@ -37,7 +36,7 @@ func main() {
 		return
 	}
 
-	db, err := config.MigrateDatabase(cfg.MigrationSourceURL)
+	db, err := config.MigrateDatabase(gowasp.MigrationsFolder)
 	if err != nil {
 		panic(err)
 	}
