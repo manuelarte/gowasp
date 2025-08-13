@@ -23,7 +23,6 @@ FROM alpine:3
 RUN apk --no-cache add ca-certificates dumb-init
 
 # Copy the binary from builder stage
-COPY --from=builder /app/resources/migrations /app/migrations
 COPY --from=builder /app/web /app/web
 
 # Copy the binary from builder stage
@@ -31,8 +30,7 @@ COPY --from=builder /gowasp /usr/local/bin/gowasp
 
 EXPOSE 8083
 
-ENV MIGRATION_SOURCE_URL="file:///app/migrations" \
-  WEB_PATH="/app/web"
+ENV WEB_PATH="/app/web"
 
 # Run
 ENTRYPOINT ["/usr/local/bin/gowasp"]
