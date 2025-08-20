@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"html/template"
+	"io/fs"
 	"log/slog"
 	"net/http"
 	"os"
@@ -78,7 +79,8 @@ func main() {
 		html.RegisterPostsHandlers(r, htmlPosts)
 		html.RegisterDebugHandlers(r)
 
-		r.StaticFS("swagger", http.Dir("./static/swagger-ui"))
+		sfs, _ := fs.Sub(fs.FS(gowasp.SwaggerUI), "static/swagger-ui")
+		r.StaticFS("swagger", http.FS(sfs))
 
 		r.GET("/api/docs", func(c *gin.Context) {
 			_, _ = c.Writer.Write(gowasp.OpenAPI)
