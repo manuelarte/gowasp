@@ -1,2 +1,2 @@
 [files]
-extend-exclude = ["go.mod"]
+extend-exclude = ["go.mod", "static/swagger-ui/*"]
