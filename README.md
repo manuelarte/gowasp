@@ -25,6 +25,8 @@ If you want to run it with Docker 🐳 use:
 make dr
 ```
 
+You can find the swagger ui in [swagger/index.html](http://localhost:8083/swagger/index.html).
+
 ## 🛠️ Application Overview
 
 Once the application is up and running, you can begin by exploring its core features.

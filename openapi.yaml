@@ -12,10 +12,9 @@ paths:
     post:
       operationId: User Signup
       description: Allow user to signup
-      summary: Signup
+      summary: User Signup endpoint
       tags:
         - user
-        - signup
       requestBody:
         content:
           application/json:
@@ -47,7 +46,6 @@ paths:
       summary: Login
       tags:
         - user
-        - login
       requestBody:
         content:
           application/json:
@@ -72,7 +70,6 @@ paths:
       description: Get posts
       summary: get posts
       tags:
-        - get
         - posts
       parameters:
         - in: query
@@ -110,7 +107,6 @@ paths:
       description: Get the post comments
       summary: get comments page
       tags:
-        - get
         - comments
       parameters:
         - in: path
@@ -160,7 +156,6 @@ paths:
       description: Post a post comment
       summary: post comment
       tags:
-        - post
         - comments
       parameters:
         - in: path

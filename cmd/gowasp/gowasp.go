@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"html/template"
 	"log/slog"
+	"net/http"
 	"os"
 
 	"github.com/caarlos0/env/v11"
@@ -27,11 +29,12 @@ import (
 
 //go:generate go tool oapi-codegen -config ../../cfg.yaml ../../openapi.yaml
 func main() {
+	ctx := context.Background()
 	logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
 	cfg, err := env.ParseAs[config.Config]()
 	if err != nil {
-		logger.Error("error parsing the configuration", "error", err)
+		logger.ErrorContext(ctx, "error parsing the configuration", "error", err)
 
 		return
 	}
@@ -74,6 +77,12 @@ func main() {
 		html.RegisterUsersHandlers(r, htmlUsers)
 		html.RegisterPostsHandlers(r, htmlPosts)
 		html.RegisterDebugHandlers(r)
+
+		r.StaticFS("swagger", http.Dir("./static/swagger-ui"))
+
+		r.GET("/api/docs", func(c *gin.Context) {
+			_, _ = c.Writer.Write(gowasp.OpenAPI)
+		})
 	}
 
 	{
@@ -88,7 +97,7 @@ func main() {
 
 	err = r.Run(cfg.Address)
 	if err != nil {
-		logger.Error("error running the application", "error", err)
+		logger.ErrorContext(ctx, "error running the application", "error", err)
 
 		return
 	}

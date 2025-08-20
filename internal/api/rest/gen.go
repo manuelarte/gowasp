@@ -177,7 +177,7 @@ type ServerInterface interface {
 	// Login
 	// (POST /api/users/login)
 	UserLogin(c *gin.Context)
-	// Signup
+	// User Signup endpoint
 	// (POST /api/users/signup)
 	UserSignup(c *gin.Context)
 }
