@@ -79,8 +79,14 @@ func main() {
 		html.RegisterPostsHandlers(r, htmlPosts)
 		html.RegisterDebugHandlers(r)
 
-		sfs, _ := fs.Sub(fs.FS(gowasp.SwaggerUI), "static/swagger-ui")
-		r.StaticFS("swagger", http.FS(sfs))
+		{
+			sfs, _ := fs.Sub(fs.FS(gowasp.SwaggerUI), "static/swagger-ui")
+			r.StaticFS("swagger", http.FS(sfs))
+		}
+		{
+			sfs, _ := fs.Sub(fs.FS(gowasp.Frontend), "frontend/dist")
+			r.StaticFS("frontend", http.FS(sfs))
+		}
 
 		r.GET("/api/docs", func(c *gin.Context) {
 			_, _ = c.Writer.Write(gowasp.OpenAPI)
