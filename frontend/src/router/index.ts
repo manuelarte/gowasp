@@ -4,9 +4,11 @@
  * Automatic routes for `./src/pages/*.vue`
  */
 
-// Composables
-import { createRouter, createWebHistory } from 'vue-router/auto'
 import { setupLayouts } from 'virtual:generated-layouts'
+// Composables
+// eslint-disable-next-line import/no-duplicates
+import { createRouter, createWebHistory } from 'vue-router/auto'
+// eslint-disable-next-line import/no-duplicates
 import { routes } from 'vue-router/auto-routes'
 
 const router = createRouter({
