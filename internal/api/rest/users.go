@@ -64,7 +64,7 @@ func (h *Users) UserLogin(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, user)
-	logrus.Infof("User %s logged in", user.Username)
+	logrus.Infof("User %q logged in", user.Username)
 }
 
 func (h *Users) UserLogout(c *gin.Context) {
@@ -77,7 +77,7 @@ func (h *Users) UserLogout(c *gin.Context) {
 		return
 	}
 	_ = json.Unmarshal(sessionUserByte, &user)
-	logrus.Infof("User %s logged out", user.Username)
+	logrus.Infof("User %q logged out", user.Username)
 }
 
 func (h *Users) UserSignup(c *gin.Context) {

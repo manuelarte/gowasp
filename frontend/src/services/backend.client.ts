@@ -1,5 +1,7 @@
 import type { User } from '@/models/users.model.ts'
 import axios, { type AxiosInstance } from 'axios'
+import { wrapper } from 'axios-cookiejar-support'
+import { CookieJar } from 'tough-cookie'
 
 export interface ApiClient {
   login: (username: string, password: string) => Promise<User>
@@ -10,12 +12,15 @@ export class HttpClient implements ApiClient {
   private client: AxiosInstance
 
   constructor (baseURL: string) {
-    this.client = axios.create({
+    axios.defaults.withCredentials = true
+    const jar = new CookieJar()
+    this.client = wrapper(axios.create({
       baseURL,
+      jar,
       headers: {
         'Content-Type': 'application/json',
       },
-    })
+    }))
   }
 
   async login (username: string, password: string): Promise<User> {
