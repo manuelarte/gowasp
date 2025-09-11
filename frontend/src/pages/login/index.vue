@@ -58,7 +58,7 @@
 
       <v-text-field
         v-model="password"
-        :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+        :append-inner-icon="!visible ? 'mdi-eye-off' : 'mdi-eye'"
         density="compact"
         placeholder="Enter your password"
         prepend-inner-icon="mdi-lock-outline"
