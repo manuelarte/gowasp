@@ -61,7 +61,7 @@ func main() {
 	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
 	configCors := cors.DefaultConfig()
-	configCors.AllowOrigins = []string{"http://localhost:8083", "http://localhost:63342"}
+	configCors.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8083", "http://localhost:63342"}
 	configCors.AllowCredentials = true
 	r.Use(cors.New(configCors))
 	store := cookie.NewStore([]byte("secret"))
