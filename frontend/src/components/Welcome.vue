@@ -17,6 +17,22 @@
   const loadingIntro = ref(true)
   const intro = ref<string | null>(null)
 
+  const page = ref(1)
+  const items = [
+    {
+      title: 'Item #1',
+      value: 1,
+    },
+    {
+      title: 'Item #2',
+      value: 2,
+    },
+    {
+      title: 'Item #3',
+      value: 3,
+    },
+  ]
+
   onMounted(() => {
     loadingIntro.value = true
     client.post('intro.txt')
@@ -49,7 +65,17 @@
   </v-card>
 
   <h2>Latest Posts</h2>
-  TODO
+  <v-card
+    class="mx-auto"
+  >
+    <v-list :items="items" />
+
+    <v-pagination
+      v-model="page"
+      :length="2"
+      rounded="circle"
+    />
+  </v-card>
 </template>
 
 <style scoped lang="sass">
