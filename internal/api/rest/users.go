@@ -67,6 +67,19 @@ func (h *Users) UserLogin(c *gin.Context) {
 	logrus.Infof("User %s logged in", user.Username)
 }
 
+func (h *Users) UserLogout(c *gin.Context) {
+	session := sessions.Default(c)
+	sessionUserByte, ok := session.Get("user").([]byte)
+	session.Clear()
+	_ = session.Save()
+	var user dtos.UserSession
+	if !ok {
+		return
+	}
+	_ = json.Unmarshal(sessionUserByte, &user)
+	logrus.Infof("User %s logged out", user.Username)
+}
+
 func (h *Users) UserSignup(c *gin.Context) {
 	userSignup := UserSignup{}
 	if err := c.BindJSON(&userSignup); err != nil {

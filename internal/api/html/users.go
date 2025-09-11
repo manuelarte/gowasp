@@ -25,12 +25,6 @@ func (h *Users) LoginPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "users/login.tpl", gin.H{})
 }
 
-func (h *Users) Logout(c *gin.Context) {
-	session := sessions.Default(c)
-	session.Clear()
-	_ = session.Save()
-}
-
 func (h *Users) SignupPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "users/signup.tpl", gin.H{})
 }
@@ -65,6 +59,5 @@ func (h *Users) WelcomePage(c *gin.Context) {
 func RegisterUsersHandlers(r gin.IRouter, u *Users) {
 	r.GET("/users/signup", u.SignupPage)
 	r.GET("/users/login", u.LoginPage)
-	r.DELETE("/users/logout", u.Logout)
 	r.GET("/users/welcome", config.AuthMiddleware(), u.WelcomePage)
 }

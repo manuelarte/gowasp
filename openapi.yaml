@@ -64,6 +64,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/users/logout:
+    delete:
+      operationId: User logout
+      description: Allow user to logout
+      summary: Logout
+      tags:
+        - user
+      responses:
+        "200":
+          description: User successfully logged out.
   /api/posts:
     get:
       operationId: Get posts

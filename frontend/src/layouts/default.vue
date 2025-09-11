@@ -3,12 +3,13 @@
     <v-toolbar-title text="GOwasp" />
     <template #append>
       <div class="d-flex ga-1">
-        <v-btn v-if="!user" icon="mdi-login" to="/login" />
-        <v-btn v-else icon="mdi-logout" @click="userStore.logout()" />
+        <v-btn v-if="!user" v-tooltip="'Login'" icon="mdi-login" to="/login" />
+        <v-btn v-else v-tooltip="'Logout'" icon="mdi-logout" @click="userStore.logout()" />
       </div>
     </template>
   </v-toolbar>
   <v-main>
+    User: {{ user }}
     <router-view />
   </v-main>
 
@@ -16,9 +17,19 @@
 </template>
 
 <script lang="ts" setup>
+  import router from '@/router'
   import { useUserStore } from '@/stores/app'
 
   const userStore = useUserStore()
+  userStore.$subscribe((mutation, state) => {
+    user.value = state.user
+  })
 
   const user = ref(userStore.user)
+
+  onMounted(() => {
+    if (!user.value) {
+      router.push('/login')
+    }
+  })
 </script>

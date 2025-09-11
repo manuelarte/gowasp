@@ -177,6 +177,9 @@ type ServerInterface interface {
 	// Login
 	// (POST /api/users/login)
 	UserLogin(c *gin.Context)
+	// Logout
+	// (DELETE /api/users/logout)
+	UserLogout(c *gin.Context)
 	// User Signup endpoint
 	// (POST /api/users/signup)
 	UserSignup(c *gin.Context)
@@ -305,6 +308,19 @@ func (siw *ServerInterfaceWrapper) UserLogin(c *gin.Context) {
 	siw.Handler.UserLogin(c)
 }
 
+// UserLogout operation middleware
+func (siw *ServerInterfaceWrapper) UserLogout(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.UserLogout(c)
+}
+
 // UserSignup operation middleware
 func (siw *ServerInterfaceWrapper) UserSignup(c *gin.Context) {
 
@@ -349,5 +365,6 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.GET(options.BaseURL+"/api/posts/:postId/comments", wrapper.GetPostComments)
 	router.POST(options.BaseURL+"/api/posts/:postId/comments", wrapper.PostAPostComment)
 	router.POST(options.BaseURL+"/api/users/login", wrapper.UserLogin)
+	router.DELETE(options.BaseURL+"/api/users/logout", wrapper.UserLogout)
 	router.POST(options.BaseURL+"/api/users/signup", wrapper.UserSignup)
 }
