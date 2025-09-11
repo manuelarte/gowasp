@@ -20,7 +20,11 @@
   import { useUserStore } from '@/stores/app'
 
   const userStore = useUserStore()
-  userStore.$subscribe((mutation, state) => {
+  userStore.$subscribe((_, state) => {
+    debugger
+    if (!state.user) {
+      router.push('/login')
+    }
     user.value = state.user
   })
 
