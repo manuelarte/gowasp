@@ -45,12 +45,13 @@ func (h *Users) UserLogin(c *gin.Context) {
 		return
 	}
 	session := sessions.Default(c)
-	userBytes, _ := json.Marshal(dtos.UserSession{
+	userSession := dtos.UserSession{
 		ID:       user.ID,
 		Username: user.Username,
 		Password: user.Password,
 		IsAdmin:  user.IsAdmin,
-	})
+	}
+	userBytes, _ := json.Marshal(userSession)
 	session.Set("user", userBytes)
 	err = session.Save()
 	if err != nil {
@@ -63,7 +64,7 @@ func (h *Users) UserLogin(c *gin.Context) {
 
 		return
 	}
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, userSession)
 	logrus.Infof("User %q logged in", user.Username)
 }
 

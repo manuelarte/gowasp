@@ -6,6 +6,8 @@ import { CookieJar } from 'tough-cookie'
 export interface ApiClient {
   login: (username: string, password: string) => Promise<User>
   logout: () => Promise<void>
+
+  post: (name: string) => Promise<string>
 }
 
 export class HttpClient implements ApiClient {
@@ -33,6 +35,11 @@ export class HttpClient implements ApiClient {
 
   async logout (): Promise<void> {
     const response = await this.client.delete<void>('api/users/logout')
+    return response.data
+  }
+
+  async post (name: string): Promise<string> {
+    const response = await this.client.get<string>(`static/posts?name=${name}`)
     return response.data
   }
 }

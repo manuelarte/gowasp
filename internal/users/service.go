@@ -10,7 +10,7 @@ import (
 	"github.com/manuelarte/gowasp/internal/models/gerrors"
 )
 
-//nolint:iface // repository does not need to have same methods as service
+//nolint:iface // repository does not need to have the same methods as service
 type Service interface {
 	Create(ctx context.Context, user *models.User) error
 	Login(ctx context.Context, username, password string) (models.User, error)

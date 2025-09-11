@@ -3,7 +3,7 @@ import type { User } from '@/models/users.model.ts'
 import { defineStore } from 'pinia'
 import { type ApiClient, HttpClient } from '@/services/backend.client'
 
-const backendClient: ApiClient = new HttpClient('http://localhost:8083')
+export const backendClient: ApiClient = new HttpClient('http://localhost:8083')
 
 export const useAppStore = defineStore('app', {
   state: () => ({

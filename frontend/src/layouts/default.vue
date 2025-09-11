@@ -21,7 +21,6 @@
 
   const userStore = useUserStore()
   userStore.$subscribe((_, state) => {
-    debugger
     if (!state.user) {
       router.push('/login')
     }
