@@ -9,7 +9,6 @@
     </template>
   </v-toolbar>
   <v-main>
-    User: {{ user }}
     <router-view />
   </v-main>
 
