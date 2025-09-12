@@ -63,6 +63,9 @@ func main() {
 	configCors := cors.DefaultConfig()
 	configCors.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8083", "http://localhost:63342"}
 	configCors.AllowCredentials = true
+	// TODO(manuelarte): I can't make axios to read the Set-Cookie header, so I'm setting it as a header
+	configCors.AddExposeHeaders("X-XSRF-TOKEN")
+	configCors.AddAllowMethods("GET, POST, PUT, DELETE, OPTIONS")
 	r.Use(cors.New(configCors))
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("mysession", store))

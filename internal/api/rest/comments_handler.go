@@ -54,7 +54,7 @@ func (h *CommentsHandler) GetPostComments(c *gin.Context, postID uint, params Ge
 	csrfToken := uuid.New()
 	{
 		// TODO(manuelarte): I can't make axios to read the Set-Cookie header, so I'm setting it as a header
-		c.Header("Access-Control-Expose-Headers", "X-XSRF-TOKEN")
+		c.SetSameSite(http.SameSiteNoneMode)
 		c.Header("X-XSRF-TOKEN", csrfToken.String())
 	}
 	c.SetCookie("XSRF-TOKEN", csrfToken.String(), int(hourTime),

@@ -10,6 +10,7 @@
     csrf: {
       type: String,
       required: true,
+      validator: (v: string, _) => v.length > 0,
     },
   })
 
