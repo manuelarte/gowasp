@@ -6,8 +6,6 @@
 </script>
 
 <script setup lang="ts">
-  // eslint-disable-next-line import/first
-  import type { User } from '@/models/users.model'
 
   const {
     data: post,
@@ -16,11 +14,15 @@
   } = usePost()
 
   const {
-    data: postCommentsPage,
+    data: postCommentsPageAndUsers,
     isLoading: isLoadingComments,
     error: errorComments,
     reload: reloadComments,
   } = usePostComments()
+
+  function getUsername (userId: number): string {
+    return postCommentsPageAndUsers.value.users[userId].username
+  }
 </script>
 
 <template>
@@ -39,17 +41,24 @@
 
     <br>
 
-    <p>This post has {{ postCommentsPage?.data.length }} comment(s)</p>
+    <p>This post has {{ postCommentsPageAndUsers.commentsPage?.data.length }} comment(s)</p>
 
     <v-card
-      v-for="comment in postCommentsPage?.data ?? []"
+      v-for="comment in postCommentsPageAndUsers.commentsPage?.data ?? []"
       :key="comment.id"
       class="card"
-      prepend-avatar="https://cdn.vuetifyjs.com/images/john.jpg"
       :subtitle="comment.postedAt"
     >
+      <template #prepend>
+        <v-avatar
+          color="brown"
+          size="large"
+        >
+          <span class="text-h5">{{ getUsername(comment.userId).substring(0, 2).toUpperCase() }}</span>
+        </v-avatar>
+      </template>
       <template #title>
-        <span class="font-weight-black">{{ comment.userId }}</span>
+        <span class="font-weight-black">{{ getUsername(comment.userId) }}</span>
       </template>
 
       <v-card-text class="pt-4">
