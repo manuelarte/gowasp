@@ -1,3 +1,5 @@
+import type { Page } from '@/models/http.model.ts'
+import type { Post } from '@/models/posts.model.ts'
 import type { User } from '@/models/users.model.ts'
 import axios, { type AxiosInstance } from 'axios'
 import { wrapper } from 'axios-cookiejar-support'
@@ -7,7 +9,8 @@ export interface ApiClient {
   login: (username: string, password: string) => Promise<User>
   logout: () => Promise<void>
 
-  post: (name: string) => Promise<string>
+  getStaticPost: (name: string) => Promise<string>
+  getPosts: (page: number) => Promise<Page<Post>>
 }
 
 export class HttpClient implements ApiClient {
@@ -38,8 +41,14 @@ export class HttpClient implements ApiClient {
     return response.data
   }
 
-  async post (name: string): Promise<string> {
+  async getStaticPost (name: string): Promise<string> {
     const response = await this.client.get<string>(`static/posts?name=${name}`)
+    return response.data
+  }
+
+  async getPosts (page: number): Promise<Page<Post>> {
+    const size = 3
+    const response = await this.client.get<Page<Post>>(`api/posts?page=${page}&size=${size}`)
     return response.data
   }
 }

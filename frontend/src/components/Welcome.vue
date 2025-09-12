@@ -1,4 +1,6 @@
 <script setup lang="ts">
+  import type { Page } from '@/models/http.model'
+  import type { Post } from '@/models/posts.model'
   import router from '@/router'
   import { backendClient, useUserStore } from '@/stores/app.ts'
 
@@ -18,26 +20,20 @@
   const intro = ref<string | null>(null)
 
   const page = ref(1)
-  const items = [
-    {
-      title: 'Item #1',
-      value: 1,
-    },
-    {
-      title: 'Item #2',
-      value: 2,
-    },
-    {
-      title: 'Item #3',
-      value: 3,
-    },
-  ]
+  const loadingPosts = ref(true)
+  const postsPage = ref<Page<Post> | null>(null)
+  // TODO const errorLoadingPostPage = ref<string | null>(null)
 
   onMounted(() => {
     loadingIntro.value = true
-    client.post('intro.txt')
+    client.getStaticPost('intro.txt')
       .then(i => intro.value = i)
       .finally(() => loadingIntro.value = false)
+
+    loadingPosts.value = true
+    client.getPosts(page.value - 1)
+      .then(pp => postsPage.value = pp)
+      .finally(() => loadingPosts.value = false)
   })
 </script>
 
@@ -46,7 +42,7 @@
 
   <v-alert
     density="compact"
-    :text="`Warning: This is just for information purposes: Password hash: ${user.password}`"
+    :text="`Warning: This is just for information purposes: Password hash: ${user!.password}`"
     title="Info"
     type="warning"
     variant="outlined"
@@ -65,14 +61,26 @@
   </v-card>
 
   <h2>Latest Posts</h2>
+  <v-skeleton-loader
+    v-if="loadingPosts"
+    class="mx-auto border"
+    type="paragraph"
+  />
   <v-card
+    v-if="!loadingPosts && postsPage"
     class="mx-auto"
   >
-    <v-list :items="items" />
+    <v-list lines="one">
+      <v-list-item
+        v-for="post in postsPage!.data"
+        :key="post.id"
+        :title="post.title"
+      />
+    </v-list>
 
     <v-pagination
       v-model="page"
-      :length="2"
+      :length="postsPage?._metadata?.totalPages"
       rounded="circle"
     />
   </v-card>
