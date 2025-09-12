@@ -41,8 +41,10 @@
 
     <br>
 
-    <v-skeleton-loader v-if="isLoadingComments" type="card"></v-skeleton-loader>
+    <v-skeleton-loader v-if="isLoadingComments" type="card" />
     <template v-else>
+      <AddComment class="card" />
+
       <p>This post has {{ postCommentsPageAndUsers.commentsPage?.data.length }} comment(s)</p>
 
       <v-card
