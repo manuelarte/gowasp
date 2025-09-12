@@ -62,7 +62,7 @@ func orderFrom(sortingCriteria GetPostsParamsSort) pagorminator.Order {
 	case Titledesc:
 		return pagorminator.MustOrder("title", pagorminator.DESC)
 	default:
-		return pagorminator.MustOrder("posted_at", pagorminator.DESC)
+		return pagorminator.MustOrder("posted_at", pagorminator.ASC)
 	}
 }
 
