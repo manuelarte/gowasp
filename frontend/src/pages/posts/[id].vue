@@ -1,22 +1,22 @@
 <script lang="ts">
-  import { defineBasicLoader } from 'unplugin-vue-router/data-loaders/basic'
-
-  const useUserData = defineBasicLoader('/posts/[id]', async route => {
-    // return getUserById(route.params.id)
-    return {
-      id: route.params.id,
-      title: 'My Post',
-      content: 'This is my post content',
-    }
-  })
+  import { usePost } from '@/loaders/post'
+  import { usePostComments } from '@/loaders/postComments'
+  export { usePost, usePostComments }
 </script>
 <script setup lang="ts">
+
+  const post = ref({ title: 'My title', content: 'my content' })
+
   const {
-    data: post,
+    data: postManuel,
+  } = usePost()
+
+  const {
+    data: postCommentsPage,
     isLoading, // a boolean indicating if the loader is fetching data
     error, // an error object if the loader failed
     reload, // a function to refetch the data without navigating
-  } = useUserData()
+  } = usePostComments()
 </script>
 
 <template>

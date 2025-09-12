@@ -130,7 +130,7 @@ paths:
       description: Get the post comments
       summary: get comments page
       tags:
-        - comments
+        - posts
       parameters:
         - in: path
           name: postId
