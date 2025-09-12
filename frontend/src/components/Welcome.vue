@@ -51,8 +51,8 @@
 
   <v-alert
     density="compact"
-    :text="`Warning: This is just for information purposes: Password hash: ${user!.password}`"
-    title="Info"
+    :text="`This is just for information purposes: Password hash: ${user!.password}`"
+    title="Warning"
     type="warning"
     variant="outlined"
   />

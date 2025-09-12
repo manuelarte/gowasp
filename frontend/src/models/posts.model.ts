@@ -16,5 +16,9 @@ export interface Comment {
   postId: number
   userId: number
   comment: string
+}
 
+export interface NewComment {
+  comment: string
+  userId: number
 }

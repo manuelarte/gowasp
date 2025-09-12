@@ -23,6 +23,13 @@
   function getUsername (userId: number): string {
     return postCommentsPageAndUsers.value.users[userId].username
   }
+
+  function onCommentSaved (_: Comment): void {
+    commentSavedSnackbar.value = true
+    reloadComments()
+  }
+
+  const commentSavedSnackbar = ref(false)
 </script>
 
 <template>
@@ -43,7 +50,7 @@
 
     <v-skeleton-loader v-if="isLoadingComments" type="card" />
     <template v-else>
-      <AddComment class="card" />
+      <AddComment class="card" :post="post" @comment:saved="onCommentSaved($event)" />
 
       <p>This post has {{ postCommentsPageAndUsers.commentsPage?.data.length }} comment(s)</p>
 
@@ -71,6 +78,12 @@
       </v-card>
     </template>
   </div>
+  <v-snackbar
+    v-model="commentSavedSnackbar"
+    timeout="1000"
+  >
+    Comment saved
+  </v-snackbar>
 </template>
 
 <style scoped lang="sass">

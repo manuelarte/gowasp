@@ -1,5 +1,5 @@
 import type { Page } from '@/models/http.model.ts'
-import type { Comment, Post } from '@/models/posts.model.ts'
+import type { Comment, NewComment, Post } from '@/models/posts.model'
 import type { User } from '@/models/users.model.ts'
 import axios, { type AxiosInstance } from 'axios'
 import { wrapper } from 'axios-cookiejar-support'
@@ -15,6 +15,7 @@ export interface ApiClient {
   getPost: (id: number) => Promise<Post>
   getPosts: (page: number) => Promise<Page<Post>>
   getPostComments: (postId: number) => Promise<Page<Comment>>
+  postPostComment: (postId: number, comment: NewComment) => Promise<Comment>
 }
 
 export class HttpClient implements ApiClient {
@@ -80,6 +81,11 @@ export class HttpClient implements ApiClient {
   async getPosts (page: number): Promise<Page<Post>> {
     const size = 3
     const response = await this.client.get<Page<Post>>(`api/posts?page=${page}&size=${size}`)
+    return response.data
+  }
+
+  async postPostComment (postId: number, comment: NewComment): Promise<Comment> {
+    const response = await this.client.post<Comment>(`api/posts/${postId}/comments`, comment)
     return response.data
   }
 }
