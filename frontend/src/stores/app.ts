@@ -1,7 +1,7 @@
 import type { User } from '@/models/users.model.ts'
 // Utilities
 import { defineStore } from 'pinia'
-import { type ApiClient, HttpClient } from '@/services/backend.client'
+import { type ApiClient, HttpClient } from '@/api/backend.client'
 
 export const backendClient: ApiClient = new HttpClient('http://localhost:8083')
 
