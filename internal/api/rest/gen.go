@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 // Defines values for GetPostsParamsSort.
@@ -109,6 +110,9 @@ type PostComment struct {
 type PostCommentNew struct {
 	// Comment The comment value
 	Comment string `json:"comment"`
+
+	// Csrf CSRF token
+	Csrf openapi_types.UUID `json:"csrf"`
 
 	// UserID Id of the user who wrote the comment
 	UserID uint `json:"userId"`

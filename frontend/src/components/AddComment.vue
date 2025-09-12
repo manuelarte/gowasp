@@ -15,12 +15,15 @@
   }>()
 
   function submit () {
-    const newComment = { comment: commentContent.value, userId: 1 }
+    const newComment = { comment: commentContent.value, userId: 1, csrf: 'TODO: get csrf token' }
     isSaving.value = true
+    errorSaving.value = null
     backendClient.postPostComment(props.post.id, newComment)
       .then(c => {
+        errorSaving.value = null
         emits('comment:saved', c)
       })
+      .catch(error => errorSaving.value = error.message)
       .finally(() => isSaving.value = false)
   }
 
@@ -28,6 +31,7 @@
 
   const valid = ref(false)
   const isSaving = ref(false)
+  const errorSaving = ref<string | null>(null)
   const commentContent = ref('')
 </script>
 
@@ -51,6 +55,18 @@
           :rules="rules"
         />
       </v-card-text>
+
+      <v-card
+        v-if="errorSaving"
+        class="mb-12"
+        color="red-lighten-2"
+        variant="tonal"
+      >
+        <v-card-text class="text-medium-emphasis text-caption">
+          {{ errorSaving! }}
+        </v-card-text>
+      </v-card>
+
       <v-card-actions>
         <v-btn :disabled="!valid || isSaving" type="submit">Save</v-btn>
       </v-card-actions>

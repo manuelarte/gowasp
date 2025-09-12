@@ -21,4 +21,5 @@ export interface Comment {
 export interface NewComment {
   comment: string
   userId: number
+  csrf: string
 }

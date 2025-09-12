@@ -447,6 +447,7 @@ components:
       required:
         - userId
         - comment
+        - csrf
       properties:
         userId:
           type: integer
@@ -456,3 +457,8 @@ components:
         comment:
           type: string
           description: The comment value
+        csrf:
+          type: string
+          description: CSRF token
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
