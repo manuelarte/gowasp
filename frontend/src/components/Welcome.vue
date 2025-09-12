@@ -50,8 +50,6 @@
 
   <br>
 
-  <h2>Posts</h2>
-
   <v-progress-linear v-if="loadingIntro" indeterminate />
   <v-card v-else>
     <v-card-title>Intro</v-card-title>
@@ -60,7 +58,6 @@
     </v-card-text>
   </v-card>
 
-  <h2>Latest Posts</h2>
   <v-skeleton-loader
     v-if="loadingPosts"
     class="mx-auto border"
@@ -70,6 +67,7 @@
     v-if="!loadingPosts && postsPage"
     class="mx-auto"
   >
+    <v-card-title>Posts</v-card-title>
     <v-list lines="one">
       <v-list-item
         v-for="post in postsPage!.data"
