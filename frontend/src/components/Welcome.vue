@@ -81,6 +81,8 @@
       <v-list-item
         v-for="post in postsPage!.data"
         :key="post.id"
+        :value="post"
+        @click="router.push(`/posts/${post.id}`)"
       >
         <template #prepend>
           <v-avatar>
