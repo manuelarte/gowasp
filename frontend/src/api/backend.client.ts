@@ -79,6 +79,7 @@ export class HttpClient implements ApiClient {
       `api/posts/${postId}/comments?page=${page}&size=${size}`,
       { withCredentials: true },
     )
+    // TODO(manuelarte): I can't make axios to read Set-Cookie header, so I have to send it in another header
     const csrf = response.headers['x-xsrf-token']
     return [csrf, response.data]
   }
