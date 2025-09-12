@@ -135,8 +135,8 @@ type User struct {
 	Username string `json:"username"`
 }
 
-// UserSignup defines model for UserSignup.
-type UserSignup struct {
+// UserCredential defines model for UserCredential.
+type UserCredential struct {
 	// Password Password of the user
 	Password string `json:"password"`
 
@@ -172,10 +172,10 @@ type GetPostCommentsParams struct {
 type PostAPostCommentJSONRequestBody = PostCommentNew
 
 // UserLoginJSONRequestBody defines body for UserLogin for application/json ContentType.
-type UserLoginJSONRequestBody = UserSignup
+type UserLoginJSONRequestBody = UserCredential
 
 // UserSignupJSONRequestBody defines body for UserSignup for application/json ContentType.
-type UserSignupJSONRequestBody = UserSignup
+type UserSignupJSONRequestBody = UserCredential
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -197,6 +197,9 @@ type ServerInterface interface {
 	// User Signup endpoint
 	// (POST /api/users/signup)
 	UserSignup(c *gin.Context)
+	// get user
+	// (GET /api/users/{userId})
+	GetUser(c *gin.Context, userID uint)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -356,6 +359,30 @@ func (siw *ServerInterfaceWrapper) UserSignup(c *gin.Context) {
 	siw.Handler.UserSignup(c)
 }
 
+// GetUser operation middleware
+func (siw *ServerInterfaceWrapper) GetUser(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "userId" -------------
+	var userID uint
+
+	err = runtime.BindStyledParameterWithOptions("simple", "userId", c.Param("userId"), &userID, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter userId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetUser(c, userID)
+}
+
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL      string
@@ -389,4 +416,5 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.POST(options.BaseURL+"/api/users/login", wrapper.UserLogin)
 	router.DELETE(options.BaseURL+"/api/users/logout", wrapper.UserLogout)
 	router.POST(options.BaseURL+"/api/users/signup", wrapper.UserSignup)
+	router.GET(options.BaseURL+"/api/users/:userId", wrapper.GetUser)
 }

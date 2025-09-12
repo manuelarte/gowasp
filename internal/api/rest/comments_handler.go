@@ -17,15 +17,15 @@ import (
 
 const defaultPageRequestSize = 10
 
-type Comments struct {
+type CommentsHandler struct {
 	service postcomments.Service
 }
 
-func NewComments(service postcomments.Service) *Comments {
-	return &Comments{service: service}
+func NewComments(service postcomments.Service) *CommentsHandler {
+	return &CommentsHandler{service: service}
 }
 
-func (h *Comments) GetPostComments(c *gin.Context, postID uint, params GetPostCommentsParams) {
+func (h *CommentsHandler) GetPostComments(c *gin.Context, postID uint, params GetPostCommentsParams) {
 	pageRequest, err := pagorminator.PageRequest(
 		ptrutils.DerefOr(params.Page, 0),
 		ptrutils.DerefOr(params.Size, defaultPageRequestSize),
@@ -56,7 +56,7 @@ func (h *Comments) GetPostComments(c *gin.Context, postID uint, params GetPostCo
 	c.JSON(http.StatusOK, postPagePostCommentToDTO(postComments, pageRequest))
 }
 
-func (h *Comments) PostAPostComment(c *gin.Context, postID uint) {
+func (h *CommentsHandler) PostAPostComment(c *gin.Context, postID uint) {
 	postCommentNew := PostCommentNew{}
 	if err := c.BindJSON(&postCommentNew); err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{

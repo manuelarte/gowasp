@@ -15,6 +15,7 @@ var ErrUserNotFound = errors.New("user and password not found")
 //nolint:iface // repository does not need to have the same methods as service
 type Repository interface {
 	Create(ctx context.Context, user *models.User) error
+	GetByID(ctx context.Context, id uint) (models.User, error)
 	Login(ctx context.Context, username, password string) (models.User, error)
 }
 
@@ -34,6 +35,16 @@ func (u gormRepository) Create(ctx context.Context, user *models.User) error {
 	}
 
 	return nil
+}
+
+func (u gormRepository) GetByID(ctx context.Context, id uint) (models.User, error) {
+	var user models.User
+	tx := u.db.WithContext(ctx).First(&user, id)
+	if tx.Error != nil {
+		return models.User{}, fmt.Errorf("error retrieving user: %w", tx.Error)
+	}
+
+	return user, nil
 }
 
 func (u gormRepository) Login(ctx context.Context, username, password string) (models.User, error) {

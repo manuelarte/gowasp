@@ -2,6 +2,8 @@ package users
 
 import (
 	"context"
+	"fmt"
+
 	//#nosec G501
 	"crypto/md5"
 	"encoding/hex"
@@ -13,6 +15,7 @@ import (
 //nolint:iface // repository does not need to have the same methods as service
 type Service interface {
 	Create(ctx context.Context, user *models.User) error
+	GetByID(ctx context.Context, id uint) (models.User, error)
 	Login(ctx context.Context, username, password string) (models.User, error)
 }
 
@@ -37,6 +40,15 @@ func (u serviceImpl) Create(ctx context.Context, user *models.User) error {
 	}
 
 	return nil
+}
+
+func (u serviceImpl) GetByID(ctx context.Context, id uint) (models.User, error) {
+	user, err := u.repository.GetByID(ctx, id)
+	if err != nil {
+		return models.User{}, fmt.Errorf("error retrieving user: %w", err)
+	}
+
+	return user, nil
 }
 
 func (u serviceImpl) Login(ctx context.Context, username, password string) (models.User, error) {

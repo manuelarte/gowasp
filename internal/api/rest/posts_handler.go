@@ -12,17 +12,17 @@ import (
 	"github.com/manuelarte/gowasp/internal/sliceutils"
 )
 
-type Posts struct {
+type PostsHandler struct {
 	service posts.Service
 }
 
-func NewPosts(service posts.Service) *Posts {
-	return &Posts{
+func NewPosts(service posts.Service) *PostsHandler {
+	return &PostsHandler{
 		service: service,
 	}
 }
 
-func (h *Posts) GetPosts(c *gin.Context, params GetPostsParams) {
+func (h *PostsHandler) GetPosts(c *gin.Context, params GetPostsParams) {
 	pageRequest, err := pagorminator.PageRequest(
 		ptrutils.DerefOr(params.Page, 0),
 		ptrutils.DerefOr(params.Size, defaultPageRequestSize),

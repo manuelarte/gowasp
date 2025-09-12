@@ -13,16 +13,16 @@ import (
 	"github.com/manuelarte/gowasp/internal/users"
 )
 
-type Users struct {
+type UsersHandler struct {
 	service users.Service
 }
 
-func NewUsers(service users.Service) *Users {
-	return &Users{service: service}
+func NewUsers(service users.Service) *UsersHandler {
+	return &UsersHandler{service: service}
 }
 
-func (h *Users) UserLogin(c *gin.Context) {
-	userLogin := UserSignup{}
+func (h *UsersHandler) UserLogin(c *gin.Context) {
+	userLogin := UserCredential{}
 	if err := c.BindJSON(&userLogin); err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
 			Code:    http.StatusBadRequest,
@@ -45,12 +45,7 @@ func (h *Users) UserLogin(c *gin.Context) {
 		return
 	}
 	session := sessions.Default(c)
-	userSession := dtos.UserSession{
-		ID:       user.ID,
-		Username: user.Username,
-		Password: user.Password,
-		IsAdmin:  user.IsAdmin,
-	}
+	userSession := userToUserSession(user)
 	userBytes, _ := json.Marshal(userSession)
 	session.Set("user", userBytes)
 	err = session.Save()
@@ -68,7 +63,7 @@ func (h *Users) UserLogin(c *gin.Context) {
 	logrus.Infof("User %q logged in", user.Username)
 }
 
-func (h *Users) UserLogout(c *gin.Context) {
+func (h *UsersHandler) UserLogout(c *gin.Context) {
 	session := sessions.Default(c)
 	sessionUserByte, ok := session.Get("user").([]byte)
 	session.Clear()
@@ -81,8 +76,8 @@ func (h *Users) UserLogout(c *gin.Context) {
 	logrus.Infof("User %q logged out", user.Username)
 }
 
-func (h *Users) UserSignup(c *gin.Context) {
-	userSignup := UserSignup{}
+func (h *UsersHandler) UserSignup(c *gin.Context) {
+	userSignup := UserCredential{}
 	if err := c.BindJSON(&userSignup); err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
 			Code:    http.StatusBadRequest,
@@ -105,12 +100,7 @@ func (h *Users) UserSignup(c *gin.Context) {
 		return
 	}
 	session := sessions.Default(c)
-	userBytes, _ := json.Marshal(dtos.UserSession{
-		ID:       user.ID,
-		Username: user.Username,
-		Password: user.Password,
-		IsAdmin:  user.IsAdmin,
-	})
+	userBytes, _ := json.Marshal(userToUserSession(user))
 	session.Set("user", userBytes)
 	err := session.Save()
 	if err != nil {
@@ -134,9 +124,32 @@ func (h *Users) UserSignup(c *gin.Context) {
 	})
 }
 
-func userToDAO(u UserSignup) models.User {
+func (h *UsersHandler) GetUser(c *gin.Context, userID uint) {
+	user, err := h.service.GetByID(c, userID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Details: err,
+			Message: "Error getting the user",
+		})
+
+		return
+	}
+	c.JSON(http.StatusOK, userToUserSession(user))
+}
+
+func userToDAO(u UserCredential) models.User {
 	return models.User{
 		Username: u.Username,
 		Password: u.Password,
+	}
+}
+
+func userToUserSession(u models.User) dtos.UserSession {
+	return dtos.UserSession{
+		ID:       u.ID,
+		Username: u.Username,
+		Password: u.Password,
+		IsAdmin:  u.IsAdmin,
 	}
 }

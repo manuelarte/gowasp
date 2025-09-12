@@ -96,9 +96,9 @@ func main() {
 	{
 		// Rest API
 		restAPI := rest.API{
-			Users:    rest.NewUsers(userService),
-			Comments: rest.NewComments(postCommentService),
-			Posts:    rest.NewPosts(postService),
+			UsersHandler:    rest.NewUsers(userService),
+			CommentsHandler: rest.NewComments(postCommentService),
+			PostsHandler:    rest.NewPosts(postService),
 		}
 		rest.RegisterHandlers(r, restAPI)
 	}

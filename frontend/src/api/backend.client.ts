@@ -9,6 +9,7 @@ export interface ApiClient {
   login: (username: string, password: string) => Promise<User>
   logout: () => Promise<void>
   signup: (username: string, password: string) => Promise<User>
+  getUser: (id: number) => Promise<User>
 
   getStaticPost: (name: string) => Promise<string>
   getPost: (id: number) => Promise<Post>
@@ -52,13 +53,18 @@ export class HttpClient implements ApiClient {
     return response.data
   }
 
+  async getUser (userId: number): Promise<User> {
+    const response = await this.client.get<User>(`api/users/${userId}`)
+    return response.data
+  }
+
   async getStaticPost (name: string): Promise<string> {
     const response = await this.client.get<string>(`static/posts?name=${name}`)
     return response.data
   }
 
   async getPost (id: number): Promise<Post> {
-    // TODO
+    // TODO(manuelarte): create endpoint, this endpoint returns the csrf token
     // const response = await this.client.get<Post>(`api/posts/${id}`)
     // return response.data
     return { title: 'Mock', content: 'Mock', id, postedAt: 1, userId: 1, createdAt: 1, updatedAt: 1 } as Post

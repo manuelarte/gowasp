@@ -1,6 +1,9 @@
 <template>
   <v-toolbar color="primary">
     <v-toolbar-title text="GOwasp" />
+    <template #prepend>
+      <v-btn v-tooltip="'Home'" icon="mdi-home" to="/" />
+    </template>
     <template #append>
       <div class="d-flex ga-1">
         <v-btn v-if="!user" v-tooltip="'Login'" icon="mdi-login" to="/login" />
