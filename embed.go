@@ -11,5 +11,5 @@ var OpenAPI []byte
 //go:embed static/swagger-ui/*
 var SwaggerUI embed.FS
 
-//go:embed frontend/dist/*
+//go:embed frontend/dist/* frontend/dist/assets/*
 var Frontend embed.FS

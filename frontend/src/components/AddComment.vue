@@ -7,6 +7,10 @@
       type: Object as PropType<Post>,
       required: true,
     },
+    csrf: {
+      type: String,
+      required: true,
+    },
   })
 
   const emits = defineEmits<{
@@ -15,7 +19,7 @@
   }>()
 
   function submit () {
-    const newComment = { comment: commentContent.value, userId: 1, csrf: 'TODO: get csrf token' }
+    const newComment = { comment: commentContent.value, userId: 1, csrf: props.csrf }
     isSaving.value = true
     errorSaving.value = null
     backendClient.postPostComment(props.post.id, newComment)

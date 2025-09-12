@@ -85,7 +85,7 @@ func main() {
 		}
 		{
 			sfs, _ := fs.Sub(fs.FS(gowasp.Frontend), "frontend/dist")
-			r.StaticFS("frontend", http.FS(sfs))
+			r.StaticFS("web", http.FS(sfs))
 		}
 
 		r.GET("/api/docs", func(c *gin.Context) {

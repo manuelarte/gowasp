@@ -14,7 +14,7 @@ export interface ApiClient {
   getStaticPost: (name: string) => Promise<string>
   getPost: (id: number) => Promise<Post>
   getPosts: (page: number) => Promise<Page<Post>>
-  getPostComments: (postId: number) => Promise<Page<Comment>>
+  getPostComments: (postId: number) => Promise<[string, Page<Comment>]>
   postPostComment: (postId: number, comment: NewComment) => Promise<Comment>
 }
 
@@ -22,13 +22,14 @@ export class HttpClient implements ApiClient {
   private client: AxiosInstance
 
   constructor (baseURL: string) {
-    axios.defaults.withCredentials = true
     const jar = new CookieJar()
     this.client = wrapper(axios.create({
       baseURL,
       jar,
+      withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
+        'Accept': '*/*',
       },
     }))
   }
@@ -68,14 +69,18 @@ export class HttpClient implements ApiClient {
     // TODO(manuelarte): create endpoint, this endpoint returns the csrf token
     // const response = await this.client.get<Post>(`api/posts/${id}`)
     // return response.data
-    return { title: 'Mock', content: 'Mock', id, postedAt: 1, userId: 1, createdAt: 1, updatedAt: 1 } as Post
+    return { title: 'Mock', content: 'Mock TODO', id, postedAt: 1, userId: 1, createdAt: 1, updatedAt: 1 } as Post
   }
 
-  async getPostComments (postId: number): Promise<Page<Comment>> {
+  async getPostComments (postId: number): Promise<[string, Page<Comment>]> {
     const page = 0
     const size = 10
-    const response = await this.client.get<Page<Comment>>(`api/posts/${postId}/comments?page=${page}&size=${size}`)
-    return response.data
+    const response = await this.client.get<Page<Comment>>(
+      `api/posts/${postId}/comments?page=${page}&size=${size}`,
+      { withCredentials: true },
+    )
+    const csrf = response.headers['x-xsrf-token']
+    return [csrf, response.data]
   }
 
   async getPosts (page: number): Promise<Page<Post>> {

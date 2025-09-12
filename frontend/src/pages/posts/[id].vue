@@ -6,6 +6,8 @@
 </script>
 
 <script setup lang="ts">
+  // eslint-disable-next-line import/first
+  import type { Comment } from '@/models/posts.model'
 
   const {
     data: post,
@@ -14,17 +16,17 @@
   } = usePost()
 
   const {
-    data: postCommentsPageAndUsers,
+    data: csrfPostCommentsPageAndUsers,
     isLoading: isLoadingComments,
     error: errorComments,
     reload: reloadComments,
   } = usePostComments()
 
   function getUsername (userId: number): string {
-    return postCommentsPageAndUsers.value.users[userId].username
+    return csrfPostCommentsPageAndUsers.value.users[userId].username
   }
 
-  function onCommentSaved (_: Comment): void {
+  function onCommentSaved (_: Comment) {
     commentSavedSnackbar.value = true
     reloadComments()
   }
@@ -50,12 +52,12 @@
 
     <v-skeleton-loader v-if="isLoadingComments" type="card" />
     <template v-else>
-      <AddComment class="card" :post="post" @comment:saved="onCommentSaved($event)" />
+      <AddComment class="card" :csrf="csrfPostCommentsPageAndUsers.csrf" :post="post" @comment:saved="onCommentSaved" />
 
-      <p>This post has {{ postCommentsPageAndUsers.commentsPage?.data.length }} comment(s)</p>
+      <p>This post has {{ csrfPostCommentsPageAndUsers.commentsPage?.data.length }} comment(s)</p>
 
       <v-card
-        v-for="comment in postCommentsPageAndUsers.commentsPage?.data ?? []"
+        v-for="comment in csrfPostCommentsPageAndUsers.commentsPage?.data ?? []"
         :key="comment.id"
         class="card"
         :subtitle="comment.postedAt"
