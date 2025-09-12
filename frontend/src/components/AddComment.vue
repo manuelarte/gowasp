@@ -2,7 +2,7 @@
   import type { Comment, Post } from '@/models/posts.model'
   import { backendClient } from '@/stores/app'
 
-  defineProps({
+  const props = defineProps({
     post: {
       type: Object as PropType<Post>,
       required: true,
@@ -17,7 +17,7 @@
   function submit () {
     const newComment = { comment: commentContent.value, userId: 1 }
     isSaving.value = true
-    backendClient.postPostComment(1, newComment)
+    backendClient.postPostComment(props.post.id, newComment)
       .then(c => {
         emits('comment:saved', c)
       })
