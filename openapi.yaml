@@ -98,6 +98,19 @@ paths:
             minimum: 1
             default: 20
           description: Size of the page
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+            enum:
+              - "postedAt,asc"
+              - "postedAt,desc"
+              - "title,asc"
+              - "title,desc"
+            default: "postedAt,asc"
+          description: Sorting criteria
+          example: "postedAt,asc"
       responses:
         "200":
           description: Post page retrieved

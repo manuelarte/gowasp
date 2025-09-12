@@ -26,6 +26,7 @@ func (h *Posts) GetPosts(c *gin.Context, params GetPostsParams) {
 	pageRequest, err := pagorminator.PageRequest(
 		ptrutils.DerefOr(params.Page, 0),
 		ptrutils.DerefOr(params.Size, defaultPageRequestSize),
+		orderFrom(ptrutils.DerefOr(params.Sort, PostedAtasc)),
 	)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
@@ -48,6 +49,21 @@ func (h *Posts) GetPosts(c *gin.Context, params GetPostsParams) {
 	}
 	dto := postPageRequestToDTO(postPage, pageRequest)
 	c.JSON(http.StatusOK, dto)
+}
+
+func orderFrom(sortingCriteria GetPostsParamsSort) pagorminator.Order {
+	switch sortingCriteria {
+	case PostedAtasc:
+		return pagorminator.MustOrder("posted_at", pagorminator.ASC)
+	case PostedAtdesc:
+		return pagorminator.MustOrder("posted_at", pagorminator.DESC)
+	case Titleasc:
+		return pagorminator.MustOrder("title", pagorminator.ASC)
+	case Titledesc:
+		return pagorminator.MustOrder("title", pagorminator.DESC)
+	default:
+		return pagorminator.MustOrder("posted_at", pagorminator.DESC)
+	}
 }
 
 func postPageRequestToDTO(posts []*models.Post, pageRequest *pagorminator.Pagination) PagePosts {

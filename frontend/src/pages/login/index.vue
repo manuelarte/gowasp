@@ -31,6 +31,19 @@
         () => loading.value = false,
       )
   }
+
+  async function signup () {
+    err.value = null
+    loading.value = true
+    userStore.signup(username.value, password.value)
+      .then(_ => {
+        router.push('/')
+      })
+      .catch(error => err.value = error.message)
+      .finally(
+        () => loading.value = false,
+      )
+  }
 </script>
 
 <template>
@@ -86,6 +99,21 @@
         color="primary"
         indeterminate
       />
+
+      <br>
+
+      <v-btn
+        v-if="form && !loading"
+        block
+        class="mb-8"
+        color="blue"
+        size="large"
+        type="submit"
+        variant="tonal"
+        @click="signup"
+      >
+        Create new account
+      </v-btn>
     </v-form>
 
     <v-card

@@ -12,6 +12,14 @@ import (
 	"github.com/oapi-codegen/runtime"
 )
 
+// Defines values for GetPostsParamsSort.
+const (
+	PostedAtasc  GetPostsParamsSort = "postedAt,asc"
+	PostedAtdesc GetPostsParamsSort = "postedAt,desc"
+	Titleasc     GetPostsParamsSort = "title,asc"
+	Titledesc    GetPostsParamsSort = "title,desc"
+)
+
 // ErrorResponse defines model for ErrorResponse.
 type ErrorResponse struct {
 	// Code The resulting http code
@@ -143,7 +151,13 @@ type GetPostsParams struct {
 
 	// Size Size of the page
 	Size *int `form:"size,omitempty" json:"size,omitempty"`
+
+	// Sort Sorting criteria
+	Sort *GetPostsParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
 }
+
+// GetPostsParamsSort defines parameters for GetPosts.
+type GetPostsParamsSort string
 
 // GetPostCommentsParams defines parameters for GetPostComments.
 type GetPostCommentsParams struct {
@@ -215,6 +229,14 @@ func (siw *ServerInterfaceWrapper) GetPosts(c *gin.Context) {
 	err = runtime.BindQueryParameter("form", true, false, "size", c.Request.URL.Query(), &params.Size)
 	if err != nil {
 		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter size: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "sort" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "sort", c.Request.URL.Query(), &params.Sort)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sort: %w", err), http.StatusBadRequest)
 		return
 	}
 

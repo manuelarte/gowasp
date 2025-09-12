@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar>
+  <v-toolbar color="primary">
     <v-toolbar-title text="GOwasp" />
     <template #append>
       <div class="d-flex ga-1">

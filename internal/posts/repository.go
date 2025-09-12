@@ -27,7 +27,7 @@ func NewRepository(db *gorm.DB) Repository {
 
 func (b gormRepository) GetAll(ctx context.Context, pageRequest *pagorminator.Pagination) ([]*models.Post, error) {
 	var posts []*models.Post
-	tx := b.DB.WithContext(ctx).Clauses(pageRequest).Order("posted_at asc").Find(&posts)
+	tx := b.DB.WithContext(ctx).Clauses(pageRequest).Find(&posts)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

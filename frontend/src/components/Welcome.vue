@@ -22,7 +22,19 @@
   const page = ref(1)
   const loadingPosts = ref(true)
   const postsPage = ref<Page<Post> | null>(null)
-  // TODO const errorLoadingPostPage = ref<string | null>(null)
+  const errorLoadingPostPage = ref<string | null>(null)
+
+  watch(page, () => {
+    loadPosts()
+  })
+
+  async function loadPosts () {
+    loadingPosts.value = true
+    client.getPosts(page.value - 1)
+      .then(pp => postsPage.value = pp)
+      .catch(error => errorLoadingPostPage.value = error)
+      .finally(() => loadingPosts.value = false)
+  }
 
   onMounted(() => {
     loadingIntro.value = true
@@ -30,10 +42,7 @@
       .then(i => intro.value = i)
       .finally(() => loadingIntro.value = false)
 
-    loadingPosts.value = true
-    client.getPosts(page.value - 1)
-      .then(pp => postsPage.value = pp)
-      .finally(() => loadingPosts.value = false)
+    loadPosts()
   })
 </script>
 
@@ -72,8 +81,14 @@
       <v-list-item
         v-for="post in postsPage!.data"
         :key="post.id"
-        :title="post.title"
-      />
+      >
+        <template #prepend>
+          <v-avatar>
+            <v-icon color="primary" icon="mdi-post" />
+          </v-avatar>
+          <v-list-item-title>{{ post.title }}</v-list-item-title>
+        </template>
+      </v-list-item>
     </v-list>
 
     <v-pagination
