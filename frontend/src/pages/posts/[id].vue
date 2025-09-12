@@ -80,6 +80,7 @@
   </div>
   <v-snackbar
     v-model="commentSavedSnackbar"
+    color="primary"
     timeout="1000"
   >
     Comment saved
