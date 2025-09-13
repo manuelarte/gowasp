@@ -24,7 +24,7 @@ jobs:
           go mod tidy
           git diff --exit-code go.mod
           git diff --exit-code go.sum
-  golangci:
+  lint:
     name: lint
     runs-on: ${{ matrix.os }}
     strategy:
@@ -36,8 +36,6 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
-
-      # This is needed because typecheck in golangci-lint needs that the code is built
       - uses: pnpm/action-setup@v4
         with:
           version: 10
@@ -47,7 +45,6 @@ jobs:
         run: pnpm -C web lint
       - name: Build
         run: pnpm -C web build
-
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v8
         with:
