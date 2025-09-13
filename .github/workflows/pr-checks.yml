@@ -50,6 +50,7 @@ jobs:
         with:
           version: v2.4
       - name: Dockerfile lint
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: Dockerfile
