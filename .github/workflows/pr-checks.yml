@@ -36,6 +36,20 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
+
+      # This is needed because typecheck in golangci-lint needs that the code is built
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install
+      - name: Lint
+        run: pnpm lint
+      - name: Build
+        run: pnpm build
+
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v8
         with:
