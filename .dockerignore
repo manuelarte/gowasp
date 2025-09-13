@@ -1,6 +1,9 @@
 tools
 
+.git
+.gitignore
 .golangci.yml
-CHANGELOG.md
+frontend/node_modules
+frontend/dist
 Makefile
-README.md
+*.md

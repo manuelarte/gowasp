@@ -74,9 +74,8 @@
           <span class="font-weight-black">{{ getUsername(comment.userId) }}</span>
         </template>
 
-        <v-card-text class="pt-4">
-          {{ comment.comment }}
-        </v-card-text>
+        <!-- eslint-disable-next-line vue/no-v-text-v-html-on-component -->
+        <v-card-text class="pt-4" v-html="comment.comment" />
       </v-card>
     </template>
   </div>
