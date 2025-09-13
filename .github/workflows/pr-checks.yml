@@ -38,10 +38,14 @@ jobs:
           go-version: ${{ matrix.go }}
 
       # This is needed because typecheck in golangci-lint needs that the code is built
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: "pnpm"
       - name: Install dependencies
         run: pnpm -C web install
       - name: Lint
