@@ -61,7 +61,10 @@ export class HttpClient implements ApiClient {
   }
 
   async getStaticPost (name: string): Promise<string> {
-    const response = await this.client.get<string>(`static/posts?name=${name}`)
+    const response = await this.client.get<string>(
+      `static/posts`,
+      { params: { name } },
+    )
     return response.data
   }
 
@@ -76,8 +79,8 @@ export class HttpClient implements ApiClient {
     const page = 0
     const size = 10
     const response = await this.client.get<Page<Comment>>(
-      `api/posts/${postId}/comments?page=${page}&size=${size}`,
-      { withCredentials: true },
+      `api/posts/${postId}/comments`,
+      { params: { page, size } },
     )
     // TODO(manuelarte): I can't make axios to read Set-Cookie header, so I have to send it in another header
     const csrf = response.headers['x-xsrf-token']
@@ -86,7 +89,10 @@ export class HttpClient implements ApiClient {
 
   async getPosts (page: number): Promise<Page<Post>> {
     const size = 3
-    const response = await this.client.get<Page<Post>>(`api/posts?page=${page}&size=${size}`)
+    const response = await this.client.get<Page<Post>>(
+      `api/posts`,
+      { params: { page, size } },
+    )
     return response.data
   }
 
