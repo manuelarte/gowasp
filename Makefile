@@ -32,6 +32,10 @@ format-code: tidy ## Format go code and run the fixer, alias: fmt
 	golangci-lint run --fix ./...
 .PHONY: fmt format-code
 
+lint:
+	pnpm -C ./web lint
+	golangci-lint run --fix ./...
+
 dr: docker-run
 docker-run:
 	docker build --tag github.com/manuelarte/gowasp .
