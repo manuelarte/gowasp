@@ -69,10 +69,8 @@ export class HttpClient implements ApiClient {
   }
 
   async getPost (id: number): Promise<Post> {
-    // TODO(manuelarte): create endpoint, this endpoint returns the csrf token
-    // const response = await this.client.get<Post>(`api/posts/${id}`)
-    // return response.data
-    return { title: 'Mock', content: 'Mock TODO', id, postedAt: 1, userId: 1, createdAt: 1, updatedAt: 1 } as Post
+    const response = await this.client.get<Post>(`api/posts/${id}`)
+    return response.data
   }
 
   async getPostComments (postId: number): Promise<[string, Page<Comment>]> {

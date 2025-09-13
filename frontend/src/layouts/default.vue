@@ -1,6 +1,6 @@
 <template>
   <v-toolbar color="primary">
-    <v-toolbar-title text="GOwasp" />
+    <v-toolbar-title text="GOwasp App" />
     <template #prepend>
       <v-btn v-tooltip="'Home'" icon="mdi-home" to="/" />
     </template>
