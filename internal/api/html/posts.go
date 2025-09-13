@@ -9,8 +9,8 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/manuelarte/gowasp/internal/api/rest"
 
+	"github.com/manuelarte/gowasp/internal/api/rest"
 	"github.com/manuelarte/gowasp/internal/config"
 	"github.com/manuelarte/gowasp/internal/posts"
 	"github.com/manuelarte/gowasp/internal/posts/postcomments"

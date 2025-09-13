@@ -141,6 +141,8 @@ type User struct {
 
 // UserCredential defines model for UserCredential.
 type UserCredential struct {
+	IsAdmin *bool `json:"isAdmin,omitempty"`
+
 	// Password Password of the user
 	Password string `json:"password"`
 

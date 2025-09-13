@@ -8,6 +8,8 @@
 <script setup lang="ts">
   // eslint-disable-next-line import/first
   import type { Comment } from '@/models/posts.model'
+  // eslint-disable-next-line import/first
+  import { getInitials } from '@/models/users.model'
 
   const {
     data: post,
@@ -22,8 +24,9 @@
     reload: reloadComments,
   } = usePostComments()
 
-  function getUsername (userId: number): string {
-    return csrfPostCommentsPageAndUsers.value.users[userId].username
+  function getUserInitials (userId: number): string {
+    const user = csrfPostCommentsPageAndUsers.value.users[userId]
+    return getInitials(user)
   }
 
   function onCommentSaved (_: Comment) {
@@ -67,11 +70,11 @@
             color="brown"
             size="large"
           >
-            <span class="text-h5">{{ getUsername(comment.userId).substring(0, 2).toUpperCase() }}</span>
+            <span class="text-h5">{{ getUserInitials(comment.userId) }}</span>
           </v-avatar>
         </template>
         <template #title>
-          <span class="font-weight-black">{{ getUsername(comment.userId) }}</span>
+          <span class="font-weight-black">{{ csrfPostCommentsPageAndUsers.users[comment.userId].username }}</span>
         </template>
 
         <!-- eslint-disable-next-line vue/no-v-text-v-html-on-component -->

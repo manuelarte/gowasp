@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/manuelarte/ptrutils"
 	"github.com/sirupsen/logrus"
 
 	"github.com/manuelarte/gowasp/internal/api/dtos"
@@ -142,6 +143,7 @@ func userToDAO(u UserCredential) models.User {
 	return models.User{
 		Username: u.Username,
 		Password: u.Password,
+		IsAdmin:  ptrutils.DerefOr(u.IsAdmin, false),
 	}
 }
 

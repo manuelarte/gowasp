@@ -1,6 +1,8 @@
 <script setup lang="ts">
   import type { Comment, Post } from '@/models/posts.model'
-  import { backendClient } from '@/stores/app'
+  import { getInitials } from '@/models/users.model.ts'
+  import router from '@/router'
+  import { backendClient, useUserStore } from '@/stores/app'
 
   const props = defineProps({
     post: {
@@ -20,7 +22,7 @@
   }>()
 
   function submit () {
-    const newComment = { comment: commentContent.value, userId: 1, csrf: props.csrf }
+    const newComment = { comment: commentContent.value, userId: user.value!.id, csrf: props.csrf }
     isSaving.value = true
     errorSaving.value = null
     backendClient.postPostComment(props.post.id, newComment)
@@ -31,6 +33,16 @@
       .catch(error => errorSaving.value = error.message)
       .finally(() => isSaving.value = false)
   }
+
+  // TODO(manuelarte): this is all over the place
+  const userStore = useUserStore()
+  userStore.$subscribe((_, state) => {
+    if (!state.user) {
+      router.push('/login')
+    }
+    user.value = state.user!
+  })
+  const user = ref(userStore.user!)
 
   const rules = [(v: string | null) => (v?.length ?? 0) <= 1000 || 'Max 1000 characters']
 
@@ -47,7 +59,7 @@
         color="brown"
         size="large"
       >
-        <span class="text-h5">MD</span>
+        <span class="text-h5">{{ getInitials(user) }}</span>
       </v-avatar>
     </template>
     <v-form v-model="valid" :type="submit" @submit.prevent="submit">

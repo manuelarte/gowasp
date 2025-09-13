@@ -2,16 +2,22 @@
 
 ![version](https://img.shields.io/github/v/release/manuelarte/gowasp)
 
-GOwasp simulates a vulnerable web application built with Go.
+GOwasp simulates a vulnerable web application built with [Go][go] and [Vuejs][vuejs].
 It showcases some of the most common security flaws found in modern web applications, based on the [OWASP Top 10](https://owasp.org/www-project-top-ten/) list.
 
 The project encourages hands-on learning:
 
-1. Exploit each vulnerability
-2. Understand the risk
+1. Exploit each vulnerability.
+2. Understand the risk.
 3. Apply the fix.
 
-## 🚀Getting Started
+## 🔧 Prerequisites
+
+* [Go](https://go.dev/doc/install)
+* [pnpm](https://pnpm.io/)
+* [Docker](https://docs.docker.com/get-docker/)
+
+## 🚀Getting started
 
 To run the app, in the root directory type:
 
@@ -25,13 +31,13 @@ If you want to run it with Docker 🐳 use:
 make dr
 ```
 
-You can find the swagger ui in [swagger/index.html](http://localhost:8083/swagger/index.html).
+You can find the Swagger UI in [swagger/index.html](http://localhost:8083/swagger/index.html).
 
-## 🛠️ Application Overview
+## 🛠️ Application overview
 
 Once the application is up and running, you can begin by exploring its core features.
 
-### 🔑 Login/Signup Page
+### 🔑 Login/Signup page
 
 Start by navigating to the [signup page][signup]. Try creating a user account with the following credentials:
 
@@ -40,13 +46,13 @@ username: test
 password: test
 ```
 
-### 🏠 Welcome Page
+### 🏠 Welcome page
 
 After logging in or creating an account, you’ll be redirected to the [welcome page][welcome].
 This page displays an introductory blog post along with links to the latest entries.
 Click on one of the recent posts to continue exploring.
 
-### 📝 Post Page
+### 📝 Post page
 
 Clicking a post takes you to its detail page, where you can read the content, view existing comments, and submit your own.
 
@@ -61,19 +67,19 @@ Now that you've explored the basic functionality, it is time to dive into the fu
 
 Let's explore different vulnerabilities by exploiting some of the functionalities that this app provides:
 
-### 1. Create User (POST /api/users/signup)
+### 1. Create user (POST /api/users/signup)
 
 We'll start by exploring vulnerabilities in the [/api/users/signup][signup] endpoint.
 Specifically, you'll investigate the following issues:
 
-- [Weak Password Requirements](#-weak-password-requirements)
-- [Weak Hash Algorithm](#-weak-hash-algorithm)
-- [Mass Assignment](#-mass-assignment)
+- [Weak password requirements](#-weak-password-requirements)
+- [Weak hash algorithm](#-weak-hash-algorithm)
+- [Mass assignment](#-mass-assignment)
 
 > [!TIP]
 > Use the provided HTTP client file [users-signup.http](./tools/users-signup.http), to follow along and test each case.
 
-#### 🔐 [Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)
+#### 🔐 [Weak password requirements](https://cwe.mitre.org/data/definitions/521.html)
 
 In [users/service.go](./internal/users/service.go), the password policy currently allows any value with _more than four characters_ (`#1. Scenario`).
 
@@ -84,7 +90,7 @@ To strengthen this, update the logic to enforce the following rules:
 
 After applying these changes, verify the new password validation behavior.
 
-#### 🤖 [Weak Hash Algorithm](https://cwe.mitre.org/data/definitions/328.html)
+#### 🤖 [Weak hash algorithm](https://cwe.mitre.org/data/definitions/328.html)
 
 For a detailed explanation of this vulnerability, see the [Weak Hashing Algorithm Vulnerability](https://knowledge-base.secureflag.com/vulnerabilities/broken_cryptography/weak_hashing_algorithm_vulnerability.html).
 
@@ -113,7 +119,7 @@ When inspecting the login response, you’ll notice a field named `isAdmin`.
 The HTML signup form doesn’t expose this field, but what happens if you _include it directly in the API request?_
 Try sending a crafted request that sets `isAdmin` to true and observe the outcome.
 
-### 2. Login User (POST /users/login)
+### 2. Login user (POST /users/login)
 
 We are going to exploit the vulnerabilities related to the endpoint to log in a user in [/api/users/login][login].
 The vulnerability that we are going to check is:
@@ -127,13 +133,13 @@ As you can see in [users repository.go](./internal/users/repository.go), in the 
 
 For a detailed explanation of this vulnerability, see the [OWASP SQL Injection Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html).
 
-Try to exploit this query concatenation by concatenating an `always true` SQL statement (something like `-OR '1'='1'-`).
+Try to exploit this query concatenation by concatenating an `always true` SQL statement (something like `OR '1'='1'-`).
 The goal is to avoid the execution of the password clause (maybe by injecting a comment (`--`) to comment out the rest of the query)
 
 > [!IMPORTANT]  
 > Never concatenate strings in a query.
 
-### 3. View Posts
+### 3. View posts
 
 Once you're logged in, you are redirected to the [Welcome][welcome] page. There you can see an **Intro Post**.
 
@@ -165,11 +171,11 @@ To solve this issue for this scenario, we could validate the user input, and avo
 
 The vulnerabilities we are going to check here:
 
-- [Broken Access Control](#-broken-access-control)
+- [Broken access control](#-broken-access-control)
 - [CSRF](#-csrf---cross-site-request-forgery)
-- [HTML Template injection](#-html-template-injection)
+- [HTML template injection](#-html-template-injection)
 
-#### 🩹 [Broken Access Control](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)
+#### 🩹 [Broken access control](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)
 
 For a detailed explanation of this vulnerability, see the [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html).
 
@@ -196,26 +202,39 @@ The post-comments endpoint lacks protection against CSRF attacks. Verify this by
 This exploit combines vulnerabilities from both CSRF and HTML template injection.
 
 Prevent CSRF attacks by adding a CSRF token cookie to requests and validating that the token in the JSON payload matches the cookie value.
-In the template [add_edit_comment.tpl](/web/templates/posts/add_edit_comment.tpl) the token appears as:
+In the file [AddComment.vue](/web/src/components/AddComment.vue) the token appears as:
 
-```html
-<input type="hidden" id="csrf" name="csrf" value="{{ .csrf }}" />
+```vue
+<script setup lang="ts">
+
+const props = defineProps({
+    ...
+    csrf: {
+        type: String,
+        required: true,
+        validator: (v: string, _) => v.length > 0,
+    },
+})
+...
 ```
 
 Implement validation to ensure the `csrf` value from the JSON payload matches the `csrf` cookie sent in the request.
 After applying the fix, restart the application and confirm that creating comments via the `win price` button no longer works.
 
-#### 💉🌐 [HTML Template Injection](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/11-Client-side_Testing/03-Testing_for_HTML_Injection)
+#### 💉🌐 [HTML template injection](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/11-Client-side_Testing/03-Testing_for_HTML_Injection)
 
 Earlier, you encountered a template injection vulnerability.
 
 Run the `#Scenario 2` HTTP requests that attempts to inject `<script>` tag in your comment.
 
 To solve this, remember to always escape and validate user input to prevent injection attacks.
-The [Gin Framework](https://gin-gonic.com/) provides built-in protection against this vulnerability.
-In this project, a custom `unsafe` function bypassed Gin’s escaping to render raw HTML.
-Check [`gowasp.main`](cmd/gowasp/gowasp.go) to see how `unsafe` function renders HTML content without escaping.
+In general, frameworks like [Gin Framework](https://gin-gonic.com/) provide built-in protection against this vulnerability.
+In this project, we are using Vue `v-html` bind to render raw HTML.
+Check [/posts/id.vue](web/src/pages/posts/%5Bid%5D.vue) to see how to render HTML content without escaping it.
 
-[signup]: http://localhost:8083/api/users/signup
-[login]: http://localhost:8083/users/login
-[welcome]: http://localhost:8083/users/welcome
+[go]: https://go.dev/
+[vuejs]: https://vuejs.org/
+[signup]: http://localhost:8083/web/login/
+[login]: http://localhost:8083/web/login/
+[welcome]: http://localhost:8083/web/
+[post5comments]: http://localhost:8083/web/posts/5/comments

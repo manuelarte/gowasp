@@ -24,6 +24,7 @@ Content-Type: application/json
 {
   "postId": 1,
   "userId": 1,
+  "csrf": "{{$random.uuid}}",
   "comment": "Horrible article, you should delete it."
 }
 
@@ -34,5 +35,6 @@ Content-Type: application/json
 {
   "postId": 1,
   "userId": 1,
-  "comment": "Horrible article, you should delete it. <script type='text/javascript'>alert('Hello')</script>"
+  "csrf": "{{$random.uuid}}",
+  "comment": "Horrible article, you should delete it. <img src=\"x\" onerror=\"alert('XSS attack')\">"
 }

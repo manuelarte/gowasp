@@ -22,6 +22,7 @@
   import router from '@/router'
   import { useUserStore } from '@/stores/app'
 
+  // TODO(manuelarte): this is all over the place
   const userStore = useUserStore()
   userStore.$subscribe((_, state) => {
     if (!state.user) {

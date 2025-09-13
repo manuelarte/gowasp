@@ -356,6 +356,9 @@ components:
           minLength: 4
           maxLength: 20
           description: Password of the user
+        isAdmin:
+          type: boolean
+          default: false
     PageMetadata:
       type: object
       required:
