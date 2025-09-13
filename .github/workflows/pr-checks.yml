@@ -44,11 +44,11 @@ jobs:
           node-version: 20
           cache: "pnpm"
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm -C web install
       - name: Lint
-        run: pnpm lint
+        run: pnpm -C web lint
       - name: Build
-        run: pnpm build
+        run: pnpm -C web build
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v8
