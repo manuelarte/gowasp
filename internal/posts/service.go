@@ -11,7 +11,7 @@ import (
 //nolint:iface // separate repository from service
 type Service interface {
 	GetAll(ctx context.Context, pagination *pagorminator.Pagination) ([]*models.Post, error)
-	GetByID(ctx context.Context, id uint64) (models.Post, error)
+	GetByID(ctx context.Context, id uint) (models.Post, error)
 }
 
 var _ Service = new(serviceImpl)
@@ -35,6 +35,6 @@ func (b serviceImpl) GetAll(ctx context.Context,
 	return posts, nil
 }
 
-func (b serviceImpl) GetByID(ctx context.Context, id uint64) (models.Post, error) {
+func (b serviceImpl) GetByID(ctx context.Context, id uint) (models.Post, error) {
 	return b.repository.GetByID(ctx, id)
 }

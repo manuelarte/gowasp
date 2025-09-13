@@ -186,6 +186,9 @@ type ServerInterface interface {
 	// get posts
 	// (GET /api/posts)
 	GetPosts(c *gin.Context, params GetPostsParams)
+	// get post
+	// (GET /api/posts/{postId})
+	GetPost(c *gin.Context, postID uint)
 	// get comments page
 	// (GET /api/posts/{postId}/comments)
 	GetPostComments(c *gin.Context, postID uint, params GetPostCommentsParams)
@@ -255,6 +258,30 @@ func (siw *ServerInterfaceWrapper) GetPosts(c *gin.Context) {
 	}
 
 	siw.Handler.GetPosts(c, params)
+}
+
+// GetPost operation middleware
+func (siw *ServerInterfaceWrapper) GetPost(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "postId" -------------
+	var postID uint
+
+	err = runtime.BindStyledParameterWithOptions("simple", "postId", c.Param("postId"), &postID, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter postId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetPost(c, postID)
 }
 
 // GetPostComments operation middleware
@@ -415,6 +442,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.GET(options.BaseURL+"/api/posts", wrapper.GetPosts)
+	router.GET(options.BaseURL+"/api/posts/:postId", wrapper.GetPost)
 	router.GET(options.BaseURL+"/api/posts/:postId/comments", wrapper.GetPostComments)
 	router.POST(options.BaseURL+"/api/posts/:postId/comments", wrapper.PostAPostComment)
 	router.POST(options.BaseURL+"/api/users/login", wrapper.UserLogin)

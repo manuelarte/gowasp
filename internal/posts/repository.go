@@ -12,7 +12,7 @@ import (
 //nolint:iface // separate repository from service
 type Repository interface {
 	GetAll(ctx context.Context, pageRequest *pagorminator.Pagination) ([]*models.Post, error)
-	GetByID(ctx context.Context, id uint64) (models.Post, error)
+	GetByID(ctx context.Context, id uint) (models.Post, error)
 }
 
 var _ Repository = new(gormRepository)
@@ -35,7 +35,7 @@ func (b gormRepository) GetAll(ctx context.Context, pageRequest *pagorminator.Pa
 	return posts, tx.Error
 }
 
-func (b gormRepository) GetByID(ctx context.Context, id uint64) (models.Post, error) {
+func (b gormRepository) GetByID(ctx context.Context, id uint) (models.Post, error) {
 	var post models.Post
 	tx := b.DB.WithContext(ctx).First(&post, id)
 	if tx.Error != nil {

@@ -22,6 +22,19 @@ func NewPosts(service posts.Service) *PostsHandler {
 	}
 }
 
+func (h *PostsHandler) GetPost(c *gin.Context, postID uint) {
+	post, err := h.service.GetByID(c, postID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Details: err,
+			Message: "Error retrieving the post",
+		})
+	}
+
+	c.JSON(http.StatusOK, postToDto(&post))
+}
+
 func (h *PostsHandler) GetPosts(c *gin.Context, params GetPostsParams) {
 	pageRequest, err := pagorminator.PageRequest(
 		ptrutils.DerefOr(params.Page, 0),
@@ -74,17 +87,18 @@ func postPageRequestToDTO(posts []*models.Post, pageRequest *pagorminator.Pagina
 			TotalCount: int(pageRequest.GetTotalElements()),
 			TotalPages: pageRequest.GetTotalPages(),
 		},
-		Data: sliceutils.Transform(posts, func(x *models.Post) Post {
-			return Post{
-				Content:   x.Content,
-				CreatedAt: x.CreatedAt,
-				ID:        x.ID,
-				PostedAt:  x.PostedAt,
-				Title:     x.Title,
-				UserID:    x.UserID,
-				UpdatedAt: x.UpdatedAt,
-			}
-		},
-		),
+		Data: sliceutils.Transform(posts, postToDto),
+	}
+}
+
+func postToDto(post *models.Post) Post {
+	return Post{
+		Content:   post.Content,
+		CreatedAt: post.CreatedAt,
+		ID:        post.ID,
+		PostedAt:  post.PostedAt,
+		Title:     post.Title,
+		UserID:    post.UserID,
+		UpdatedAt: post.UpdatedAt,
 	}
 }

@@ -2,11 +2,10 @@ package users
 
 import (
 	"context"
-	"fmt"
-
 	//#nosec G501
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 
 	"github.com/manuelarte/gowasp/internal/models"
 	"github.com/manuelarte/gowasp/internal/models/gerrors"

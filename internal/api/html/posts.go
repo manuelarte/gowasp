@@ -47,7 +47,7 @@ func (h *Posts) ViewPostPage(c *gin.Context) {
 
 		return
 	}
-	post, err := h.service.GetByID(c, id)
+	post, err := h.service.GetByID(c, uint(id))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, rest.ErrorResponse{
 			Code:    http.StatusBadRequest,

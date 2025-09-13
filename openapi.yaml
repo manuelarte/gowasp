@@ -153,6 +153,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/posts/{postId}:
+    get:
+      operationId: Get post
+      description: Get the post
+      summary: get post
+      tags:
+        - posts
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+            x-go-type: uint
+          x-go-name: postID
+          description: Numeric ID of the post
+      responses:
+        "200":
+          description: Post retrieved
+          headers:
+            X-XSRF-TOKEN:
+              description: CSRF token
+              schema:
+                type: string
+              example: 123e4567-e89b-12d3-a456-426655440000
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        "400":
+          description: Error retrieving post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/posts/{postId}/comments:
     get:
       operationId: Get post comments
@@ -189,6 +236,11 @@ paths:
         "200":
           description: Comments page retrieved
           headers:
+            X-XSRF-TOKEN:
+              description: CSRF token
+              schema:
+                type: string
+              example: 123e4567-e89b-12d3-a456-426655440000
             Set-Cookie:
               description: CSRF cookie
               schema:
