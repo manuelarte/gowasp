@@ -3,12 +3,16 @@ ARG VERSION=1.24.0
 # Build Stage
 FROM golang:${VERSION}-alpine AS builder
 # hadolint ignore=DL3018
-RUN apk --no-cache add make git gcc libtool musl-dev ca-certificates dumb-init
+RUN apk --no-cache add ca-certificates dumb-init make git gcc libtool musl-dev nodejs npm \
+    && npm install -g pnpm
 
 WORKDIR /app
 
 # Copy the source code
 COPY ./ ./
+
+# build frontend with pnpm
+RUN cd web && pnpm install && pnpm build
 
 RUN go mod download && go mod tidy
 

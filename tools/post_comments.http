@@ -13,7 +13,8 @@ Content-Type: application/json
 {
   "postId": 1,
   "userId": 2,
-  "comment": "Very nice article"
+  "comment": "Very nice article",
+  "csrf": "{{$random.uuid}}"
 }
 
 ### Scenario 1. Create Post comment for another user (e.g. admin user userId=1)
@@ -23,6 +24,7 @@ Content-Type: application/json
 {
   "postId": 1,
   "userId": 1,
+  "csrf": "{{$random.uuid}}",
   "comment": "Horrible article, you should delete it."
 }
 
@@ -33,5 +35,6 @@ Content-Type: application/json
 {
   "postId": 1,
   "userId": 1,
-  "comment": "Horrible article, you should delete it. <script type='text/javascript'>alert('Hello')</script>"
+  "csrf": "{{$random.uuid}}",
+  "comment": "Horrible article, you should delete it. <img src=\"x\" onerror=\"alert('XSS attack')\">"
 }

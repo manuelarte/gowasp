@@ -1,6 +1,9 @@
 tools
 
+.git
+.gitignore
 .golangci.yml
-CHANGELOG.md
+web/node_modules
+web/dist
 Makefile
-README.md
+*.md

@@ -67,19 +67,20 @@
         const inputs = document.getElementsByTagName("INPUT");
         inputs[0].setAttribute("disabled", "disabled");
         console.log(inputs[0]);
-        const postId = 2;
+        const postId = 5;
         const userId = 2;
         const newUserComment = {
           postId: postId,
           userId: userId,
-          comment: "<script>alert('You have been hacked')<\/script>",
+          //comment: "<button onclick=\"alert('XSS example')\">Click me</button>",
+          comment: "<img src=\"x\" onerror=\"alert('XSS attack')\">",
         };
         console.log(
           "Sending data:",
-          "/posts/" + postId + "/comments",
+          `/posts/${postId}/comments`,
           JSON.stringify(newUserComment),
         );
-        fetch("http://localhost:8083/api/posts/" + postId + "/comments", {
+        fetch(`http://localhost:8083/api/posts/${postId}/comments`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
