@@ -12,5 +12,4 @@ var OpenAPI []byte
 var SwaggerUI embed.FS
 
 //go:embed web/dist/* web/dist/assets/*
-//nolint:typecheck // needs to be built
 var Web embed.FS
