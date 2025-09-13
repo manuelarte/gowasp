@@ -10,6 +10,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
+)
+
+// Defines values for GetPostsParamsSort.
+const (
+	PostedAtasc  GetPostsParamsSort = "postedAt,asc"
+	PostedAtdesc GetPostsParamsSort = "postedAt,desc"
+	Titleasc     GetPostsParamsSort = "title,asc"
+	Titledesc    GetPostsParamsSort = "title,desc"
 )
 
 // ErrorResponse defines model for ErrorResponse.
@@ -102,6 +111,9 @@ type PostCommentNew struct {
 	// Comment The comment value
 	Comment string `json:"comment"`
 
+	// Csrf CSRF token
+	Csrf openapi_types.UUID `json:"csrf"`
+
 	// UserID Id of the user who wrote the comment
 	UserID uint `json:"userId"`
 }
@@ -127,8 +139,10 @@ type User struct {
 	Username string `json:"username"`
 }
 
-// UserSignup defines model for UserSignup.
-type UserSignup struct {
+// UserCredential defines model for UserCredential.
+type UserCredential struct {
+	IsAdmin *bool `json:"isAdmin,omitempty"`
+
 	// Password Password of the user
 	Password string `json:"password"`
 
@@ -143,7 +157,13 @@ type GetPostsParams struct {
 
 	// Size Size of the page
 	Size *int `form:"size,omitempty" json:"size,omitempty"`
+
+	// Sort Sorting criteria
+	Sort *GetPostsParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
 }
+
+// GetPostsParamsSort defines parameters for GetPosts.
+type GetPostsParamsSort string
 
 // GetPostCommentsParams defines parameters for GetPostComments.
 type GetPostCommentsParams struct {
@@ -158,16 +178,19 @@ type GetPostCommentsParams struct {
 type PostAPostCommentJSONRequestBody = PostCommentNew
 
 // UserLoginJSONRequestBody defines body for UserLogin for application/json ContentType.
-type UserLoginJSONRequestBody = UserSignup
+type UserLoginJSONRequestBody = UserCredential
 
 // UserSignupJSONRequestBody defines body for UserSignup for application/json ContentType.
-type UserSignupJSONRequestBody = UserSignup
+type UserSignupJSONRequestBody = UserCredential
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// get posts
 	// (GET /api/posts)
 	GetPosts(c *gin.Context, params GetPostsParams)
+	// get post
+	// (GET /api/posts/{postId})
+	GetPost(c *gin.Context, postID uint)
 	// get comments page
 	// (GET /api/posts/{postId}/comments)
 	GetPostComments(c *gin.Context, postID uint, params GetPostCommentsParams)
@@ -177,9 +200,15 @@ type ServerInterface interface {
 	// Login
 	// (POST /api/users/login)
 	UserLogin(c *gin.Context)
+	// Logout
+	// (DELETE /api/users/logout)
+	UserLogout(c *gin.Context)
 	// User Signup endpoint
 	// (POST /api/users/signup)
 	UserSignup(c *gin.Context)
+	// get user
+	// (GET /api/users/{userId})
+	GetUser(c *gin.Context, userID uint)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -215,6 +244,14 @@ func (siw *ServerInterfaceWrapper) GetPosts(c *gin.Context) {
 		return
 	}
 
+	// ------------- Optional query parameter "sort" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "sort", c.Request.URL.Query(), &params.Sort)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sort: %w", err), http.StatusBadRequest)
+		return
+	}
+
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
 		if c.IsAborted() {
@@ -223,6 +260,30 @@ func (siw *ServerInterfaceWrapper) GetPosts(c *gin.Context) {
 	}
 
 	siw.Handler.GetPosts(c, params)
+}
+
+// GetPost operation middleware
+func (siw *ServerInterfaceWrapper) GetPost(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "postId" -------------
+	var postID uint
+
+	err = runtime.BindStyledParameterWithOptions("simple", "postId", c.Param("postId"), &postID, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter postId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetPost(c, postID)
 }
 
 // GetPostComments operation middleware
@@ -305,6 +366,19 @@ func (siw *ServerInterfaceWrapper) UserLogin(c *gin.Context) {
 	siw.Handler.UserLogin(c)
 }
 
+// UserLogout operation middleware
+func (siw *ServerInterfaceWrapper) UserLogout(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.UserLogout(c)
+}
+
 // UserSignup operation middleware
 func (siw *ServerInterfaceWrapper) UserSignup(c *gin.Context) {
 
@@ -316,6 +390,30 @@ func (siw *ServerInterfaceWrapper) UserSignup(c *gin.Context) {
 	}
 
 	siw.Handler.UserSignup(c)
+}
+
+// GetUser operation middleware
+func (siw *ServerInterfaceWrapper) GetUser(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "userId" -------------
+	var userID uint
+
+	err = runtime.BindStyledParameterWithOptions("simple", "userId", c.Param("userId"), &userID, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter userId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetUser(c, userID)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -346,8 +444,11 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.GET(options.BaseURL+"/api/posts", wrapper.GetPosts)
+	router.GET(options.BaseURL+"/api/posts/:postId", wrapper.GetPost)
 	router.GET(options.BaseURL+"/api/posts/:postId/comments", wrapper.GetPostComments)
 	router.POST(options.BaseURL+"/api/posts/:postId/comments", wrapper.PostAPostComment)
 	router.POST(options.BaseURL+"/api/users/login", wrapper.UserLogin)
+	router.DELETE(options.BaseURL+"/api/users/logout", wrapper.UserLogout)
 	router.POST(options.BaseURL+"/api/users/signup", wrapper.UserSignup)
+	router.GET(options.BaseURL+"/api/users/:userId", wrapper.GetUser)
 }

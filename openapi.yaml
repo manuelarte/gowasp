@@ -19,7 +19,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserSignup'
+              $ref: '#/components/schemas/UserCredential'
       responses:
         "200":
           description: User successfully signed up.
@@ -50,7 +50,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserSignup'
+              $ref: '#/components/schemas/UserCredential'
       responses:
         "200":
           description: User successfully log in.
@@ -60,6 +60,45 @@ paths:
                 $ref: '#/components/schemas/User'
         "400":
           description: Username and password combination not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/users/logout:
+    delete:
+      operationId: User logout
+      description: Allow user to logout
+      summary: Logout
+      tags:
+        - user
+      responses:
+        "200":
+          description: User successfully logged out.
+  /api/users/{userId}:
+    get:
+      operationId: Get user
+      description: Get user
+      summary: get user
+      tags:
+        - user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+            x-go-type: uint
+          x-go-name: userID
+          description: ID of the user to retrieve its data
+      responses:
+        "200":
+          description: User retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "404":
+          description: User not found
           content:
             application/json:
               schema:
@@ -88,6 +127,19 @@ paths:
             minimum: 1
             default: 20
           description: Size of the page
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+            enum:
+              - "postedAt,asc"
+              - "postedAt,desc"
+              - "title,asc"
+              - "title,desc"
+            default: "postedAt,asc"
+          description: Sorting criteria
+          example: "postedAt,asc"
       responses:
         "200":
           description: Post page retrieved
@@ -101,13 +153,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/posts/{postId}:
+    get:
+      operationId: Get post
+      description: Get the post
+      summary: get post
+      tags:
+        - posts
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+            x-go-type: uint
+          x-go-name: postID
+          description: Numeric ID of the post
+      responses:
+        "200":
+          description: Post retrieved
+          headers:
+            X-XSRF-TOKEN:
+              description: CSRF token
+              schema:
+                type: string
+              example: 123e4567-e89b-12d3-a456-426655440000
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        "400":
+          description: Error retrieving post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/posts/{postId}/comments:
     get:
       operationId: Get post comments
       description: Get the post comments
       summary: get comments page
       tags:
-        - comments
+        - posts
       parameters:
         - in: path
           name: postId
@@ -137,6 +236,11 @@ paths:
         "200":
           description: Comments page retrieved
           headers:
+            X-XSRF-TOKEN:
+              description: CSRF token
+              schema:
+                type: string
+              example: 123e4567-e89b-12d3-a456-426655440000
             Set-Cookie:
               description: CSRF cookie
               schema:
@@ -236,7 +340,7 @@ components:
         isAdmin:
           type: boolean
           description: Whether the user is admin or not
-    UserSignup:
+    UserCredential:
       type: object
       required:
         - username
@@ -252,6 +356,9 @@ components:
           minLength: 4
           maxLength: 20
           description: Password of the user
+        isAdmin:
+          type: boolean
+          default: false
     PageMetadata:
       type: object
       required:
@@ -395,6 +502,7 @@ components:
       required:
         - userId
         - comment
+        - csrf
       properties:
         userId:
           type: integer
@@ -404,3 +512,8 @@ components:
         comment:
           type: string
           description: The comment value
+        csrf:
+          type: string
+          description: CSRF token
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000

@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"database/sql"
-	"fmt"
-	"html/template"
 	"io/fs"
 	"log/slog"
 	"net/http"
@@ -58,29 +56,28 @@ func main() {
 	postService := posts.NewService(posts.NewRepository(gormDB))
 	postCommentService := postcomments.NewService(postcomments.NewRepository(gormDB))
 
-	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
 	configCors := cors.DefaultConfig()
-	configCors.AllowOrigins = []string{"http://localhost:8083", "http://localhost:63342"}
+	configCors.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8083", "http://localhost:63342"}
 	configCors.AllowCredentials = true
+	// TODO(manuelarte): I can't make axios to read the Set-Cookie header, so I'm setting it as a header
+	configCors.AddExposeHeaders("X-XSRF-TOKEN")
+	configCors.AddAllowMethods("GET, POST, PUT, DELETE, OPTIONS")
 	r.Use(cors.New(configCors))
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("mysession", store))
-	r.SetFuncMap(template.FuncMap{
-		"unsafe": renderUnsafe,
-	})
-	r.Static("/css", fmt.Sprintf("%s/css", cfg.WebPath))
-	r.LoadHTMLGlob(fmt.Sprintf("%s%s", cfg.WebPath, "/templates/**/*"))
 
 	{
-		htmlUsers := html.NewUsers(postService)
 		htmlPosts := html.NewPosts(postService, postCommentService)
-		html.RegisterUsersHandlers(r, htmlUsers)
 		html.RegisterPostsHandlers(r, htmlPosts)
-		html.RegisterDebugHandlers(r)
-
-		sfs, _ := fs.Sub(fs.FS(gowasp.SwaggerUI), "static/swagger-ui")
-		r.StaticFS("swagger", http.FS(sfs))
+		{
+			sfs, _ := fs.Sub(fs.FS(gowasp.SwaggerUI), "static/swagger-ui")
+			r.StaticFS("swagger", http.FS(sfs))
+		}
+		{
+			sfs, _ := fs.Sub(fs.FS(gowasp.Web), "web/dist")
+			r.StaticFS("web", http.FS(sfs))
+		}
 
 		r.GET("/api/docs", func(c *gin.Context) {
 			_, _ = c.Writer.Write(gowasp.OpenAPI)
@@ -90,9 +87,9 @@ func main() {
 	{
 		// Rest API
 		restAPI := rest.API{
-			Users:    rest.NewUsers(userService),
-			Comments: rest.NewComments(postCommentService),
-			Posts:    rest.NewPosts(postService),
+			UsersHandler:    rest.NewUsers(userService),
+			CommentsHandler: rest.NewComments(postCommentService),
+			PostsHandler:    rest.NewPosts(postService),
 		}
 		rest.RegisterHandlers(r, restAPI)
 	}
@@ -103,9 +100,4 @@ func main() {
 
 		return
 	}
-}
-
-func renderUnsafe(s string) template.HTML {
-	//#nosec G203
-	return template.HTML(s)
 }
