@@ -49,6 +49,10 @@ jobs:
         uses: golangci/golangci-lint-action@v8
         with:
           version: v2.4
+      - name: Dockerfile lint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
 
   spell:
     name: "Spell check"
