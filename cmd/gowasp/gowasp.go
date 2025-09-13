@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"database/sql"
-	"html/template"
 	"io/fs"
 	"log/slog"
 	"net/http"
@@ -57,7 +56,6 @@ func main() {
 	postService := posts.NewService(posts.NewRepository(gormDB))
 	postCommentService := postcomments.NewService(postcomments.NewRepository(gormDB))
 
-	config.RegisterErrorResponseHandlers()
 	r := gin.Default()
 	configCors := cors.DefaultConfig()
 	configCors.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8083", "http://localhost:63342"}
@@ -102,9 +100,4 @@ func main() {
 
 		return
 	}
-}
-
-func renderUnsafe(s string) template.HTML {
-	//#nosec G203
-	return template.HTML(s)
 }
