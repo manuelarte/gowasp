@@ -16,7 +16,7 @@ tidy: ## Run go mod tidy in all directories
 
 r: run
 run: ## Run GOwasp, alias: r
-	pnpm -C ./frontend build
+	pnpm -C ./web build
 	go run ./cmd/gowasp/.
 .PHONY: r run
 
@@ -27,7 +27,7 @@ test: ## Run unit tests, alias: t
 
 fmt: format-code
 format-code: tidy ## Format go code and run the fixer, alias: fmt
-	pnpm -C ./frontend lint
+	pnpm -C ./web lint
 	golangci-lint fmt
 	golangci-lint run --fix ./...
 .PHONY: fmt format-code

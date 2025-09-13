@@ -3,7 +3,7 @@ tools
 .git
 .gitignore
 .golangci.yml
-frontend/node_modules
-frontend/dist
+web/node_modules
+web/dist
 Makefile
 *.md

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"html/template"
 	"io/fs"
 	"log/slog"
@@ -69,25 +68,16 @@ func main() {
 	r.Use(cors.New(configCors))
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("mysession", store))
-	r.SetFuncMap(template.FuncMap{
-		"unsafe": renderUnsafe,
-	})
-	r.Static("/css", fmt.Sprintf("%s/css", cfg.WebPath))
-	r.LoadHTMLGlob(fmt.Sprintf("%s%s", cfg.WebPath, "/templates/**/*"))
 
 	{
-		htmlUsers := html.NewUsers(postService)
 		htmlPosts := html.NewPosts(postService, postCommentService)
-		html.RegisterUsersHandlers(r, htmlUsers)
 		html.RegisterPostsHandlers(r, htmlPosts)
-		html.RegisterDebugHandlers(r)
-
 		{
 			sfs, _ := fs.Sub(fs.FS(gowasp.SwaggerUI), "static/swagger-ui")
 			r.StaticFS("swagger", http.FS(sfs))
 		}
 		{
-			sfs, _ := fs.Sub(fs.FS(gowasp.Frontend), "frontend/dist")
+			sfs, _ := fs.Sub(fs.FS(gowasp.Web), "web/dist")
 			r.StaticFS("web", http.FS(sfs))
 		}
 
