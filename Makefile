@@ -1,4 +1,4 @@
-export PORT = 8084
+export PORT = 8083
 
 default: help
 
@@ -16,17 +16,6 @@ tidy: ## Run go mod tidy in all directories
 	go mod tidy
 .PHONY: tidy
 
-r: run
-run: ## Run GOwasp, alias: r
-	pnpm -C ./web build
-	ADDRESS=:${PORT} go run ./cmd/gowasp/.
-.PHONY: r run
-
-t: test
-test: ## Run unit tests, alias: t
-	go test --cover -timeout=300s -parallel=16 ${TEST_DIRECTORIES}
-.PHONY: t test
-
 fmt: format-code
 format-code: tidy ## Format go code and run the fixer, alias: fmt
 	pnpm -C ./web lint
@@ -37,6 +26,17 @@ format-code: tidy ## Format go code and run the fixer, alias: fmt
 lint:
 	pnpm -C ./web lint
 	golangci-lint run --fix ./...
+
+t: test
+test: ## Run unit tests, alias: t
+	go test --cover -timeout=300s -parallel=16 ${TEST_DIRECTORIES}
+.PHONY: t test
+
+r: run
+run: ## Run GOwasp, alias: r
+	pnpm -C ./web build
+	ADDRESS=:${PORT} go run ./cmd/gowasp/.
+.PHONY: r run
 
 dr: docker-run
 docker-run:
