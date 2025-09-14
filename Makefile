@@ -1,3 +1,5 @@
+export PORT = 8084
+
 default: help
 
 help:
@@ -17,7 +19,7 @@ tidy: ## Run go mod tidy in all directories
 r: run
 run: ## Run GOwasp, alias: r
 	pnpm -C ./web build
-	go run ./cmd/gowasp/.
+	ADDRESS=:${PORT} go run ./cmd/gowasp/.
 .PHONY: r run
 
 t: test
@@ -39,4 +41,4 @@ lint:
 dr: docker-run
 docker-run:
 	docker build --tag github.com/manuelarte/gowasp .
-	docker run --publish 8083:8083 github.com/manuelarte/gowasp
+	docker run --publish ${PORT}:${PORT} -e ADDRESS=:${PORT} github.com/manuelarte/gowasp
