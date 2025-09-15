@@ -25,10 +25,16 @@ To run the app, in the root directory type:
 make r
 ```
 
-If you want to run it with Docker 🐳 use:
+If you want to run it with Docker 🐳 locally, use:
 
 ```bash
 make dr
+```
+
+Or without building it locally:
+
+```bash
+docker run -p 8083:8083 ghcr.io/manuelarte/gowasp:v0.0.6
 ```
 
 You can find the Swagger UI in [swagger/index.html](http://localhost:8083/swagger/index.html).
