@@ -21,7 +21,7 @@ export interface ApiClient {
 export class HttpClient implements ApiClient {
   private client: AxiosInstance
 
-  constructor (baseURL: string) {
+  constructor (baseURL: string = import.meta.env.VITE_BACKEND_URL) {
     const jar = new CookieJar()
     this.client = wrapper(axios.create({
       baseURL,

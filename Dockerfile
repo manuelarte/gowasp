@@ -32,8 +32,6 @@ COPY --from=builder /app/web /app/web
 # Copy the binary from builder stage
 COPY --from=builder /gowasp /usr/local/bin/gowasp
 
-EXPOSE 8083
-
 ENV WEB_PATH="/app/web"
 
 # Run
