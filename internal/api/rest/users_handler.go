@@ -3,6 +3,7 @@ package rest
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -114,18 +115,10 @@ func (h *UsersHandler) UserSignup(c *gin.Context) {
 		return
 	}
 	logrus.Infof("Signup for User %q completed", user.Username)
-	c.JSON(http.StatusCreated, User{
-		CreatedAt: user.CreatedAt,
-		//#nosec G115
-		Id:        int(user.ID),
-		IsAdmin:   user.IsAdmin,
-		Password:  user.Password,
-		UpdatedAt: user.UpdatedAt,
-		Username:  user.Username,
-	})
+	c.JSON(http.StatusCreated, userToDTO(user))
 }
 
-func (h *UsersHandler) GetUser(c *gin.Context, userID uint) {
+func (h *UsersHandler) GetUserById(c *gin.Context, userID uint) {
 	user, err := h.service.GetByID(c, userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
@@ -136,7 +129,7 @@ func (h *UsersHandler) GetUser(c *gin.Context, userID uint) {
 
 		return
 	}
-	c.JSON(http.StatusOK, userToUserSession(user))
+	c.JSON(http.StatusOK, userToDTO(user))
 }
 
 func userToDAO(u UserCredential) models.User {
@@ -144,6 +137,19 @@ func userToDAO(u UserCredential) models.User {
 		Username: u.Username,
 		Password: u.Password,
 		IsAdmin:  ptrutils.DerefOr(u.IsAdmin, false),
+	}
+}
+
+func userToDTO(u models.User) User {
+	return User{
+		CreatedAt: u.CreatedAt,
+		//#nosec G115
+		Self:      Paths{}.GetUserByIdEndpoint.Path(strconv.Itoa(int(u.ID))),
+		ID:        u.ID,
+		IsAdmin:   u.IsAdmin,
+		Password:  u.Password,
+		UpdatedAt: u.UpdatedAt,
+		Username:  u.Username,
 	}
 }
 

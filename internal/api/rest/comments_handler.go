@@ -61,7 +61,7 @@ func (h *CommentsHandler) GetPostComments(c *gin.Context, postID uint, params Ge
 	c.JSON(http.StatusOK, postPagePostCommentToDTO(postComments, pageRequest))
 }
 
-func (h *CommentsHandler) PostAPostComment(c *gin.Context, postID uint) {
+func (h *CommentsHandler) PostPostComment(c *gin.Context, postID uint) {
 	postCommentNew := PostCommentNew{}
 	if err := c.BindJSON(&postCommentNew); err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
