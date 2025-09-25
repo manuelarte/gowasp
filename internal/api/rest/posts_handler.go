@@ -2,6 +2,7 @@ package rest
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/manuelarte/pagorminator"
@@ -22,7 +23,7 @@ func NewPosts(service posts.Service) *PostsHandler {
 	}
 }
 
-func (h *PostsHandler) GetPost(c *gin.Context, postID uint) {
+func (h *PostsHandler) GetPostByID(c *gin.Context, postID uint) {
 	post, err := h.service.GetByID(c, postID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
@@ -93,6 +94,8 @@ func postPageRequestToDTO(posts []*models.Post, pageRequest *pagorminator.Pagina
 
 func postToDto(post *models.Post) Post {
 	return Post{
+		//#nosec G115
+		Self:      Paths{}.GetPostByIDEndpoint.Path(strconv.Itoa(int(post.ID))),
 		Content:   post.Content,
 		CreatedAt: post.CreatedAt,
 		ID:        post.ID,

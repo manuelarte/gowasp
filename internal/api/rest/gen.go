@@ -72,6 +72,9 @@ type Post struct {
 	// PostedAt Posting time of the comment
 	PostedAt time.Time `json:"postedAt"`
 
+	// Self Self link of the post
+	Self string `json:"self"`
+
 	// Title Title of the post
 	Title string `json:"title"`
 
@@ -123,14 +126,17 @@ type User struct {
 	// CreatedAt Creating time of the user
 	CreatedAt time.Time `json:"createdAt"`
 
-	// Id Id of the user
-	Id int `json:"id"`
+	// ID Id of the user
+	ID uint `json:"id"`
 
 	// IsAdmin Whether the user is admin or not
 	IsAdmin bool `json:"isAdmin"`
 
 	// Password Password of the user
 	Password string `json:"password"`
+
+	// Self Self link of the user
+	Self string `json:"self"`
 
 	// UpdatedAt Updating time of the user
 	UpdatedAt time.Time `json:"updatedAt"`
@@ -174,8 +180,8 @@ type GetPostCommentsParams struct {
 	Size *int `form:"size,omitempty" json:"size,omitempty"`
 }
 
-// PostAPostCommentJSONRequestBody defines body for PostAPostComment for application/json ContentType.
-type PostAPostCommentJSONRequestBody = PostCommentNew
+// PostPostCommentJSONRequestBody defines body for PostPostComment for application/json ContentType.
+type PostPostCommentJSONRequestBody = PostCommentNew
 
 // UserLoginJSONRequestBody defines body for UserLogin for application/json ContentType.
 type UserLoginJSONRequestBody = UserCredential
@@ -190,13 +196,13 @@ type ServerInterface interface {
 	GetPosts(c *gin.Context, params GetPostsParams)
 	// get post
 	// (GET /api/posts/{postId})
-	GetPost(c *gin.Context, postID uint)
+	GetPostByID(c *gin.Context, postID uint)
 	// get comments page
 	// (GET /api/posts/{postId}/comments)
 	GetPostComments(c *gin.Context, postID uint, params GetPostCommentsParams)
 	// post comment
 	// (POST /api/posts/{postId}/comments)
-	PostAPostComment(c *gin.Context, postID uint)
+	PostPostComment(c *gin.Context, postID uint)
 	// Login
 	// (POST /api/users/login)
 	UserLogin(c *gin.Context)
@@ -208,7 +214,7 @@ type ServerInterface interface {
 	UserSignup(c *gin.Context)
 	// get user
 	// (GET /api/users/{userId})
-	GetUser(c *gin.Context, userID uint)
+	GetUserByID(c *gin.Context, userID uint)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -262,8 +268,8 @@ func (siw *ServerInterfaceWrapper) GetPosts(c *gin.Context) {
 	siw.Handler.GetPosts(c, params)
 }
 
-// GetPost operation middleware
-func (siw *ServerInterfaceWrapper) GetPost(c *gin.Context) {
+// GetPostByID operation middleware
+func (siw *ServerInterfaceWrapper) GetPostByID(c *gin.Context) {
 
 	var err error
 
@@ -283,7 +289,7 @@ func (siw *ServerInterfaceWrapper) GetPost(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.GetPost(c, postID)
+	siw.Handler.GetPostByID(c, postID)
 }
 
 // GetPostComments operation middleware
@@ -329,8 +335,8 @@ func (siw *ServerInterfaceWrapper) GetPostComments(c *gin.Context) {
 	siw.Handler.GetPostComments(c, postID, params)
 }
 
-// PostAPostComment operation middleware
-func (siw *ServerInterfaceWrapper) PostAPostComment(c *gin.Context) {
+// PostPostComment operation middleware
+func (siw *ServerInterfaceWrapper) PostPostComment(c *gin.Context) {
 
 	var err error
 
@@ -350,7 +356,7 @@ func (siw *ServerInterfaceWrapper) PostAPostComment(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.PostAPostComment(c, postID)
+	siw.Handler.PostPostComment(c, postID)
 }
 
 // UserLogin operation middleware
@@ -392,8 +398,8 @@ func (siw *ServerInterfaceWrapper) UserSignup(c *gin.Context) {
 	siw.Handler.UserSignup(c)
 }
 
-// GetUser operation middleware
-func (siw *ServerInterfaceWrapper) GetUser(c *gin.Context) {
+// GetUserByID operation middleware
+func (siw *ServerInterfaceWrapper) GetUserByID(c *gin.Context) {
 
 	var err error
 
@@ -413,7 +419,7 @@ func (siw *ServerInterfaceWrapper) GetUser(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.GetUser(c, userID)
+	siw.Handler.GetUserByID(c, userID)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -444,11 +450,11 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.GET(options.BaseURL+"/api/posts", wrapper.GetPosts)
-	router.GET(options.BaseURL+"/api/posts/:postId", wrapper.GetPost)
+	router.GET(options.BaseURL+"/api/posts/:postId", wrapper.GetPostByID)
 	router.GET(options.BaseURL+"/api/posts/:postId/comments", wrapper.GetPostComments)
-	router.POST(options.BaseURL+"/api/posts/:postId/comments", wrapper.PostAPostComment)
+	router.POST(options.BaseURL+"/api/posts/:postId/comments", wrapper.PostPostComment)
 	router.POST(options.BaseURL+"/api/users/login", wrapper.UserLogin)
 	router.DELETE(options.BaseURL+"/api/users/logout", wrapper.UserLogout)
 	router.POST(options.BaseURL+"/api/users/signup", wrapper.UserSignup)
-	router.GET(options.BaseURL+"/api/users/:userId", wrapper.GetUser)
+	router.GET(options.BaseURL+"/api/users/:userId", wrapper.GetUserByID)
 }

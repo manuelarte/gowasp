@@ -27,6 +27,7 @@ import (
 )
 
 //go:generate go tool oapi-codegen -config ../../cfg.yaml ../../openapi.yaml
+//go:generate go tool gospecpaths --package rest --output ../../internal/api/rest/paths.gen.go ../../openapi.yaml
 func main() {
 	ctx := context.Background()
 	logger := slog.New(slog.NewTextHandler(os.Stderr, nil))

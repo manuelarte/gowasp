@@ -1,4 +1,5 @@
 export interface Post {
+  self: string
   id: number
   createdAt: EpochTimeStamp
   updatedAt: EpochTimeStamp

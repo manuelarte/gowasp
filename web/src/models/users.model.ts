@@ -1,4 +1,5 @@
 export interface User {
+  self: string
   id: number
   username: string
   password: string

@@ -10,7 +10,7 @@ info:
 paths:
   /api/users/signup:
     post:
-      operationId: User Signup
+      operationId: userSignup
       description: Allow user to signup
       summary: User Signup endpoint
       tags:
@@ -41,7 +41,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /api/users/login:
     post:
-      operationId: User login
+      operationId: userLogin
       description: Allow user to login
       summary: Login
       tags:
@@ -66,7 +66,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /api/users/logout:
     delete:
-      operationId: User logout
+      operationId: userLogout
       description: Allow user to logout
       summary: Logout
       tags:
@@ -76,7 +76,7 @@ paths:
           description: User successfully logged out.
   /api/users/{userId}:
     get:
-      operationId: Get user
+      operationId: getUserByID
       description: Get user
       summary: get user
       tags:
@@ -105,7 +105,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /api/posts:
     get:
-      operationId: Get posts
+      operationId: getPosts
       description: Get posts
       summary: get posts
       tags:
@@ -155,7 +155,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /api/posts/{postId}:
     get:
-      operationId: Get post
+      operationId: getPostByID
       description: Get the post
       summary: get post
       tags:
@@ -202,7 +202,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /api/posts/{postId}/comments:
     get:
-      operationId: Get post comments
+      operationId: getPostComments
       description: Get the post comments
       summary: get comments page
       tags:
@@ -256,7 +256,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
     post:
-      operationId: Post a post comment
+      operationId: postPostComment
       description: Post a post comment
       summary: post comment
       tags:
@@ -309,6 +309,7 @@ components:
     User:
       type: object
       required:
+        - self
         - id
         - createdAt
         - updatedAt
@@ -316,9 +317,15 @@ components:
         - password
         - isAdmin
       properties:
+        self:
+          type: string
+          format: uri
+          description: Self link of the user
         id:
           type: integer
           description: Id of the user
+          x-go-type: uint
+          x-go-name: ID
         createdAt:
           type: string
           format: date-time
@@ -406,6 +413,7 @@ components:
     Post:
       type: object
       required:
+        - self
         - id
         - createdAt
         - updatedAt
@@ -414,6 +422,10 @@ components:
         - title
         - content
       properties:
+        self:
+          type: string
+          format: uri
+          description: Self link of the post
         id:
           type: integer
           description: Id of the post
