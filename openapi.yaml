@@ -76,7 +76,7 @@ paths:
           description: User successfully logged out.
   /api/users/{userId}:
     get:
-      operationId: getUserById
+      operationId: getUserByID
       description: Get user
       summary: get user
       tags:
@@ -155,7 +155,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /api/posts/{postId}:
     get:
-      operationId: getPostById
+      operationId: getPostByID
       description: Get the post
       summary: get post
       tags:

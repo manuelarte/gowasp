@@ -118,7 +118,7 @@ func (h *UsersHandler) UserSignup(c *gin.Context) {
 	c.JSON(http.StatusCreated, userToDTO(user))
 }
 
-func (h *UsersHandler) GetUserById(c *gin.Context, userID uint) {
+func (h *UsersHandler) GetUserByID(c *gin.Context, userID uint) {
 	user, err := h.service.GetByID(c, userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
@@ -144,7 +144,7 @@ func userToDTO(u models.User) User {
 	return User{
 		CreatedAt: u.CreatedAt,
 		//#nosec G115
-		Self:      Paths{}.GetUserByIdEndpoint.Path(strconv.Itoa(int(u.ID))),
+		Self:      Paths{}.GetUserByIDEndpoint.Path(strconv.Itoa(int(u.ID))),
 		ID:        u.ID,
 		IsAdmin:   u.IsAdmin,
 		Password:  u.Password,

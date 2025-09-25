@@ -12,9 +12,9 @@ func (p GetPostCommentsEndpoint) Path(postId string) string {
 	return message
 }
 
-type GetPostByIdEndpoint struct{}
+type GetPostByIDEndpoint struct{}
 
-func (p GetPostByIdEndpoint) Path(postId string) string {
+func (p GetPostByIDEndpoint) Path(postId string) string {
 	message := "/api/posts/{postId}"
 	message = strings.Replace(message, "{postId}", postId, -1)
 	return message
@@ -27,9 +27,9 @@ func (p GetPostsEndpoint) Path() string {
 	return message
 }
 
-type GetUserByIdEndpoint struct{}
+type GetUserByIDEndpoint struct{}
 
-func (p GetUserByIdEndpoint) Path(userId string) string {
+func (p GetUserByIDEndpoint) Path(userId string) string {
 	message := "/api/users/{userId}"
 	message = strings.Replace(message, "{userId}", userId, -1)
 	return message
@@ -37,7 +37,7 @@ func (p GetUserByIdEndpoint) Path(userId string) string {
 
 type Paths struct {
 	GetPostCommentsEndpoint GetPostCommentsEndpoint
-	GetPostByIdEndpoint     GetPostByIdEndpoint
+	GetPostByIDEndpoint     GetPostByIDEndpoint
 	GetPostsEndpoint        GetPostsEndpoint
-	GetUserByIdEndpoint     GetUserByIdEndpoint
+	GetUserByIDEndpoint     GetUserByIDEndpoint
 }

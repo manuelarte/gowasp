@@ -23,7 +23,7 @@ func NewPosts(service posts.Service) *PostsHandler {
 	}
 }
 
-func (h *PostsHandler) GetPostById(c *gin.Context, postID uint) {
+func (h *PostsHandler) GetPostByID(c *gin.Context, postID uint) {
 	post, err := h.service.GetByID(c, postID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
@@ -94,7 +94,8 @@ func postPageRequestToDTO(posts []*models.Post, pageRequest *pagorminator.Pagina
 
 func postToDto(post *models.Post) Post {
 	return Post{
-		Self:      Paths{}.GetPostByIdEndpoint.Path(strconv.Itoa(int(post.ID))),
+		//#nosec G115
+		Self:      Paths{}.GetPostByIDEndpoint.Path(strconv.Itoa(int(post.ID))),
 		Content:   post.Content,
 		CreatedAt: post.CreatedAt,
 		ID:        post.ID,
