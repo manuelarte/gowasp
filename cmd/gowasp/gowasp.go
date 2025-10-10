@@ -58,32 +58,27 @@ func main() {
 	postCommentService := postcomments.NewService(postcomments.NewRepository(gormDB))
 
 	r := gin.Default()
-	configCors := cors.DefaultConfig()
-	configCors.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8083", "http://localhost:63342"}
-	configCors.AllowCredentials = true
-	// TODO(manuelarte): I can't make axios to read the Set-Cookie header, so I'm setting it as a header
-	configCors.AddExposeHeaders("X-XSRF-TOKEN")
-	configCors.AddAllowMethods("GET, POST, PUT, DELETE, OPTIONS")
-	r.Use(cors.New(configCors))
-	store := cookie.NewStore([]byte("secret"))
-	r.Use(sessions.Sessions("mysession", store))
-
+	r.Use(
+		cors.New(configureConfigCors()),
+		sessions.Sessions("mysession", cookie.NewStore([]byte("secret"))),
+	)
+	r.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "/web")
+	})
+	htmlPosts := html.NewPosts(postService, postCommentService)
+	html.RegisterPostsHandlers(r, htmlPosts)
 	{
-		htmlPosts := html.NewPosts(postService, postCommentService)
-		html.RegisterPostsHandlers(r, htmlPosts)
-		{
-			sfs, _ := fs.Sub(fs.FS(gowasp.SwaggerUI), "static/swagger-ui")
-			r.StaticFS("swagger", http.FS(sfs))
-		}
-		{
-			sfs, _ := fs.Sub(fs.FS(gowasp.Web), "web/dist")
-			r.StaticFS("web", http.FS(sfs))
-		}
-
-		r.GET("/api/docs", func(c *gin.Context) {
-			_, _ = c.Writer.Write(gowasp.OpenAPI)
-		})
+		sfs, _ := fs.Sub(fs.FS(gowasp.SwaggerUI), "static/swagger-ui")
+		r.StaticFS("swagger", http.FS(sfs))
 	}
+	{
+		sfs, _ := fs.Sub(fs.FS(gowasp.Web), "web/dist")
+		r.StaticFS("web", http.FS(sfs))
+	}
+
+	r.GET("/api/docs", func(c *gin.Context) {
+		_, _ = c.Writer.Write(gowasp.OpenAPI)
+	})
 
 	{
 		// Rest API
@@ -101,4 +96,15 @@ func main() {
 
 		return
 	}
+}
+
+func configureConfigCors() cors.Config {
+	configCors := cors.DefaultConfig()
+	configCors.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8083", "http://localhost:63342"}
+	configCors.AllowCredentials = true
+	// TODO(manuelarte): I can't make axios to read the Set-Cookie header, so I'm setting it as a header
+	configCors.AddExposeHeaders("X-XSRF-TOKEN")
+	configCors.AddAllowMethods("GET, POST, PUT, DELETE, OPTIONS")
+
+	return configCors
 }

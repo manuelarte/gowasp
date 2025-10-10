@@ -55,8 +55,6 @@
 
     <v-skeleton-loader v-if="isLoadingComments" type="card" />
     <template v-else>
-      <AddComment class="card" :csrf="csrfPostCommentsPageAndUsers.csrf" :post="post" @comment:saved="onCommentSaved" />
-
       <p>This post has {{ csrfPostCommentsPageAndUsers.commentsPage?.data.length }} comment(s)</p>
 
       <v-card
@@ -80,6 +78,8 @@
         <!-- eslint-disable-next-line vue/no-v-text-v-html-on-component -->
         <v-card-text class="pt-4" v-html="comment.comment" />
       </v-card>
+
+      <AddComment class="card" :csrf="csrfPostCommentsPageAndUsers.csrf" :post="post" @comment:saved="onCommentSaved" />
     </template>
   </div>
   <v-snackbar
