@@ -1,8 +1,9 @@
 # GOwasp
 
-![version](https://img.shields.io/github/v/release/manuelarte/gowasp)
+[![version](https://img.shields.io/github/v/release/manuelarte/gowasp)](https://img.shields.io/github/v/release/manuelarte/gowasp)
+[![PR checks](https://github.com/manuelarte/gowasp/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/manuelarte/gowasp/actions/workflows/pr-checks.yml)
 
-GOwasp simulates a vulnerable web application built with [Go][go] and [Vuejs][vuejs].
+GOwasp simulates a vulnerable web application built with [Go][go] and [Vue.js][vuejs].
 It showcases some of the most common security flaws found in modern web applications, based on the [OWASP Top 10](https://owasp.org/www-project-top-ten/) list.
 
 The project encourages hands-on learning:
