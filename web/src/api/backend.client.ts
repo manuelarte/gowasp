@@ -22,16 +22,14 @@ export class HttpClient implements ApiClient {
   private client: AxiosInstance
 
   constructor (baseURL: string = import.meta.env.VITE_BACKEND_URL) {
-    const jar = new CookieJar()
-    this.client = wrapper(axios.create({
+    this.client = axios.create({
       baseURL,
-      jar,
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
         'Accept': '*/*',
       },
-    }))
+    })
   }
 
   async login (username: string, password: string): Promise<User> {
