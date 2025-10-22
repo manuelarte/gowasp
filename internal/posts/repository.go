@@ -3,6 +3,8 @@ package posts
 import (
 	"context"
 
+	"github.com/golaxo/goqrius"
+	"github.com/golaxo/gormgoqrius"
 	"github.com/manuelarte/pagorminator"
 	"gorm.io/gorm"
 
@@ -11,7 +13,7 @@ import (
 
 //nolint:iface // separate repository from service
 type Repository interface {
-	GetAll(ctx context.Context, pageRequest *pagorminator.Pagination) ([]*models.Post, error)
+	GetAll(ctx context.Context, q goqrius.Expression, pageRequest *pagorminator.Pagination) ([]*models.Post, error)
 	GetByID(ctx context.Context, id uint) (models.Post, error)
 }
 
@@ -25,9 +27,19 @@ func NewRepository(db *gorm.DB) Repository {
 	return &gormRepository{DB: db}
 }
 
-func (b gormRepository) GetAll(ctx context.Context, pageRequest *pagorminator.Pagination) ([]*models.Post, error) {
+func (b gormRepository) GetAll(
+	ctx context.Context,
+	q goqrius.Expression,
+	pageRequest *pagorminator.Pagination,
+) ([]*models.Post, error) {
 	var posts []*models.Post
-	tx := b.DB.WithContext(ctx).Clauses(pageRequest).Find(&posts)
+
+	whereClause := gormgoqrius.WhereClause(q)
+	tx := b.DB.WithContext(ctx).Clauses(pageRequest)
+	if whereClause != nil {
+		tx = tx.Clauses(whereClause)
+	}
+	tx = tx.Find(&posts)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

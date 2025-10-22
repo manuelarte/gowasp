@@ -140,6 +140,14 @@ paths:
             default: "postedAt,asc"
           description: Sorting criteria
           example: "postedAt,asc"
+        - in: query
+          name: q
+          required: false
+          schema:
+            type: string
+            default: ""
+            format: rfc8040
+          example: "title eq 'Cats are evil'"
       responses:
         "200":
           description: Post page retrieved

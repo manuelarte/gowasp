@@ -166,6 +166,7 @@ type GetPostsParams struct {
 
 	// Sort Sorting criteria
 	Sort *GetPostsParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
+	Q    *string             `form:"q,omitempty" json:"q,omitempty"`
 }
 
 // GetPostsParamsSort defines parameters for GetPosts.
@@ -255,6 +256,14 @@ func (siw *ServerInterfaceWrapper) GetPosts(c *gin.Context) {
 	err = runtime.BindQueryParameter("form", true, false, "sort", c.Request.URL.Query(), &params.Sort)
 	if err != nil {
 		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sort: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "q" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "q", c.Request.URL.Query(), &params.Q)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter q: %w", err), http.StatusBadRequest)
 		return
 	}
 

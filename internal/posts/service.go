@@ -3,6 +3,7 @@ package posts
 import (
 	"context"
 
+	"github.com/golaxo/goqrius"
 	"github.com/manuelarte/pagorminator"
 
 	"github.com/manuelarte/gowasp/internal/models"
@@ -10,7 +11,8 @@ import (
 
 //nolint:iface // separate repository from service
 type Service interface {
-	GetAll(ctx context.Context, pagination *pagorminator.Pagination) ([]*models.Post, error)
+	// GetAll post based on the filtering expression q and the pagination information.
+	GetAll(ctx context.Context, q goqrius.Expression, pagination *pagorminator.Pagination) ([]*models.Post, error)
 	GetByID(ctx context.Context, id uint) (models.Post, error)
 }
 
@@ -24,10 +26,12 @@ func NewService(repository Repository) Service {
 	return &serviceImpl{repository: repository}
 }
 
-func (b serviceImpl) GetAll(ctx context.Context,
+func (b serviceImpl) GetAll(
+	ctx context.Context,
+	q goqrius.Expression,
 	pagination *pagorminator.Pagination,
 ) ([]*models.Post, error) {
-	posts, err := b.repository.GetAll(ctx, pagination)
+	posts, err := b.repository.GetAll(ctx, q, pagination)
 	if err != nil {
 		return nil, err
 	}
