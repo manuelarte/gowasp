@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golaxo/goqrius"
 	"github.com/manuelarte/pagorminator"
 	"github.com/manuelarte/ptrutils"
 
@@ -37,6 +38,17 @@ func (h *PostsHandler) GetPostByID(c *gin.Context, postID uint) {
 }
 
 func (h *PostsHandler) GetPosts(c *gin.Context, params GetPostsParams) {
+	q, err := goqrius.Parse(ptrutils.DerefOr(params.Q, ""))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Details: err.Error(),
+			Message: "Error parsing the q parameter",
+		})
+
+		return
+	}
+
 	pageRequest, err := pagorminator.PageRequest(
 		ptrutils.DerefOr(params.Page, 0),
 		ptrutils.DerefOr(params.Size, defaultPageRequestSize),
@@ -51,7 +63,7 @@ func (h *PostsHandler) GetPosts(c *gin.Context, params GetPostsParams) {
 
 		return
 	}
-	postPage, err := h.service.GetAll(c, pageRequest)
+	postPage, err := h.service.GetAll(c, q, pageRequest)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
 			Code:    http.StatusBadRequest,
