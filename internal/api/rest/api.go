@@ -1,7 +1,8 @@
 package rest
 
 type API struct {
-	*UsersHandler
-	*PostsHandler
-	*CommentsHandler
+	UsersHandler
+	PostsHandler
+	CommentsHandler
+	SessionHandler
 }

@@ -297,6 +297,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/session:
+    get:
+      operationId: getSession
+      description: Get the user session
+      summary: get user session
+      tags:
+        - user
+      responses:
+        "200":
+          description: User logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSession'
+        "404":
+          description: User not logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 
 components:
   schemas:
@@ -342,6 +369,32 @@ components:
           type: string
           format: date-time
           description: Updating time of the user
+        username:
+          type: string
+          minLength: 3
+          maxLength: 20
+          description: Username of the user
+        password:
+          type: string
+          minLength: 4
+          maxLength: 20
+          description: Password of the user
+        isAdmin:
+          type: boolean
+          description: Whether the user is admin or not
+    UserSession:
+      type: object
+      required:
+        - id
+        - username
+        - password
+        - isAdmin
+      properties:
+        id:
+          type: integer
+          description: Id of the user
+          x-go-type: uint
+          x-go-name: ID
         username:
           type: string
           minLength: 3

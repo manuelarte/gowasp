@@ -13,25 +13,15 @@ export const useAppStore = defineStore('app', {
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<User | null>(null)
-  const login = async (username: string, password: string): Promise<User> => {
-    return backendClient.login(username, password)
-      .then(u => {
-        user.value = u
-        return u
-      })
+
+  const setUser = (newUser: User | null) => {
+    user.value = newUser
   }
+
   const logout = async () => {
     await backendClient.logout()
     user.value = null
   }
 
-  const signup = async (username: string, password: string): Promise<User> => {
-    return backendClient.signup(username, password)
-      .then(u => {
-        user.value = u
-        return u
-      })
-  }
-
-  return { user, login, logout, signup }
+  return { user, setUser, logout }
 })

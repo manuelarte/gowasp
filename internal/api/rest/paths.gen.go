@@ -4,6 +4,13 @@ package rest
 
 import "strings"
 
+type GetSessionEndpoint struct{}
+
+func (p GetSessionEndpoint) Path() string {
+	message := "/api/session"
+	return message
+}
+
 type GetPostCommentsEndpoint struct{}
 
 func (p GetPostCommentsEndpoint) Path(postId string) string {
@@ -36,6 +43,7 @@ func (p GetUserByIDEndpoint) Path(userId string) string {
 }
 
 type Paths struct {
+	GetSessionEndpoint      GetSessionEndpoint
 	GetPostCommentsEndpoint GetPostCommentsEndpoint
 	GetPostByIDEndpoint     GetPostByIDEndpoint
 	GetPostsEndpoint        GetPostsEndpoint

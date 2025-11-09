@@ -86,6 +86,7 @@ func main() {
 			UsersHandler:    rest.NewUsers(userService),
 			CommentsHandler: rest.NewComments(postCommentService),
 			PostsHandler:    rest.NewPosts(postService),
+			SessionHandler:  rest.NewSession(userService),
 		}
 		rest.RegisterHandlers(r, restAPI)
 	}

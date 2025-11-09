@@ -18,13 +18,13 @@ type PostsHandler struct {
 	service posts.Service
 }
 
-func NewPosts(service posts.Service) *PostsHandler {
-	return &PostsHandler{
+func NewPosts(service posts.Service) PostsHandler {
+	return PostsHandler{
 		service: service,
 	}
 }
 
-func (h *PostsHandler) GetPostByID(c *gin.Context, postID uint) {
+func (h PostsHandler) GetPostByID(c *gin.Context, postID uint) {
 	post, err := h.service.GetByID(c, postID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
@@ -37,7 +37,7 @@ func (h *PostsHandler) GetPostByID(c *gin.Context, postID uint) {
 	c.JSON(http.StatusOK, postToDto(&post))
 }
 
-func (h *PostsHandler) GetPosts(c *gin.Context, params GetPostsParams) {
+func (h PostsHandler) GetPosts(c *gin.Context, params GetPostsParams) {
 	q, err := goqrius.Parse(ptrutils.DerefOr(params.Q, ""))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{

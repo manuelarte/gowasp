@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import router from '@/router'
-  import { useUserStore } from '@/stores/app.ts'
+  import { backendClient, useUserStore } from '@/stores/app'
 
   const visible = ref(false)
   const loading = ref(false)
@@ -22,8 +22,9 @@
   async function login () {
     err.value = null
     loading.value = true
-    userStore.login(username.value, password.value)
-      .then(_ => {
+    backendClient.login(username.value, password.value)
+      .then(user => {
+        userStore.setUser(user)
         router.push('/')
       })
       .catch(error => err.value = error.message)
@@ -35,8 +36,9 @@
   async function signup () {
     err.value = null
     loading.value = true
-    userStore.signup(username.value, password.value)
-      .then(_ => {
+    backendClient.signup(username.value, password.value)
+      .then(user => {
+        userStore.setUser(user)
         router.push('/')
       })
       .catch(error => err.value = error.message)
@@ -101,7 +103,7 @@
       />
 
       <p class="text-body-2 text-center">Or</p>
-      <v-divider/>
+      <v-divider />
       <br>
 
       <v-btn

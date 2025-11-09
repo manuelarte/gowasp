@@ -19,11 +19,11 @@ type UsersHandler struct {
 	service users.Service
 }
 
-func NewUsers(service users.Service) *UsersHandler {
-	return &UsersHandler{service: service}
+func NewUsers(service users.Service) UsersHandler {
+	return UsersHandler{service: service}
 }
 
-func (h *UsersHandler) UserLogin(c *gin.Context) {
+func (h UsersHandler) UserLogin(c *gin.Context) {
 	userLogin := UserCredential{}
 	if err := c.BindJSON(&userLogin); err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
@@ -65,7 +65,7 @@ func (h *UsersHandler) UserLogin(c *gin.Context) {
 	logrus.Infof("User %q logged in", user.Username)
 }
 
-func (h *UsersHandler) UserLogout(c *gin.Context) {
+func (h UsersHandler) UserLogout(c *gin.Context) {
 	session := sessions.Default(c)
 	sessionUserByte, ok := session.Get("user").([]byte)
 	session.Clear()
@@ -78,7 +78,7 @@ func (h *UsersHandler) UserLogout(c *gin.Context) {
 	logrus.Infof("User %q logged out", user.Username)
 }
 
-func (h *UsersHandler) UserSignup(c *gin.Context) {
+func (h UsersHandler) UserSignup(c *gin.Context) {
 	userSignup := UserCredential{}
 	if err := c.BindJSON(&userSignup); err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
@@ -118,7 +118,7 @@ func (h *UsersHandler) UserSignup(c *gin.Context) {
 	c.JSON(http.StatusCreated, userToDTO(user))
 }
 
-func (h *UsersHandler) GetUserByID(c *gin.Context, userID uint) {
+func (h UsersHandler) GetUserByID(c *gin.Context, userID uint) {
 	user, err := h.service.GetByID(c, userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
