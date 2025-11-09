@@ -156,6 +156,21 @@ type UserCredential struct {
 	Username string `json:"username"`
 }
 
+// UserSession defines model for UserSession.
+type UserSession struct {
+	// ID Id of the user
+	ID uint `json:"id"`
+
+	// IsAdmin Whether the user is admin or not
+	IsAdmin bool `json:"isAdmin"`
+
+	// Password Password of the user
+	Password string `json:"password"`
+
+	// Username Username of the user
+	Username string `json:"username"`
+}
+
 // GetPostsParams defines parameters for GetPosts.
 type GetPostsParams struct {
 	// Page Page to retrieve
@@ -204,6 +219,9 @@ type ServerInterface interface {
 	// post comment
 	// (POST /api/posts/{postId}/comments)
 	PostPostComment(c *gin.Context, postID uint)
+	// get user session
+	// (GET /api/session)
+	GetSession(c *gin.Context)
 	// Login
 	// (POST /api/users/login)
 	UserLogin(c *gin.Context)
@@ -368,6 +386,19 @@ func (siw *ServerInterfaceWrapper) PostPostComment(c *gin.Context) {
 	siw.Handler.PostPostComment(c, postID)
 }
 
+// GetSession operation middleware
+func (siw *ServerInterfaceWrapper) GetSession(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetSession(c)
+}
+
 // UserLogin operation middleware
 func (siw *ServerInterfaceWrapper) UserLogin(c *gin.Context) {
 
@@ -462,6 +493,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.GET(options.BaseURL+"/api/posts/:postId", wrapper.GetPostByID)
 	router.GET(options.BaseURL+"/api/posts/:postId/comments", wrapper.GetPostComments)
 	router.POST(options.BaseURL+"/api/posts/:postId/comments", wrapper.PostPostComment)
+	router.GET(options.BaseURL+"/api/session", wrapper.GetSession)
 	router.POST(options.BaseURL+"/api/users/login", wrapper.UserLogin)
 	router.DELETE(options.BaseURL+"/api/users/logout", wrapper.UserLogout)
 	router.POST(options.BaseURL+"/api/users/signup", wrapper.UserSignup)

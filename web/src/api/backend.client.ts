@@ -10,6 +10,7 @@ export interface ApiClient {
   logout: () => Promise<void>
   signup: (username: string, password: string) => Promise<User>
   getUser: (id: number) => Promise<User>
+  getSession: () => Promise<User>
 
   getStaticPost: (name: string) => Promise<string>
   getPost: (id: number) => Promise<Post>
@@ -57,6 +58,11 @@ export class HttpClient implements ApiClient {
 
   async getUser (userId: number): Promise<User> {
     const response = await this.client.get<User>(`api/users/${userId}`)
+    return response.data
+  }
+
+  async getSession (): Promise<User> {
+    const response = await this.client.get<User>('api/session')
     return response.data
   }
 
