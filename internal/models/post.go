@@ -3,11 +3,11 @@ package models
 import "time"
 
 type Post struct {
-	ID        uint      `json:"id"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
-	PostedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP()" json:"postedAt"`
-	UserID    uint      `json:"userId"`
-	Title     string    `json:"title"`
-	Content   string    `binding:"required" json:"content"`
+	ID        uint
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	PostedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP()"`
+	UserID    uint
+	Title     string
+	Content   string
 }

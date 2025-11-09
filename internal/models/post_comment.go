@@ -5,12 +5,12 @@ import (
 )
 
 type PostComment struct {
-	ID        uint      `json:"id"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
-	PostedAt  time.Time `gorm:"now" json:"postedAt"`
-	PostID    uint      `json:"postId"`
-	UserID    uint      `json:"userId"`
-	User      *User     `json:"user"`
-	Comment   string    `json:"comment"`
+	ID        uint
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	PostedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP()"`
+	PostID    uint
+	UserID    uint
+	User      *User
+	Comment   string
 }
