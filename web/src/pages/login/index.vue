@@ -100,6 +100,8 @@
         indeterminate
       />
 
+      <p class="text-body-2 text-center">Or</p>
+      <v-divider/>
       <br>
 
       <v-btn
