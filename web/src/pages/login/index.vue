@@ -1,53 +1,3 @@
-<script setup lang="ts">
-  import router from '@/router'
-  import { backendClient, useUserStore } from '@/stores/app'
-
-  const visible = ref(false)
-  const loading = ref(false)
-  const err = ref<string | null>(null)
-
-  const form = ref()
-  const username = ref('')
-  const usernameRules = [
-    (value: string | null) => {
-      if ((value?.length ?? 0) < 3) return 'Username name must be at least 3 characters.'
-      if ((value?.length ?? 0) > 21) return 'Username name must be at most 20 characters.'
-      return true
-    },
-  ]
-  const password = ref('')
-
-  const userStore = useUserStore()
-
-  async function login () {
-    err.value = null
-    loading.value = true
-    backendClient.login(username.value, password.value)
-      .then(user => {
-        userStore.setUser(user)
-        router.push('/')
-      })
-      .catch(error => err.value = error.message)
-      .finally(
-        () => loading.value = false,
-      )
-  }
-
-  async function signup () {
-    err.value = null
-    loading.value = true
-    backendClient.signup(username.value, password.value)
-      .then(user => {
-        userStore.setUser(user)
-        router.push('/')
-      })
-      .catch(error => err.value = error.message)
-      .finally(
-        () => loading.value = false,
-      )
-  }
-</script>
-
 <template>
   <v-card
     class="mx-auto pa-12 pb-8"
@@ -56,7 +6,7 @@
     rounded="lg"
   >
 
-    <v-form ref="form" fast-fail @submit.prevent>
+    <v-form ref="form" v-model="valid" fast-fail @submit.prevent>
       <div class="text-subtitle-1 text-medium-emphasis">Account</div>
 
       <v-text-field
@@ -84,10 +34,12 @@
       />
 
       <v-btn
-        v-if="form && !loading"
+        v-if="form"
         block
         class="mb-8"
         color="blue"
+        :disabled="!valid || loadingNewUser"
+        :loading="loadingExistingUser"
         size="large"
         type="submit"
         variant="tonal"
@@ -95,22 +47,18 @@
       >
         Log In
       </v-btn>
-      <v-progress-circular
-        v-else
-        class="mb-8 align-center"
-        color="primary"
-        indeterminate
-      />
 
       <p class="text-body-2 text-center">Or</p>
       <v-divider />
       <br>
 
       <v-btn
-        v-if="form && !loading"
+        v-if="form"
         block
         class="mb-8"
         color="blue"
+        :disabled="!valid || loadingExistingUser"
+        :loading="loadingNewUser"
         size="large"
         type="submit"
         variant="tonal"
@@ -132,6 +80,62 @@
     </v-card>
   </v-card>
 </template>
+
+<script setup lang="ts">
+  import router from '@/router'
+  import { backendClient, useUserStore } from '@/stores/app'
+
+  const valid = ref(false)
+  const visible = ref(false)
+  const loadingExistingUser = ref(false)
+  const loadingNewUser = ref(false)
+  const err = ref<string | null>(null)
+
+  const form = ref()
+  const username = ref('')
+  const usernameRules = [
+    (value: string | null) => {
+      if ((value?.length ?? 0) < 3) return 'Username name must be at least 3 characters.'
+      if ((value?.length ?? 0) > 21) return 'Username name must be at most 20 characters.'
+      return true
+    },
+  ]
+  const password = ref('')
+
+  const userStore = useUserStore()
+
+  const loading = computed(() => {
+    return loadingExistingUser.value || loadingNewUser.value
+  })
+
+  async function login () {
+    err.value = null
+    loadingExistingUser.value = true
+    backendClient.login(username.value, password.value)
+      .then(user => {
+        userStore.setUser(user)
+        router.push('/')
+      })
+      .catch(error => err.value = error.message)
+      .finally(
+        () => loadingExistingUser.value = false,
+      )
+  }
+
+  async function signup () {
+    err.value = null
+    loadingNewUser.value = true
+    backendClient.signup(username.value, password.value)
+      .then(user => {
+        userStore.setUser(user)
+        router.push('/')
+      })
+      .catch(error => err.value = error.message)
+      .finally(
+        () => loadingNewUser.value = false,
+      )
+  }
+</script>
 
 <style scoped lang="sass">
 </style>
