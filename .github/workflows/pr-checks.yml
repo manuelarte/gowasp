@@ -46,7 +46,7 @@ jobs:
       - name: Build
         run: pnpm -C web build
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
+        uses: golangci/golangci-lint-action@v9
         with:
           version: v2.6
       - name: Dockerfile lint
