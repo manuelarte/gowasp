@@ -4,18 +4,10 @@ package rest
 
 import "strings"
 
-type GetSessionEndpoint struct{}
+type GetPostsEndpoint struct{}
 
-func (p GetSessionEndpoint) Path() string {
-	message := "/api/session"
-	return message
-}
-
-type GetPostCommentsEndpoint struct{}
-
-func (p GetPostCommentsEndpoint) Path(postId string) string {
-	message := "/api/posts/{postId}/comments"
-	message = strings.Replace(message, "{postId}", postId, -1)
+func (p GetPostsEndpoint) Path() string {
+	message := "/api/posts"
 	return message
 }
 
@@ -27,10 +19,18 @@ func (p GetPostByIDEndpoint) Path(postId string) string {
 	return message
 }
 
-type GetPostsEndpoint struct{}
+type GetPostCommentsEndpoint struct{}
 
-func (p GetPostsEndpoint) Path() string {
-	message := "/api/posts"
+func (p GetPostCommentsEndpoint) Path(postId string) string {
+	message := "/api/posts/{postId}/comments"
+	message = strings.Replace(message, "{postId}", postId, -1)
+	return message
+}
+
+type GetSessionEndpoint struct{}
+
+func (p GetSessionEndpoint) Path() string {
+	message := "/api/session"
 	return message
 }
 
@@ -43,9 +43,9 @@ func (p GetUserByIDEndpoint) Path(userId string) string {
 }
 
 type Paths struct {
-	GetSessionEndpoint      GetSessionEndpoint
-	GetPostCommentsEndpoint GetPostCommentsEndpoint
 	GetPostByIDEndpoint     GetPostByIDEndpoint
+	GetPostCommentsEndpoint GetPostCommentsEndpoint
 	GetPostsEndpoint        GetPostsEndpoint
+	GetSessionEndpoint      GetSessionEndpoint
 	GetUserByIDEndpoint     GetUserByIDEndpoint
 }

@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/golaxo/gofieldselect"
 	"github.com/manuelarte/ptrutils"
 	"github.com/sirupsen/logrus"
 
@@ -89,6 +90,7 @@ func (h UsersHandler) UserSignup(c *gin.Context) {
 
 		return
 	}
+
 	user := userToDAO(userSignup)
 	if err := h.service.Create(c, &user); err != nil {
 		logrus.Infof("Signup attempt failed for User %q", user.Username)
@@ -115,10 +117,21 @@ func (h UsersHandler) UserSignup(c *gin.Context) {
 		return
 	}
 	logrus.Infof("Signup for User %q completed", user.Username)
-	c.JSON(http.StatusCreated, userToDTO(user))
+	c.JSON(http.StatusCreated, userToDTO(gofieldselect.AllIdentifiers{}, user))
 }
 
-func (h UsersHandler) GetUserByID(c *gin.Context, userID uint) {
+func (h UsersHandler) GetUserByID(c *gin.Context, userID uint, params GetUserByIDParams) {
+	fields, errFields := gofieldselect.Parse(ptrutils.DerefOr(params.Fields, ""))
+	if errFields != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Details: errFields,
+			Message: "fields query parameter not valid",
+		})
+
+		return
+	}
+
 	user, err := h.service.GetByID(c, userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
@@ -129,7 +142,7 @@ func (h UsersHandler) GetUserByID(c *gin.Context, userID uint) {
 
 		return
 	}
-	c.JSON(http.StatusOK, userToDTO(user))
+	c.JSON(http.StatusOK, userToDTO(fields, user))
 }
 
 func userToDAO(u UserCredential) models.User {
@@ -140,16 +153,16 @@ func userToDAO(u UserCredential) models.User {
 	}
 }
 
-func userToDTO(u models.User) User {
+func userToDTO(fields gofieldselect.Node, u models.User) User {
 	return User{
-		CreatedAt: u.CreatedAt,
+		CreatedAt: gofieldselect.Get(fields, "createdAt", ptrutils.Ptr(u.CreatedAt)),
 		//#nosec G115
 		Self:      Paths{}.GetUserByIDEndpoint.Path(strconv.Itoa(int(u.ID))),
-		ID:        u.ID,
-		IsAdmin:   u.IsAdmin,
-		Password:  u.Password,
-		UpdatedAt: u.UpdatedAt,
-		Username:  u.Username,
+		ID:        gofieldselect.Get(fields, "id", ptrutils.Ptr(u.ID)),
+		IsAdmin:   gofieldselect.Get(fields, "isAdmin", ptrutils.Ptr(u.IsAdmin)),
+		Password:  gofieldselect.Get(fields, "password", ptrutils.Ptr(u.Password)),
+		UpdatedAt: gofieldselect.Get(fields, "updatedAt", ptrutils.Ptr(u.UpdatedAt)),
+		Username:  gofieldselect.Get(fields, "username", ptrutils.Ptr(u.Username)),
 	}
 }
 
