@@ -90,6 +90,14 @@ paths:
             x-go-type: uint
           x-go-name: userID
           description: ID of the user to retrieve its data
+        - in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+            format: fields
+          description: Fields to retrieve
+          example: "id,username"
       responses:
         "200":
           description: User retrieved
@@ -345,12 +353,6 @@ components:
       type: object
       required:
         - self
-        - id
-        - createdAt
-        - updatedAt
-        - username
-        - password
-        - isAdmin
       properties:
         self:
           type: string
@@ -528,7 +530,6 @@ components:
           properties:
             username:
               type: string
-
     PostComment:
       type: object
       required:

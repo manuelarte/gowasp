@@ -124,25 +124,25 @@ type PostCommentNew struct {
 // User defines model for User.
 type User struct {
 	// CreatedAt Creating time of the user
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
 
 	// ID Id of the user
-	ID uint `json:"id"`
+	ID *uint `json:"id,omitempty"`
 
 	// IsAdmin Whether the user is admin or not
-	IsAdmin bool `json:"isAdmin"`
+	IsAdmin *bool `json:"isAdmin,omitempty"`
 
 	// Password Password of the user
-	Password string `json:"password"`
+	Password *string `json:"password,omitempty"`
 
 	// Self Self link of the user
 	Self string `json:"self"`
 
 	// UpdatedAt Updating time of the user
-	UpdatedAt time.Time `json:"updatedAt"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
 
 	// Username Username of the user
-	Username string `json:"username"`
+	Username *string `json:"username,omitempty"`
 }
 
 // UserCredential defines model for UserCredential.
@@ -196,6 +196,12 @@ type GetPostCommentsParams struct {
 	Size *int `form:"size,omitempty" json:"size,omitempty"`
 }
 
+// GetUserByIDParams defines parameters for GetUserByID.
+type GetUserByIDParams struct {
+	// Fields Fields to retrieve
+	Fields *string `form:"fields,omitempty" json:"fields,omitempty"`
+}
+
 // PostPostCommentJSONRequestBody defines body for PostPostComment for application/json ContentType.
 type PostPostCommentJSONRequestBody = PostCommentNew
 
@@ -233,7 +239,7 @@ type ServerInterface interface {
 	UserSignup(c *gin.Context)
 	// get user
 	// (GET /api/users/{userId})
-	GetUserByID(c *gin.Context, userID uint)
+	GetUserByID(c *gin.Context, userID uint, params GetUserByIDParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -452,6 +458,17 @@ func (siw *ServerInterfaceWrapper) GetUserByID(c *gin.Context) {
 		return
 	}
 
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetUserByIDParams
+
+	// ------------- Optional query parameter "fields" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "fields", c.Request.URL.Query(), &params.Fields)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter fields: %w", err), http.StatusBadRequest)
+		return
+	}
+
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
 		if c.IsAborted() {
@@ -459,7 +476,7 @@ func (siw *ServerInterfaceWrapper) GetUserByID(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.GetUserByID(c, userID)
+	siw.Handler.GetUserByID(c, userID, params)
 }
 
 // GinServerOptions provides options for the Gin server.
