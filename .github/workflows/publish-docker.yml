@@ -1,5 +1,5 @@
 ---
-# This workflow uses actions that are not certified by GitHub.
+# This workflow uses actions that GitHub does not certify.
 # They are provided by a third-party and are governed by
 # separate terms of service, privacy policy, and support
 # documentation.
@@ -15,7 +15,7 @@ on:
     types: [published]
 
 # Defines two custom environment variables for the workflow.
-# These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
+# These are used for the Container registry domain and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
