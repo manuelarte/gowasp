@@ -56,6 +56,7 @@
   <v-card title="My comment">
     <template #prepend>
       <v-avatar
+        id="avatar"
         color="brown"
         size="large"
       >
@@ -92,5 +93,6 @@
 </template>
 
 <style scoped lang="sass">
-
+#avatar
+  user-select: none
 </style>
