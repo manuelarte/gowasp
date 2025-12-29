@@ -13,7 +13,7 @@ require (
 	github.com/golaxo/gormgoqrius v0.0.4
 	github.com/google/uuid v1.6.0
 	github.com/manuelarte/pagorminator v0.1.0
-	github.com/manuelarte/ptrutils v1.0.1
+	github.com/manuelarte/ptrutils v1.0.2
 	github.com/oapi-codegen/runtime v1.1.2
 	github.com/sirupsen/logrus v1.9.3
 	gorm.io/driver/sqlite v1.6.0

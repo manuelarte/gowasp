@@ -125,8 +125,8 @@ github.com/manuelarte/gospecpaths v0.0.2 h1:sIlWJ0JoJcNr2ulctQfw5QfahBwF9gkvokCi
 github.com/manuelarte/gospecpaths v0.0.2/go.mod h1:Lhnuz2UoNzjZh9sbyb3I71YH2c4cPMa2ErqmQNAzA1o=
 github.com/manuelarte/pagorminator v0.1.0 h1:bKnBRDwF3MWKQusN8aEF2nvi/97GGSWZTrO4WVd1kJY=
 github.com/manuelarte/pagorminator v0.1.0/go.mod h1:tXEKBDo8ZwMMyD4pG/sajoKksxOMu85YejYqHAir6wQ=
-github.com/manuelarte/ptrutils v1.0.1 h1:finAeiCJcDZHZoDyg7dWm+iKmoMoHbTXYYEoey4KEGg=
-github.com/manuelarte/ptrutils v1.0.1/go.mod h1:ThCS3whPljc02UlWsJ9rs215r7wqGzkSiA7dJzYta88=
+github.com/manuelarte/ptrutils v1.0.2 h1:YEDdPxd1p6F9JzaytpTu+XsaxWf7psKWeahZ9RZmaCE=
+github.com/manuelarte/ptrutils v1.0.2/go.mod h1:ThCS3whPljc02UlWsJ9rs215r7wqGzkSiA7dJzYta88=
 github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWEY=
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/mattn/go-sqlite3 v1.14.32 h1:JD12Ag3oLy1zQA+BNn74xRgaBbdhbNIDYvQUEuuErjs=
