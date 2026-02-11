@@ -6,9 +6,9 @@
 
 import { setupLayouts } from 'virtual:generated-layouts'
 // Composables
-// eslint-disable-next-line import/no-duplicates
-import { createRouter, createWebHistory } from 'vue-router/auto'
-// eslint-disable-next-line import/no-duplicates
+
+import { createRouter, createWebHistory, type RouteLocationNormalized } from 'vue-router'
+
 import { routes } from 'vue-router/auto-routes'
 import { useSession } from '@/api/useSession'
 
@@ -18,7 +18,7 @@ const router = createRouter({
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804
-router.onError((err, to) => {
+router.onError((err: Error, to: RouteLocationNormalized) => {
   if (err?.message?.includes?.('Failed to fetch dynamically imported module')) {
     if (localStorage.getItem('vuetify:dynamic-reload')) {
       console.error('Dynamic import error, reloading page did not fix it', err)

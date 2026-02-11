@@ -9,7 +9,7 @@
         <v-btn v-if="!user" v-tooltip="'Login'" icon="mdi-login" to="/login" />
       </div>
       <v-menu v-else>
-        <template v-slot:activator="{ props }">
+        <template #activator="{ props }">
           <v-avatar
             id="avatar"
             color="secondary"
@@ -21,12 +21,12 @@
         </template>
 
         <v-list>
-          <v-list-item v-if="!user" to="/login" append-icon="mdi-login">
+          <v-list-item v-if="!user" append-icon="mdi-login" to="/login">
             <v-list-item-title>
               Login
             </v-list-item-title>
           </v-list-item>
-          <v-list-item v-else @click="userStore.logout()" append-icon="mdi-logout">
+          <v-list-item v-else append-icon="mdi-logout" @click="userStore.logout()">
             <v-list-item-title>
               Logout
             </v-list-item-title>
@@ -43,9 +43,9 @@
 </template>
 
 <script lang="ts" setup>
+  import { getInitials } from '@/models/users.model.ts'
   import router from '@/router'
   import { useUserStore } from '@/stores/app'
-  import {getInitials} from "@/models/users.model.ts";
 
   // TODO(manuelarte): this is all over the place
   const userStore = useUserStore()
