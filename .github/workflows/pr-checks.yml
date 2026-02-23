@@ -48,7 +48,7 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.6
+          version: v2.9
       - name: Dockerfile lint
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.go == 'stable' }}
         uses: hadolint/hadolint-action@v3.3.0
