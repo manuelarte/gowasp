@@ -3,7 +3,7 @@ module github.com/manuelarte/gowasp
 go 1.25
 
 require (
-	github.com/caarlos0/env/v11 v11.3.1
+	github.com/caarlos0/env/v11 v11.4.0
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-contrib/sessions v1.0.4
 	github.com/gin-gonic/gin v1.11.0
@@ -12,7 +12,7 @@ require (
 	github.com/golaxo/goqrius v0.0.5
 	github.com/golaxo/gormgoqrius v0.0.4
 	github.com/google/uuid v1.6.0
-	github.com/manuelarte/pagorminator v0.1.0
+	github.com/manuelarte/pagorminator v0.2.1
 	github.com/manuelarte/ptrutils v1.0.2
 	github.com/oapi-codegen/runtime v1.1.2
 	github.com/sirupsen/logrus v1.9.4
