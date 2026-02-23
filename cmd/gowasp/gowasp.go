@@ -18,8 +18,8 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/manuelarte/gowasp"
-	"github.com/manuelarte/gowasp/internal/api/html"
 	"github.com/manuelarte/gowasp/internal/api/rest"
+	"github.com/manuelarte/gowasp/internal/api/viewhtml"
 	"github.com/manuelarte/gowasp/internal/config"
 	"github.com/manuelarte/gowasp/internal/posts"
 	"github.com/manuelarte/gowasp/internal/posts/postcomments"
@@ -65,8 +65,8 @@ func main() {
 	r.GET("/", func(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "/web")
 	})
-	htmlPosts := html.NewPosts(postService, postCommentService)
-	html.RegisterPostsHandlers(r, htmlPosts)
+	htmlPosts := viewhtml.NewPosts(postService, postCommentService)
+	viewhtml.RegisterPostsHandlers(r, htmlPosts)
 	{
 		sfs, _ := fs.Sub(fs.FS(gowasp.SwaggerUI), "static/swagger-ui")
 		r.StaticFS("swagger", http.FS(sfs))
