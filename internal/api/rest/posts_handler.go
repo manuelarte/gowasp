@@ -49,7 +49,7 @@ func (h PostsHandler) GetPosts(c *gin.Context, params GetPostsParams) {
 		return
 	}
 
-	pageRequest, err := pagorminator.PageRequest(
+	pageRequest, err := pagorminator.NewPageRequest(
 		ptrutils.DerefOr(params.Page, 0),
 		ptrutils.DerefOr(params.Size, defaultPageRequestSize),
 		orderFrom(ptrutils.DerefOr(params.Sort, PostedAtdesc)),
@@ -80,15 +80,15 @@ func (h PostsHandler) GetPosts(c *gin.Context, params GetPostsParams) {
 func orderFrom(sortingCriteria GetPostsParamsSort) pagorminator.Order {
 	switch sortingCriteria {
 	case PostedAtasc:
-		return pagorminator.MustOrder("posted_at", pagorminator.ASC)
+		return pagorminator.Asc("posted_at")
 	case PostedAtdesc:
-		return pagorminator.MustOrder("posted_at", pagorminator.DESC)
+		return pagorminator.Desc("posted_at")
 	case Titleasc:
-		return pagorminator.MustOrder("title", pagorminator.ASC)
+		return pagorminator.Asc("title")
 	case Titledesc:
-		return pagorminator.MustOrder("title", pagorminator.DESC)
+		return pagorminator.Desc("title")
 	default:
-		return pagorminator.MustOrder("posted_at", pagorminator.DESC)
+		return pagorminator.Desc("posted_at")
 	}
 }
 
