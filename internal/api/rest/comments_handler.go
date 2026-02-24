@@ -26,7 +26,7 @@ func NewComments(service postcomments.Service) CommentsHandler {
 }
 
 func (h CommentsHandler) GetPostComments(c *gin.Context, postID uint, params GetPostCommentsParams) {
-	pageRequest, err := pagorminator.PageRequest(
+	pageRequest, err := pagorminator.NewPageRequest(
 		ptrutils.DerefOr(params.Page, 0),
 		ptrutils.DerefOr(params.Size, defaultPageRequestSize),
 	)
