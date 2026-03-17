@@ -125,8 +125,8 @@ github.com/mailru/easyjson v0.7.7 h1:UGYAvKxe3sBsEDzO8ZeWOSlIQfWFlxbzLZe7hwFURr0
 github.com/mailru/easyjson v0.7.7/go.mod h1:xzfreul335JAWq5oZzymOObrkdz5UnU4kGfJJLY9Nlc=
 github.com/manuelarte/gospecpaths v0.0.2 h1:sIlWJ0JoJcNr2ulctQfw5QfahBwF9gkvokCiwHTK/yE=
 github.com/manuelarte/gospecpaths v0.0.2/go.mod h1:Lhnuz2UoNzjZh9sbyb3I71YH2c4cPMa2ErqmQNAzA1o=
-github.com/manuelarte/pagorminator v0.2.1 h1:lTIU3Ol1sg3UmOHh4B3tPEYIE3HTrRGkFEBPN6NaqSw=
-github.com/manuelarte/pagorminator v0.2.1/go.mod h1:2DsLcNfWZdxm4xfX10FHHUuK/6a5XNL1u9JI2fOddtU=
+github.com/manuelarte/pagorminator v0.2.2 h1:pqoM1lG4E/fwGGF5WcgzlYQ5NxfmodwiAd7o3wmjX9s=
+github.com/manuelarte/pagorminator v0.2.2/go.mod h1:2DsLcNfWZdxm4xfX10FHHUuK/6a5XNL1u9JI2fOddtU=
 github.com/manuelarte/ptrutils v1.0.2 h1:YEDdPxd1p6F9JzaytpTu+XsaxWf7psKWeahZ9RZmaCE=
 github.com/manuelarte/ptrutils v1.0.2/go.mod h1:ThCS3whPljc02UlWsJ9rs215r7wqGzkSiA7dJzYta88=
 github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWEY=

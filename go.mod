@@ -12,7 +12,7 @@ require (
 	github.com/golaxo/goqrius v0.0.5
 	github.com/golaxo/gormgoqrius v0.0.4
 	github.com/google/uuid v1.6.0
-	github.com/manuelarte/pagorminator v0.2.1
+	github.com/manuelarte/pagorminator v0.2.2
 	github.com/manuelarte/ptrutils v1.0.2
 	github.com/oapi-codegen/runtime v1.2.0
 	github.com/sirupsen/logrus v1.9.4
