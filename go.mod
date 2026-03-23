@@ -14,7 +14,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/manuelarte/pagorminator v0.2.2
 	github.com/manuelarte/ptrutils v1.0.2
-	github.com/oapi-codegen/runtime v1.2.0
+	github.com/oapi-codegen/runtime v1.3.0
 	github.com/sirupsen/logrus v1.9.4
 	gorm.io/driver/sqlite v1.6.0
 	gorm.io/gorm v1.31.1
