@@ -49,7 +49,7 @@ func (h UsersHandler) UserLogin(c *gin.Context) {
 	}
 	session := sessions.Default(c)
 	userSession := userToUserSession(user)
-	userBytes, _ := json.Marshal(userSession)
+	userBytes, _ := json.Marshal(userSession) // #nosec G117 -- intentional
 	session.Set("user", userBytes)
 	err = session.Save()
 	if err != nil {
@@ -104,7 +104,7 @@ func (h UsersHandler) UserSignup(c *gin.Context) {
 		return
 	}
 	session := sessions.Default(c)
-	userBytes, _ := json.Marshal(userToUserSession(user))
+	userBytes, _ := json.Marshal(userToUserSession(user)) // #nosec G117 -- intentional
 	session.Set("user", userBytes)
 	err := session.Save()
 	if err != nil {
