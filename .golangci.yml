@@ -107,6 +107,8 @@ linters:
           paramsOnly: false
         underef:
           skipRecvDeref: false
+    goconst:
+      min-occurrences: 5
     godox:
       keywords:
         - FIXME
