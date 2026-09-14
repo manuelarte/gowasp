@@ -3,7 +3,7 @@ package postcomments
 import (
 	"context"
 
-	"github.com/manuelarte/pagorminator"
+	"github.com/manuelarte/pagorminator/pagepagination"
 	"gorm.io/gorm"
 
 	"github.com/manuelarte/gowasp/internal/models"
@@ -13,7 +13,7 @@ import (
 type Repository interface {
 	Create(ctx context.Context, postComment *models.PostComment) error
 	GetAllForPostID(ctx context.Context, postID uint,
-		pageRequest *pagorminator.Pagination) ([]*models.PostComment, error)
+		pageRequest *pagepagination.Pagination) ([]*models.PostComment, error)
 }
 
 var _ Repository = new(gormRepository)
@@ -27,7 +27,7 @@ func NewRepository(db *gorm.DB) Repository {
 }
 
 func (b gormRepository) GetAllForPostID(ctx context.Context, postID uint,
-	pageRequest *pagorminator.Pagination,
+	pageRequest *pagepagination.Pagination,
 ) ([]*models.PostComment, error) {
 	var postComments []*models.PostComment
 	tx := b.db.WithContext(ctx).Clauses(pageRequest).Order("posted_at asc").

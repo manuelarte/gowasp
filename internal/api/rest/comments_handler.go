@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/manuelarte/pagorminator"
+	"github.com/manuelarte/pagorminator/pagepagination"
 	"github.com/manuelarte/ptrutils"
 
 	"github.com/manuelarte/gowasp/internal/models"
@@ -26,7 +26,7 @@ func NewComments(service postcomments.Service) CommentsHandler {
 }
 
 func (h CommentsHandler) GetPostComments(c *gin.Context, postID uint, params GetPostCommentsParams) {
-	pageRequest, err := pagorminator.NewPageRequest(
+	pageRequest, err := pagepagination.New(
 		ptrutils.DerefOr(params.Page, 0),
 		ptrutils.DerefOr(params.Size, defaultPageRequestSize),
 	)
@@ -97,14 +97,16 @@ func postCommentNewToDAO(dto PostCommentNew, postID uint, postedAt time.Time) mo
 
 func postPagePostCommentToDTO(
 	postComments []*models.PostComment,
-	pageRequest *pagorminator.Pagination,
+	pageRequest *pagepagination.Pagination,
 ) PagePostComments {
+	totalElements, _ := pageRequest.TotalElements()
+
 	return PagePostComments{
 		UnderscoreMetadata: PageMetadata{
-			Page:       pageRequest.GetPage(),
-			Size:       pageRequest.GetSize(),
-			TotalCount: int(pageRequest.GetTotalElements()),
-			TotalPages: pageRequest.GetTotalPages(),
+			Page:       pageRequest.Page(),
+			Size:       pageRequest.Size(),
+			TotalCount: int(totalElements),
+			TotalPages: pageRequest.TotalPages(),
 		},
 		Data: sliceutils.Transform(postComments, func(x *models.PostComment) PostComment {
 			return PostComment{

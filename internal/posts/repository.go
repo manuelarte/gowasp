@@ -5,7 +5,7 @@ import (
 
 	"github.com/golaxo/goqrius"
 	"github.com/golaxo/gormgoqrius"
-	"github.com/manuelarte/pagorminator"
+	"github.com/manuelarte/pagorminator/pagepagination"
 	"gorm.io/gorm"
 
 	"github.com/manuelarte/gowasp/internal/models"
@@ -13,7 +13,7 @@ import (
 
 //nolint:iface // separate repository from service
 type Repository interface {
-	GetAll(ctx context.Context, q goqrius.Expression, pageRequest *pagorminator.Pagination) ([]*models.Post, error)
+	GetAll(ctx context.Context, q goqrius.Expression, pageRequest *pagepagination.Pagination) ([]*models.Post, error)
 	GetByID(ctx context.Context, id uint) (models.Post, error)
 }
 
@@ -30,7 +30,7 @@ func NewRepository(db *gorm.DB) Repository {
 func (b gormRepository) GetAll(
 	ctx context.Context,
 	q goqrius.Expression,
-	pageRequest *pagorminator.Pagination,
+	pageRequest *pagepagination.Pagination,
 ) ([]*models.Post, error) {
 	var posts []*models.Post
 

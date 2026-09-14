@@ -3,7 +3,7 @@ package postcomments
 import (
 	"context"
 
-	"github.com/manuelarte/pagorminator"
+	"github.com/manuelarte/pagorminator/pagepagination"
 
 	"github.com/manuelarte/gowasp/internal/models"
 )
@@ -12,7 +12,7 @@ import (
 type Service interface {
 	Create(ctx context.Context, postComment *models.PostComment) error
 	GetAllForPostID(ctx context.Context, postID uint,
-		pagination *pagorminator.Pagination) ([]*models.PostComment, error)
+		pagination *pagepagination.Pagination) ([]*models.PostComment, error)
 }
 
 var _ Service = new(serviceImpl)
@@ -26,7 +26,7 @@ func NewService(repository Repository) Service {
 }
 
 func (b serviceImpl) GetAllForPostID(ctx context.Context, postID uint,
-	pagination *pagorminator.Pagination,
+	pagination *pagepagination.Pagination,
 ) ([]*models.PostComment, error) {
 	postComments, err := b.Repository.GetAllForPostID(ctx, postID, pagination)
 	if err != nil {

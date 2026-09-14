@@ -6,7 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golaxo/goqrius"
-	"github.com/manuelarte/pagorminator"
+	"github.com/manuelarte/pagorminator/pagegeneric"
+	"github.com/manuelarte/pagorminator/pagepagination"
 	"github.com/manuelarte/ptrutils"
 
 	"github.com/manuelarte/gowasp/internal/models"
@@ -49,7 +50,7 @@ func (h PostsHandler) GetPosts(c *gin.Context, params GetPostsParams) {
 		return
 	}
 
-	pageRequest, err := pagorminator.NewPageRequest(
+	pageRequest, err := pagepagination.New(
 		ptrutils.DerefOr(params.Page, 0),
 		ptrutils.DerefOr(params.Size, defaultPageRequestSize),
 		orderFrom(ptrutils.DerefOr(params.Sort, PostedAtdesc)),
@@ -77,28 +78,30 @@ func (h PostsHandler) GetPosts(c *gin.Context, params GetPostsParams) {
 	c.JSON(http.StatusOK, dto)
 }
 
-func orderFrom(sortingCriteria GetPostsParamsSort) pagorminator.Order {
+func orderFrom(sortingCriteria GetPostsParamsSort) pagegeneric.Order {
 	switch sortingCriteria {
 	case PostedAtasc:
-		return pagorminator.Asc("posted_at")
+		return pagegeneric.Asc("posted_at")
 	case PostedAtdesc:
-		return pagorminator.Desc("posted_at")
+		return pagegeneric.Desc("posted_at")
 	case Titleasc:
-		return pagorminator.Asc("title")
+		return pagegeneric.Asc("title")
 	case Titledesc:
-		return pagorminator.Desc("title")
+		return pagegeneric.Desc("title")
 	default:
-		return pagorminator.Desc("posted_at")
+		return pagegeneric.Desc("posted_at")
 	}
 }
 
-func postPageRequestToDTO(posts []*models.Post, pageRequest *pagorminator.Pagination) PagePosts {
+func postPageRequestToDTO(posts []*models.Post, pageRequest *pagepagination.Pagination) PagePosts {
+	totalElements, _ := pageRequest.TotalElements()
+
 	return PagePosts{
 		UnderscoreMetadata: PageMetadata{
-			Page:       pageRequest.GetPage(),
-			Size:       pageRequest.GetSize(),
-			TotalCount: int(pageRequest.GetTotalElements()),
-			TotalPages: pageRequest.GetTotalPages(),
+			Page:       pageRequest.Page(),
+			Size:       pageRequest.Size(),
+			TotalCount: int(totalElements),
+			TotalPages: pageRequest.TotalPages(),
 		},
 		Data: sliceutils.Transform(posts, postToDto),
 	}
