@@ -155,14 +155,14 @@ func userToDAO(u UserCredential) models.User {
 
 func userToDTO(fields gofieldselect.Node, u models.User) User {
 	return User{
-		CreatedAt: gofieldselect.Get(fields, "createdAt", ptrutils.Ptr(u.CreatedAt)),
+		CreatedAt: gofieldselect.Get(fields, "createdAt", new(u.CreatedAt)),
 		//#nosec G115
 		Self:      Paths{}.GetUserByIDEndpoint.Path(strconv.Itoa(int(u.ID))),
-		ID:        gofieldselect.Get(fields, "id", ptrutils.Ptr(u.ID)),
-		IsAdmin:   gofieldselect.Get(fields, "isAdmin", ptrutils.Ptr(u.IsAdmin)),
-		Password:  gofieldselect.Get(fields, "password", ptrutils.Ptr(u.Password)),
-		UpdatedAt: gofieldselect.Get(fields, "updatedAt", ptrutils.Ptr(u.UpdatedAt)),
-		Username:  gofieldselect.Get(fields, "username", ptrutils.Ptr(u.Username)),
+		ID:        gofieldselect.Get(fields, "id", new(u.ID)),
+		IsAdmin:   gofieldselect.Get(fields, "isAdmin", new(u.IsAdmin)),
+		Password:  gofieldselect.Get(fields, "password", new(u.Password)),
+		UpdatedAt: gofieldselect.Get(fields, "updatedAt", new(u.UpdatedAt)),
+		Username:  gofieldselect.Get(fields, "username", new(u.Username)),
 	}
 }
 
