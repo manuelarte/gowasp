@@ -1,11 +1,11 @@
 module github.com/manuelarte/gowasp
 
-go 1.25.11
+go 1.26.0
 
 require (
 	github.com/caarlos0/env/v11 v11.4.1
-	github.com/gin-contrib/cors v1.7.8
-	github.com/gin-contrib/sessions v1.1.1
+	github.com/gin-contrib/cors v1.7.9
+	github.com/gin-contrib/sessions v1.1.2
 	github.com/gin-gonic/gin v1.12.0
 	github.com/golang-migrate/migrate/v4 v4.20.1
 	github.com/golaxo/gofieldselect v0.0.2
@@ -73,7 +73,7 @@ require (
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	go.yaml.in/yaml/v4 v4.0.0-rc.2 // indirect
 	golang.org/x/arch v0.29.0 // indirect
-	golang.org/x/crypto v0.55.0 // indirect
+	golang.org/x/crypto v0.56.0 // indirect
 	golang.org/x/mod v0.40.0 // indirect
 	golang.org/x/net v0.58.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
