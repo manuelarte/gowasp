@@ -41,7 +41,7 @@ importers:
         version: 22.18.1
       '@vitejs/plugin-vue':
         specifier: ^5.2.3
-        version: 5.2.4(vite@6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue@3.5.21(typescript@5.8.3))
+        version: 5.2.4(vite@6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue@3.5.21(typescript@5.8.3))
       '@vue/tsconfig':
         specifier: ^0.7.0
         version: 0.7.0(typescript@5.8.3)(vue@3.5.21(typescript@5.8.3))
@@ -65,7 +65,7 @@ importers:
         version: 19.3.0
       unplugin-fonts:
         specifier: ^1.3.1
-        version: 1.4.0(vite@6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))
+        version: 1.4.0(vite@6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))
       unplugin-vue-components:
         specifier: ^28.8.0
         version: 28.8.0(@babel/parser@7.28.4)(supports-color@8.1.1)(vue@3.5.21(typescript@5.8.3))
@@ -73,14 +73,14 @@ importers:
         specifier: ^0.14.0
         version: 0.14.0(@vue/compiler-sfc@3.5.21)(vue-router@4.5.1(vue@3.5.21(typescript@5.8.3)))(vue@3.5.21(typescript@5.8.3))
       vite:
-        specifier: ^6.4.3
-        version: 6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3)
+        specifier: ^6.4.4
+        version: 6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3)
       vite-plugin-vue-layouts-next:
         specifier: ^1.0.0
-        version: 1.0.0(supports-color@8.1.1)(vite@6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue-router@4.5.1(vue@3.5.21(typescript@5.8.3)))(vue@3.5.21(typescript@5.8.3))
+        version: 1.0.0(supports-color@8.1.1)(vite@6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue-router@4.5.1(vue@3.5.21(typescript@5.8.3)))(vue@3.5.21(typescript@5.8.3))
       vite-plugin-vuetify:
         specifier: ^2.1.1
-        version: 2.1.2(supports-color@8.1.1)(vite@6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue@3.5.21(typescript@5.8.3))(vuetify@3.10.0)
+        version: 2.1.2(supports-color@8.1.1)(vite@6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue@3.5.21(typescript@5.8.3))(vuetify@3.10.0)
       vue-router:
         specifier: ^4.5.1
         version: 4.5.1(vue@3.5.21(typescript@5.8.3))
@@ -2343,8 +2343,8 @@ packages:
       vue: ^3.0.0
       vuetify: ^3.0.0
 
-  vite@6.4.3:
-    resolution: {integrity: sha512-NTKlcQjlAK7MlQoyb6LgaqHc8sso/pVyUJYWMws3jg21uTJw/LddqIFPcPqP6PzpgbIcZyKI85sFE4HBrQDA8A==}
+  vite@6.4.4:
+    resolution: {integrity: sha512-xGjU/SyjeNyb0E4KxXBvYz/1C+3JXuujvf2hXNOtnlcE+58o5ajd9N2/n2VhkiJvpCP2qQasnUpx5PXNeI+p1Q==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
     peerDependencies:
@@ -3121,9 +3121,9 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
-  '@vitejs/plugin-vue@5.2.4(vite@6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue@3.5.21(typescript@5.8.3))':
+  '@vitejs/plugin-vue@5.2.4(vite@6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue@3.5.21(typescript@5.8.3))':
     dependencies:
-      vite: 6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3)
+      vite: 6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3)
       vue: 3.5.21(typescript@5.8.3)
 
   '@vitest/eslint-plugin@1.3.9(eslint@9.35.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.8.3)':
@@ -4532,11 +4532,11 @@ snapshots:
       unplugin: 2.3.10
       unplugin-utils: 0.2.5
 
-  unplugin-fonts@1.4.0(vite@6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3)):
+  unplugin-fonts@1.4.0(vite@6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3)):
     dependencies:
       fast-glob: 3.3.3
       unplugin: 2.3.5
-      vite: 6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3)
+      vite: 6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3)
 
   unplugin-utils@0.2.5:
     dependencies:
@@ -4634,28 +4634,28 @@ snapshots:
 
   varint@6.0.0: {}
 
-  vite-plugin-vue-layouts-next@1.0.0(supports-color@8.1.1)(vite@6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue-router@4.5.1(vue@3.5.21(typescript@5.8.3)))(vue@3.5.21(typescript@5.8.3)):
+  vite-plugin-vue-layouts-next@1.0.0(supports-color@8.1.1)(vite@6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue-router@4.5.1(vue@3.5.21(typescript@5.8.3)))(vue@3.5.21(typescript@5.8.3)):
     dependencies:
       debug: 4.4.1(supports-color@8.1.1)
       fast-glob: 3.3.3
-      vite: 6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3)
+      vite: 6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3)
       vue: 3.5.21(typescript@5.8.3)
       vue-router: 4.5.1(vue@3.5.21(typescript@5.8.3))
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-vuetify@2.1.2(supports-color@8.1.1)(vite@6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue@3.5.21(typescript@5.8.3))(vuetify@3.10.0):
+  vite-plugin-vuetify@2.1.2(supports-color@8.1.1)(vite@6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue@3.5.21(typescript@5.8.3))(vuetify@3.10.0):
     dependencies:
       '@vuetify/loader-shared': 2.1.1(vue@3.5.21(typescript@5.8.3))(vuetify@3.10.0)
       debug: 4.4.3(supports-color@8.1.1)
       upath: 2.0.1
-      vite: 6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3)
+      vite: 6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3)
       vue: 3.5.21(typescript@5.8.3)
       vuetify: 3.10.0(typescript@5.8.3)(vite-plugin-vuetify@2.1.2)(vue@3.5.21(typescript@5.8.3))
     transitivePeerDependencies:
       - supports-color
 
-  vite@6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3):
+  vite@6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.4)
@@ -4723,7 +4723,7 @@ snapshots:
       vue: 3.5.21(typescript@5.8.3)
     optionalDependencies:
       typescript: 5.8.3
-      vite-plugin-vuetify: 2.1.2(supports-color@8.1.1)(vite@6.4.3(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue@3.5.21(typescript@5.8.3))(vuetify@3.10.0)
+      vite-plugin-vuetify: 2.1.2(supports-color@8.1.1)(vite@6.4.4(@types/node@22.18.1)(sass-embedded@1.92.1)(sass@1.92.1)(yaml@2.8.3))(vue@3.5.21(typescript@5.8.3))(vuetify@3.10.0)
 
   webpack-virtual-modules@0.6.2: {}
 
